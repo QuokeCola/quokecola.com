@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TEST</title>
+<!--    <script type="module" src="AppDelegate.js"></script>- -->
+    <script type="module" src="./framework/test.js"></script>
+    <link href="./framework/assets/fonts/BlenderPro/BlenderPro.css" rel="stylesheet" type="text/css">
+    <link href="./framework/assets/fonts/NunitoSans/NunitoSans.css" rel="stylesheet" type="text/css">
+    <link href="/framework/assets/css/loading_animations.css" rel="stylesheet" type="text/css">
+    <link href="./framework/assets/css/content_loader.css" rel="stylesheet" type="text/css">
+    <link href="./framework/assets/css/website_styles.css" rel="stylesheet" type="text/css">
+    <link href="./framework/assets/css/navigation_bar.css" rel="stylesheet" type="text/css">
+</head>
+<body style="margin: 0">
+<input type="checkbox" style="display: none" id="loading-status" checked="checked">
+<div id="content-screen" class="content-screen"></div>
+<div id="loading-screen">
+    <div id = "loading-textBox"><div class="loading-text"></div></div>
+    <div id = "loading-orgName"></div>
+    <div id = "loading-grid"></div>
+</div>
+<nav id="navigation-bar">
+    <input type="checkbox" style="display: none" id="nav-panel-status">
+    <label	id="nav-expand-btn"	class="nav-expand-btn"	for="nav-panel-status">
+        <span class="nav-expand-btn-bread nav-expand-btn-bread-top">
+            <span class="nav-expand-btn-line nav-expand-btn-line-top"></span>
+        </span>
+        <span class="nav-expand-btn-bread nav-expand-btn-bread-bottom">
+            <span class="nav-expand-btn-line nav-expand-btn-line-bottom"></span>
+        </span>
+    </label>
+    <div class="nav-logo-panel" id="nav-logoPanel">QuokeCola</div>
+    <div class="nav-menu-panel" id ="nav-menuPanel"></div>
+</nav>
+</body>
+</html>

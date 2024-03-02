@@ -1,0 +1,7 @@
+<svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"
+     width="20" height="20" viewBox="0 0 20 20"
+     fill="none" stroke="rgb(20,100,255)" stroke-linecap="round"
+     aria-hidden = "true">
+    <path d="M 3 10 L 17 10"></path>
+    <path d="M 7 5 L 2 10 L 7 15"  stroke-linejoin="round"></path>
+</svg>

@@ -1,0 +1,14 @@
+{
+  "name": "quokecola.com",
+  "version": "1.0.0",
+  "description": "",
+  "main": "framework/test.ts",
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "tsc --build --clean"
+  },
+  "dependencies": {
+    "typescript": "^5.3.3"
+  },
+  "private": true
+}
