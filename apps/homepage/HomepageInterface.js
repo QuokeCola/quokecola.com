@@ -26,9 +26,7 @@ export class HomepageInterface {
         for (let idx = 0; idx < 3; idx++) {
             var github_images = new Image();
             github_images.addEventListener('load', function () {
-                console.log("load!");
                 let img_obj = tiles.item(idx + 1).querySelector("div");
-                console.log(img_obj);
                 if (img_obj)
                     img_obj.style.backgroundImage = 'url(' + HomepageInterface.works_images_url[idx] + ')';
                 img_obj === null || img_obj === void 0 ? void 0 : img_obj.classList.remove("loading-components-light");
@@ -57,6 +55,15 @@ export class HomepageInterface {
             (_h = HomepageInterface.home_banner_imgs) === null || _h === void 0 ? void 0 : _h.classList.add("loaded-components-light");
         });
         banner_image.src = HomepageInterface.home_banner_imgs_url;
+        var selfie_image = new Image();
+        banner_image.addEventListener('load', function () {
+            let selfie_img_obj = document.querySelector(".home-half-size-tile > img");
+            if (selfie_img_obj)
+                selfie_img_obj.src = "./apps/homepage/assets/images/selfie.jpeg";
+            selfie_img_obj === null || selfie_img_obj === void 0 ? void 0 : selfie_img_obj.classList.remove("loading-components-light");
+            selfie_img_obj === null || selfie_img_obj === void 0 ? void 0 : selfie_img_obj.classList.add("loadedcomponents-light");
+        });
+        selfie_image.src = HomepageInterface.home_banner_imgs_url;
     }
     static remove_layout() {
         for (let url of this.css_urls) {

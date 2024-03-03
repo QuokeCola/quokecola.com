@@ -4,6 +4,7 @@
     display: block;
     position: relative;
     flex-wrap: wrap;
+    border-bottom: solid 1px rgb(225,225,225);
 }
 
 .home-banner-imgs {
