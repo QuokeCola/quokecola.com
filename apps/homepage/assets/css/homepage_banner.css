@@ -13,6 +13,7 @@
     left: 0;
     top: 0;
     background-size: cover;
+    background-position-x: center;
 }
 
 .home-banner-text {
@@ -22,7 +23,7 @@
     top: 30%;
     left: 5%;
     z-index: 2;
-    transition: all 0.5s cubic-bezier(.8, 0.0, 0.0, 1.0);
+    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
 }
 
 .home-banner-text hr {
@@ -40,6 +41,13 @@
     display:flex;
     flex-basis: 100%;
     margin: 5px 0 5px 0;
+    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
+}
+
+.home-banner-text h1{
+    font-family: "IBM Plex Sans", serif;
+    font-weight: normal;
+    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
 }
 
 .home-banner-button{
@@ -77,28 +85,33 @@
 
 
 
-@media screen and (min-width: 650px) {
-    .home-banner-text{
-        width: 35%
-    }
-}
-
-@media screen and (max-width: 649px) {
+@media screen and (min-width: 700px){
 
     .home-banner-text{
-        width: 90%
+        position: absolute;
+        left: 80px;
+        top: 30%;
+        font-size: 20px;
+        width: 400px;
     }
 
-}
-
-@media screen and (min-width: 700px) {
-    .home-section-wrapper{
-        margin: 0 80px 0 80px;
+    .home-banner-text > h1{
+        font-size: 40px;
+        font-weight: 400;
     }
 }
 
 @media screen and (max-width: 699px) {
-    .home-section-wrapper{
-        margin: 0 40px 0 40px;
+    .home-banner-text{
+        position: absolute;
+        left: 40px;
+        top: 150px;
+        font-size: 15px;
+        width: 200px;
+    }
+
+    .home-banner-text > h1{
+        font-size: 20px;
+        font-weight: 400;
     }
 }

@@ -1,9 +1,11 @@
 import { ContentLoaderInterface } from "../../framework/ContentLoaderInterface.js";
 export class HomepageInterface {
     static create_layout() {
-        ContentLoaderInterface.set_app_customize_css('./apps/homepage/assets/css/homepage.css');
+        for (let url of this.css_urls) {
+            ContentLoaderInterface.set_app_customize_css(url);
+        }
         let request = new XMLHttpRequest();
-        request.open("GET", this.css_url);
+        request.open("GET", this.html_url);
         request.send();
         request.onreadystatechange = (e) => {
             if (request.readyState == 4 && request.status == 200) {
@@ -20,8 +22,28 @@ export class HomepageInterface {
         this.home_banner_abstract = document.getElementById("home-banner-abstract");
         this.home_banner_imgs = document.getElementById("home-banner-imgs");
         this.home_banner_button = document.getElementById("home-banner-button");
-        var image = new Image();
-        image.addEventListener('load', function () {
+        let tiles = document.querySelectorAll(".home-quarter-size-tile");
+        for (let idx = 0; idx < 3; idx++) {
+            var github_images = new Image();
+            github_images.addEventListener('load', function () {
+                console.log("load!");
+                let img_obj = tiles.item(idx + 1).querySelector("div");
+                console.log(img_obj);
+                if (img_obj)
+                    img_obj.style.backgroundImage = 'url(' + HomepageInterface.works_images_url[idx] + ')';
+                img_obj === null || img_obj === void 0 ? void 0 : img_obj.classList.remove("loading-components-light");
+                img_obj === null || img_obj === void 0 ? void 0 : img_obj.classList.add("loaded-components-light");
+                let title_obj = tiles.item(idx + 1).querySelector("h1");
+                title_obj === null || title_obj === void 0 ? void 0 : title_obj.classList.remove("loading-components-light");
+                title_obj === null || title_obj === void 0 ? void 0 : title_obj.classList.add("loaded-components-light");
+                let p_obj = tiles.item(idx + 1).querySelector("p");
+                p_obj === null || p_obj === void 0 ? void 0 : p_obj.classList.remove("loading-components-light");
+                p_obj === null || p_obj === void 0 ? void 0 : p_obj.classList.add("loaded-components-light");
+            });
+            github_images.src = HomepageInterface.works_images_url[idx];
+        }
+        var banner_image = new Image();
+        banner_image.addEventListener('load', function () {
             var _a, _b, _c, _d, _e, _f, _g, _h;
             if (HomepageInterface.home_banner_imgs)
                 HomepageInterface.home_banner_imgs.style.backgroundImage = 'url(' + HomepageInterface.home_banner_imgs_url + ')';
@@ -34,12 +56,25 @@ export class HomepageInterface {
             (_g = HomepageInterface.home_banner_abstract) === null || _g === void 0 ? void 0 : _g.classList.add("loaded-components-dark");
             (_h = HomepageInterface.home_banner_imgs) === null || _h === void 0 ? void 0 : _h.classList.add("loaded-components-light");
         });
-        image.src = HomepageInterface.home_banner_imgs_url;
+        banner_image.src = HomepageInterface.home_banner_imgs_url;
     }
     static remove_layout() {
-        ContentLoaderInterface.remove_app_customize_css(this.css_url);
+        for (let url of this.css_urls) {
+            ContentLoaderInterface.remove_app_customize_css(url);
+        }
         ContentLoaderInterface.set_app_layout("");
     }
 }
 HomepageInterface.home_banner_imgs_url = "./apps/homepage/assets/images/banner_img.JPG";
-HomepageInterface.css_url = "./apps/homepage/layout.html";
+HomepageInterface.html_url = "./apps/homepage/layout.html";
+HomepageInterface.css_urls = [
+    "./apps/homepage/assets/css/homepage_layout.css",
+    "./apps/homepage/assets/css/homepage_banner.css",
+    "./apps/homepage/assets/css/homepage_biography.css",
+    "./apps/homepage/assets/css/homepage_works.css"
+];
+HomepageInterface.works_images_url = [
+    "./apps/homepage/assets/images/project_therm_calc_tile_pic.png",
+    "./apps/homepage/assets/images/project_terminal_tile_pic.png",
+    "./apps/homepage/assets/images/project_pcb_tile_pic.png"
+];

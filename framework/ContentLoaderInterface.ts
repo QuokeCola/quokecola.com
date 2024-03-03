@@ -51,9 +51,7 @@ export class ContentLoaderInterface {
      * @param html_code
      */
     public static set_app_layout(html_code:string) {
-        console.log(ContentLoaderInterface.content_window_obj)
         if (ContentLoaderInterface.content_window_obj) {
-            console.log("loo")
             ContentLoaderInterface.content_window_obj.innerHTML = html_code;
         }
     }

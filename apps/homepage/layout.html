@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <title>HOME</title>
     <link href="/framework/assets/css/loading_animations.css" rel="stylesheet" type="text/css">
-    <link href="/apps/homepage/assets/css/homepage.css" rel="stylesheet" type="text/css">
+    <link href="/apps/homepage/assets/css/homepage_banner.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 <div style="width: 100%; height: 100%;position: absolute;top: 0;left: 0;overflow-y: scroll;">
-    <div class="home-banner-wrapper">
+    <div class="home-banner-wrapper" style="margin-bottom: 10%">
         <div class="home-banner-text">
             <h2 class="loading-components-dark" id="home-banner-subtitle">Project</h2>
             <h1 class="loading-components-dark" id="home-banner-title">Haptic Device</h1>
@@ -17,7 +17,99 @@
         </div>
         <div class="home-banner-imgs loading-components-light" id="home-banner-imgs"></div>
     </div>
+    <div class="home-section-wrapper">
+        <div id="home-welcome">
+            I am <span style="color: var(--accent-color);">Chen Qian,</span> a graduate student @ UMich
+        </div>
+        <div style="width: 100%"></div>
+        <span class="home-div-line"></span>
+        <div style="width: 100%"></div>
+        <h1 style="font-weight: 300">Biography</h1><div style="width: 100%"></div>
+        <div class="home-half-size-tile" id="home-about-biography">
+            <span style="font-weight: 500">Education</span><br>
+            <table class="home-timeline-tile">
+                <tr>
+                    <th><span>2015-2018</span></th>
+                    <th>Hangzhou High School, Qianjiang Campus</th>
+                </tr>
+                <tr>
+                    <th><span>2018-2022</span></th>
+                    <th>三墩镇职业技术学院</th>
+                </tr>
+                <tr>
+                    <th><span>2018-2022</span></th>
+                    <th>University of Illinois at Urbana-Champaign</th>
+                </tr>
+                <tr>
+                    <th><span>2022-</span></th>
+                    <th>University of Michigan</th>
+                </tr>
+            </table>
+            <span style="font-weight: 500">Experiences</span><br>
+            <span style="color: rgba(150,150,150)">DJI RoboMaster University League</span><br>
+            <table class="home-timeline-tile">
+                <tr>
+                    <th><span>2019-2020</span></th>
+                    <th>Project Manager</th>
+                </tr>
+                <tr>
+                    <th><span>2018-now</span></th>
+                    <th>Embedded R&D Team Member</th>
+                </tr>
+            </table>
+            <span style="color: rgba(150,150,150)">Multiple Usage Structural Test Platform</span><br>
+            <table class="home-timeline-tile">
+                <tr>
+                    <th><span>2019</span></th>
+                    <th>Frame Structure Designer</th>
+                </tr>
+                <tr>
+                    <th><span>2019-2020</span></th>
+                    <th>Student Research Training Program</th>
+                </tr>
+            </table>
+        </div>
+        <div class="home-half-size-tile" style="line-height: 0">
+            <img style="width: 100%; margin-top: auto" src="/apps/homepage/assets/images/selfie.jpeg">
+        </div>
+    </div>
+    <div class="home-section-wrapper">
+        <div class="home-half-size-tile" style="display: flex; flex-wrap: wrap">
+            <div class="home-quarter-size-tile" id="home-github-link-tile">
+                <div id="home-works-title"><h1 style="font-weight: 300; margin: 0; font-size: 30px">GitHub</h1></div>
+                <div style="width: 100%"></div>
+                <div class="home-div-line" id="home-github-tile-line"></div>
+                <div style="width: 100%"></div>
+                <div class="home-link-button" style="margin-bottom: auto;"
+                     onclick="javascript:window.open('https://github.com/QuokeCola/')">More<img src="/apps/homepage/assets/images/link_arrow.svg"></div>
+            </div>
+            <div class="home-quarter-size-tile" onclick="javascript:window.open('https://github.com/QuokeCola/ThermoCalculator')">
+                <div class="home-card-image loading-components-light"></div>
+                <h1 class="loading-components-light">Thermal Calculator</h1>
+                <p class="loading-components-light">A iOS application for calculating substance properties.</p>
+                <img class="home-card-link-arrow" src="/apps/homepage/assets/images/link_arrow.svg">
+            </div>
+        </div>
+        <div class="home-half-size-tile" style="display: flex; flex-wrap: wrap">
+            <div class="home-quarter-size-tile" onclick="javascript:window.open('https://github.com/QuokeCola/Meta_Terminal_Rebuild')">
+                <div class="home-card-image loading-components-light"></div>
+                <h1 class="loading-components-light">Meta Terminal 2</h1>
+                <p class="loading-components-light">Adjust vehicle PID parameters through a visualized terminal.</p>
+                <img class="home-card-link-arrow" src="/apps/homepage/assets/images/link_arrow.svg">
+            </div>
+            <div class="home-quarter-size-tile" onclick="javascript:window.open('https://github.com/QuokeCola/Robomaster-PCBs')">
+                <div class="home-card-image loading-components-light"></div>
+                <h1 class="loading-components-light">Robomaster PCBs</h1>
+                <p class="loading-components-light">PCB for ZJUI Robomaster team vehicles. </p>
+                <img class="home-card-link-arrow" src="/apps/homepage/assets/images/link_arrow.svg">
+            </div>
+        </div>
+    </div>
+    <div id="copyright">
+        &#169; Chen Qian, 2019-2024
+    </div>
 </div>
+
 
 </body>
 </html>

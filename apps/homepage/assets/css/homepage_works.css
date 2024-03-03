@@ -1,0 +1,30 @@
+#home-github-link-tile{
+    background-color: rgba(255,255,255,0);
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+}
+#home-works-title{
+    transition: all cubic-bezier(0.8, 0.0, 0.0, 1.0) .75s;
+}
+@media screen and (min-width: 550px) {
+    #home-works-title{
+        margin-top: 0;
+    }
+    #home-github-tile-line{
+        margin: 50px 0 50px 5px;
+    }
+    #home-github-link-tile{
+        padding-bottom: inherit;
+    }
+}@media screen and (max-width: 549px) {
+    #home-works-title{
+        margin-top: 50px;
+    }
+    #home-github-tile-line{
+        margin: 40px 0 30px 5px;
+    }
+    #home-github-link-tile{
+        padding-bottom: 20px;
+    }
+}

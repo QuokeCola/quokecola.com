@@ -2,7 +2,7 @@
   "name": "quokecola.com",
   "version": "1.0.0",
   "description": "",
-  "main": "framework/test.ts",
+  "main": "framework/main.ts",
   "scripts": {
     "build": "tsc --build",
     "clean": "tsc --build --clean"

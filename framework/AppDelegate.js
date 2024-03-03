@@ -11,8 +11,8 @@ export class AppDelegate {
     /************************************************
      *  Prepared Methods
      ***********************************************/
-    post_message(app_request) {
-        window.postMessage(app_request);
+    post_message(app_data) {
+        window.postMessage(app_data);
     }
     /************************************************
      *  App Schedule Framework -- Auto Call
@@ -72,7 +72,7 @@ export class AppDelegate {
                     this_ref.awake(app_request.app_data); // Create layout & register DOM
                     setTimeout(() => {
                         ContentLoaderInterface.set_loading_status(false);
-                    }, 1000);
+                    }, 10);
                 }
                 this_ref.handle_app_requests(app_request.app_data);
                 this_ref.current_session_app_data = app_request.app_data;

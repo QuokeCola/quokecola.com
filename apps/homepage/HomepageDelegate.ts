@@ -1,11 +1,19 @@
 import {AppDelegate} from "../../framework/AppDelegate.js";
 import {HomepageInterface} from "./HomepageInterface.js";
+import {NavigationBarInterface} from "../../framework/NavigationBarInterface.js";
+import {AppRequests} from "../../framework/AppRequests.js";
 export class HomepageDelegate extends AppDelegate{
     app_data: any;
     name: string = "HOME";
-
-
-    background_service(app_request: any): boolean {
+    constructor() {
+        super();
+        let app_request = new AppRequests()
+        app_request.app_name = this.name;
+        app_request.url      = this.data_to_url("");
+        app_request.app_data = null;
+        NavigationBarInterface.add_btn(this.name, app_request);
+    }
+    background_service(app_data: any): boolean {
         return true;
     }
 
@@ -14,7 +22,7 @@ export class HomepageDelegate extends AppDelegate{
         return true;
     }
 
-    data_to_url(app_request: any): string {
+    data_to_url(app_data: any): string {
         return ""
     }
 
@@ -29,7 +37,4 @@ export class HomepageDelegate extends AppDelegate{
         HomepageInterface.remove_layout();
         return true;
     }
-
-
-
 }

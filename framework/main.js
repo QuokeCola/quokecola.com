@@ -17,5 +17,4 @@ for (const app_delegate of app_delegates) {
         break;
     }
 }
-console.log(request);
 window.postMessage(request);

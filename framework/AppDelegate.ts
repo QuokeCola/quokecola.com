@@ -47,17 +47,22 @@ export abstract class AppDelegate{
 
     /**
      * Here implements the background service for the app.
-     * @param app_request The event send to application (can from other applications).
+     * @param app_data
      */
-    abstract background_service(app_request: any): boolean
+    abstract background_service(app_data: any): boolean
 
     /**
      * Here implements convert user data to url.
-     * @param app_request The event send to application.
+     * @param app_data
      */
-    abstract data_to_url(app_request: typeof this.app_data) : string;
+    abstract data_to_url(app_data: typeof this.app_data) : string;
 
+    /**
+     * Here implements the method that parse url to user data
+     * @param url The url.
+     */
     abstract url_to_data(url: string) : typeof this.app_data;
+
     /************************************************
      *  App Cache
      ***********************************************/
@@ -79,8 +84,8 @@ export abstract class AppDelegate{
     /************************************************
      *  Prepared Methods
      ***********************************************/
-    post_message(app_request: typeof this.app_data) : void {
-        window.postMessage(app_request);
+    post_message(app_data: typeof this.app_data) : void {
+        window.postMessage(app_data);
     }
 
 
@@ -143,7 +148,7 @@ export abstract class AppDelegate{
                     this_ref.awake(app_request.app_data); // Create layout & register DOM
                     setTimeout(()=> {
                         ContentLoaderInterface.set_loading_status(false);
-                    },1000);
+                    },10);
                 }
                 this_ref.handle_app_requests(app_request.app_data);
                 this_ref.current_session_app_data = app_request.app_data;
