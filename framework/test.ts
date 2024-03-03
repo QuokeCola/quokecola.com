@@ -7,7 +7,6 @@ let homepage_delegate = new HomepageDelegate();
 let request = new AppRequests();
 let app_delegates : AppDelegate[] = [homepage_delegate];
 
-request.app_data = "404";
 request.url      = "#404";
 
 let url_levels = window.location.href.split("#")

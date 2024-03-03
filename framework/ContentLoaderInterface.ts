@@ -10,6 +10,7 @@ export class ContentLoaderInterface {
     private static vert_half_line_count = 0;
     private static horz_half_line_count = 0;
     private static initialized = false
+    private static app_customized_css = new Map()
     public static initialize() {
         if (!this.initialized) {
             ContentLoaderInterface.update_grid();
@@ -35,6 +36,14 @@ export class ContentLoaderInterface {
         style.rel  = "stylesheet"
 
         head.appendChild(style);
+        this.app_customized_css.set(url,style)
+    }
+    public static remove_app_customize_css(url:string) {
+        if (this.app_customized_css.has(url)) {
+            let head = document.head || document.getElementsByTagName('head')[0];
+            head.removeChild(this.app_customized_css.get(url))
+            this.app_customized_css.delete(url)
+        }
     }
 
     /**

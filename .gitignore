@@ -3,3 +3,5 @@
 /framework/AppRequests.js
 /framework/ContentLoaderInterface.js
 /framework/NavigationBarInterface.js
+/node_modules/*
+/node_modules/**/*

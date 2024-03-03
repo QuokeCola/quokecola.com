@@ -4,7 +4,6 @@ import { AppRequests } from "./AppRequests.js";
 let homepage_delegate = new HomepageDelegate();
 let request = new AppRequests();
 let app_delegates = [homepage_delegate];
-request.app_data = "404";
 request.url = "#404";
 let url_levels = window.location.href.split("#");
 if (url_levels.length === 1) {

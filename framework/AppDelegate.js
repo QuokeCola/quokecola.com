@@ -24,7 +24,7 @@ export class AppDelegate {
      * @private
      */
     awake(app_data) {
-        return this.create_layout(app_data) && this.register_DOM(app_data);
+        return this.create_layout(app_data);
     }
     /**
      * When browser is switching to other apps.
@@ -60,7 +60,7 @@ export class AppDelegate {
         if (app_event instanceof MessageEvent) {
             app_request = app_event.data;
         }
-        else if (app_event instanceof PopStateEvent) {
+        else if (app_event instanceof PopStateEvent && app_event.state && app_event.state.data) {
             app_request = app_event.state.data;
         }
         else { // Unknown source
@@ -76,6 +76,7 @@ export class AppDelegate {
                 }
                 this_ref.handle_app_requests(app_request.app_data);
                 this_ref.current_session_app_data = app_request.app_data;
+                location.href = location.href.split("#")[0].toString() + "#" + this_ref.name + "#" + this_ref.data_to_url(app_request.app_data);
                 if (!(app_event instanceof PopStateEvent)) {
                     history.pushState(app_request, this_ref.data_to_url(app_request.app_data)); // Update history
                 }

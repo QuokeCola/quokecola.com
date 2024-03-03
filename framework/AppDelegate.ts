@@ -32,12 +32,6 @@ export abstract class AppDelegate{
      * @return Whether successfully create layout
      */
     abstract create_layout(app_data: typeof this.app_data) : boolean;
-    /**
-     * Here implements the part for linking DOM elements to the class
-     * @param app_data The event send to application.
-     * @return Whether successfully awake
-     */
-    abstract register_DOM(app_data: typeof this.app_data) : boolean;
 
     /**
      * Here implements the main logic of the app. Operating DOM to behave.
@@ -101,7 +95,7 @@ export abstract class AppDelegate{
      * @private
      */
     private awake(app_data: typeof this.app_data) : boolean {
-        return this.create_layout(app_data) && this.register_DOM(app_data)
+        return this.create_layout(app_data)
     }
 
     /**
@@ -138,7 +132,7 @@ export abstract class AppDelegate{
         let app_request : AppRequests;
         if(app_event instanceof MessageEvent) {
             app_request = app_event.data;
-        } else if (app_event instanceof PopStateEvent) {
+        } else if (app_event instanceof PopStateEvent && app_event.state && app_event.state.data) {
             app_request = app_event.state.data;
         } else { // Unknown source
             app_request = new AppRequests();
@@ -153,6 +147,7 @@ export abstract class AppDelegate{
                 }
                 this_ref.handle_app_requests(app_request.app_data);
                 this_ref.current_session_app_data = app_request.app_data;
+                location.href = location.href.split("#")[0].toString()+"#"+this_ref.name+"#"+this_ref.data_to_url(app_request.app_data);
                 if (!(app_event instanceof PopStateEvent)){
                     history.pushState(app_request, this_ref.data_to_url(app_request.app_data)); // Update history
                 }
