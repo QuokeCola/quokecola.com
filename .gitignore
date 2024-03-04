@@ -1,7 +1,4 @@
 # Project exclude paths
-/apps/homepage/HomepageDelegate.js
-/framework/AppRequests.js
-/framework/ContentLoaderInterface.js
-/framework/NavigationBarInterface.js
+*.js
 /node_modules/*
 /node_modules/**/*
