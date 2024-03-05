@@ -13,6 +13,7 @@ nav{
     -webkit-backdrop-filter: blur(0px) brightness(100%);
 
     transition: all 0.25s;
+    user-select: none;
 }
 
 .nav-scrollDown{

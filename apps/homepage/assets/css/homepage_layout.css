@@ -98,6 +98,16 @@
     margin-bottom: var(--home-grid-border-width);
 }
 
+#home-selfie-wrapper{
+    position: relative;
+}
+
+#home-selfie{
+    width: 100%;
+    height: 100%;
+    /*padding-bottom: 75%;*/
+}
+
 @media screen and (min-width: 900px){
     :root{
         --home-grid-border-width: 20px

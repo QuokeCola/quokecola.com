@@ -10,7 +10,7 @@ export class HomepageDelegate extends AppDelegate{
         let app_request = new AppRequests()
         app_request.app_name = this.name;
         app_request.url      = this.data_to_url("");
-        app_request.app_data = null;
+        app_request.app_data = "reload";
         NavigationBarInterface.add_btn(this.name, app_request);
     }
     background_service(app_data: any): boolean {
@@ -30,6 +30,11 @@ export class HomepageDelegate extends AppDelegate{
     }
 
     handle_app_requests(app_data: any): boolean {
+        if (app_data==="reload"){
+            HomepageInterface.reload_banner();
+            HomepageInterface.reload_selfie_imgs();
+            HomepageInterface.reload_tiles_imgs();
+        }
         return true;
     }
 

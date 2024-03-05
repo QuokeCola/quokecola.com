@@ -1,11 +1,7 @@
 import {ContentLoaderInterface} from "../../framework/ContentLoaderInterface.js";
 export class HomepageInterface {
-    static home_banner_subtitle : HTMLElement|null;
-    static home_banner_title : HTMLElement|null;
-    static home_banner_abstract : HTMLElement|null;
-    static home_banner_imgs : HTMLElement|null;
-    static home_banner_button: HTMLElement|null;
     static home_banner_imgs_url:string = "./apps/homepage/assets/images/banner_img.JPG"
+    static home_selfie_img_url:string = "./apps/homepage/assets/images/selfie.jpeg"
     static html_url = "./apps/homepage/layout.html"
     static css_urls: string[] = [
         "./apps/homepage/assets/css/homepage_layout.css",
@@ -29,58 +25,63 @@ export class HomepageInterface {
                 const parser = new DOMParser()
                 let html_doc = parser.parseFromString(request.responseText,'text/html');
                 ContentLoaderInterface.set_app_layout(html_doc.body.children[0].innerHTML)
-                this.register_DOM()
+                this.reload_banner();
+                this.reload_tiles_imgs();
+                this.reload_selfie_imgs();
             }
         }
     }
 
-    static register_DOM() {
-        this.home_banner_subtitle = document.getElementById("home-banner-subtitle");
-        this.home_banner_title    = document.getElementById("home-banner-title");
-        this.home_banner_abstract = document.getElementById("home-banner-abstract");
-        this.home_banner_imgs     = document.getElementById("home-banner-imgs");
-        this.home_banner_button   = document.getElementById("home-banner-button");
+    static reload_banner() {
+        let banner_subtitle = document.getElementById("home-banner-subtitle");
+        let banner_title    = document.getElementById("home-banner-title");
+        let banner_abstract = document.getElementById("home-banner-abstract");
+        let banner_imgs     = document.getElementById("home-banner-imgs");
+        if (banner_imgs && banner_subtitle && banner_title && banner_abstract) {
+            this.load_img_with_children(banner_imgs, this.home_banner_imgs_url,
+                [banner_subtitle,banner_title,banner_abstract,banner_imgs]);
+        }
+    }
+    static reload_tiles_imgs() {
         let tiles= document.querySelectorAll(".home-quarter-size-tile")
         for (let idx = 0; idx < 3; idx++) {
-            var github_images = new Image();
-            github_images.addEventListener('load', function() {
-                let img_obj = tiles.item(idx+1).querySelector("div")
-                if (img_obj) img_obj.style.backgroundImage = 'url('+HomepageInterface.works_images_url[idx]+')';
-                img_obj?.classList.remove("loading-components-light")
-                img_obj?.classList.add("loaded-components-light")
-                let title_obj = tiles.item(idx+1).querySelector("h1")
-                title_obj?.classList.remove("loading-components-light")
-                title_obj?.classList.add("loaded-components-light")
-                let p_obj = tiles.item(idx+1).querySelector("p")
-                p_obj?.classList.remove("loading-components-light")
-                p_obj?.classList.add("loaded-components-light")
-            });
-            github_images.src = HomepageInterface.works_images_url[idx];
+            let img_obj = tiles.item(idx+1).querySelector("div")
+            let title_obj = tiles.item(idx+1).querySelector("h1")
+            let p_obj = tiles.item(idx+1).querySelector("p")
+            if (img_obj&&title_obj&&p_obj)
+                this.load_img_with_children(img_obj,HomepageInterface.works_images_url[idx],[img_obj,title_obj,p_obj])
+        }
+    }
+
+    static reload_selfie_imgs() {
+        // let selfie_img_obj:HTMLImageElement|null = document.querySelector(".home-half-size-tile > picture > img");
+        let pic : HTMLElement|null = document.getElementById("home-selfie");
+        let pic_wrapper : HTMLElement|null = document.getElementById("home-selfie-wrapper");
+        if (pic && pic_wrapper)
+            this.load_img_with_children(pic,HomepageInterface.home_selfie_img_url,[pic_wrapper]);
+    }
+
+    static load_img_with_children(img_obj:HTMLElement|HTMLImageElement, img_url:string, children:HTMLElement[],) {
+        let wait_time = 10;
+        let image = new Image();
+
+        for (let element of children) {
+            element.classList.replace("loaded-components-light", "loading-components-light")
         }
 
-        var banner_image = new Image();
-        banner_image.addEventListener('load', function() {
-            if (HomepageInterface.home_banner_imgs)
-            HomepageInterface.home_banner_imgs.style.backgroundImage = 'url(' + HomepageInterface.home_banner_imgs_url + ')';
-            HomepageInterface.home_banner_subtitle?.classList.remove("loading-components-dark")
-            HomepageInterface.home_banner_title?.classList.remove("loading-components-dark")
-            HomepageInterface.home_banner_abstract?.classList.remove("loading-components-dark")
-            HomepageInterface.home_banner_imgs?.classList.remove("loading-components-light")
-
-            HomepageInterface.home_banner_subtitle?.classList.add("loaded-components-dark")
-            HomepageInterface.home_banner_title?.classList.add("loaded-components-dark")
-            HomepageInterface.home_banner_abstract?.classList.add("loaded-components-dark")
-            HomepageInterface.home_banner_imgs?.classList.add("loaded-components-light")
-        });
-        banner_image.src = HomepageInterface.home_banner_imgs_url;
-        var selfie_image = new Image();
-        banner_image.addEventListener('load', function() {
-            let selfie_img_obj: HTMLImageElement|null = document.querySelector(".home-half-size-tile > img");
-            if (selfie_img_obj) selfie_img_obj.src="./apps/homepage/assets/images/selfie.jpeg";
-            selfie_img_obj?.classList.remove("loading-components-light");
-            selfie_img_obj?.classList.add("loadedcomponents-light");
-        });
-        selfie_image.src = HomepageInterface.home_banner_imgs_url;
+        setTimeout(()=> {
+            image.addEventListener('load', function() {
+                if (img_obj instanceof HTMLImageElement){
+                    img_obj.src = img_url;
+                } else {
+                    img_obj.style.backgroundImage = 'url(' + img_url + ')';
+                }
+                for (let element of children) {
+                    element.classList.replace("loading-components-light", "loaded-components-light")
+                }
+            });
+            image.src = img_url;
+        }, wait_time);
     }
 
     static remove_layout() {

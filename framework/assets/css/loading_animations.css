@@ -23,6 +23,8 @@
     opacity: 1;
     transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
     background-size: 50% 50%;background-image: var(--loading-placeholder-background-img-light);
+    z-index: 2;
+    pointer-events: none;
 }
 
 .loading-components-light::before{
@@ -35,6 +37,8 @@
     backdrop-filter: blur(40px);
     -webkit-backdrop-filter: blur(40px);
     transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
+    z-index: 1;
+    pointer-events: none;
 }
 
 
@@ -49,6 +53,7 @@
     opacity: 1;
     transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
     background-size: 50% 50%;background-image: var(--loading-placeholder-background-img-dark);
+    pointer-events: none;
 }
 
 .loading-components-dark::before{
@@ -61,6 +66,7 @@
     backdrop-filter: blur(40px);
     -webkit-backdrop-filter: blur(40px);
     transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
+    pointer-events: none;
 }
 
 .loaded-components-light::after{
@@ -73,6 +79,8 @@
     opacity: 0;
     transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
     background-size: 50% 50%;background-image: var(--loading-placeholder-background-img-light);
+    z-index: 2;
+    pointer-events: none;
 }
 
 .loaded-components-light::before{
@@ -85,6 +93,8 @@
     backdrop-filter: blur(0px);
     -webkit-backdrop-filter: blur(0px);
     transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
+    z-index: 1;
+    pointer-events: none;
 }
 
 .loaded-components-dark::after{
@@ -97,6 +107,7 @@
     opacity: 0;
     transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
     background-size: 50% 50%;background-image: var(--loading-placeholder-background-img-dark);
+    pointer-events: none;
 }
 
 .loaded-components-dark::before{
@@ -109,6 +120,7 @@
     backdrop-filter: blur(0px);
     -webkit-backdrop-filter: blur(0px);
     transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
+    pointer-events: none;
 }
 
 @keyframes loading-animation {
