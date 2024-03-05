@@ -33,8 +33,7 @@
 }
 
 .home-link-button:hover{
-    padding: 8px 18px;
-    border: black solid 4px;
+    background-color: #CCCCCC;
 }
 
 .home-quarter-size-tile{

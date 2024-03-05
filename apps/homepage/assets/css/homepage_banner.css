@@ -51,41 +51,6 @@
     transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
 }
 
-.home-banner-button{
-    display: block;
-    text-align: center;
-    padding: 10px 20px;
-    border: black solid 2px;
-    font-size: 15px;
-    border-radius: 25px;
-    margin-top: 20px;
-    font-weight: 500;
-
-    transition: all cubic-bezier(1.0, 0.0, 0.0, 1.0) 0.15s;
-    user-select: none;
-    -webkit-user-select: none;
-    cursor: default;
-}
-
-.home-banner-button:hover{
-    padding: 8px 18px;
-    border: black solid 4px;
-}
-
-.home-banner-button > img{
-    transition: all cubic-bezier(1.0, 0.0, 0.0, 1.0) .75s;
-    transform-origin: right;
-    width: 0;
-    margin-bottom: 2px;
-    vertical-align: middle;
-}
-
-.home-banner-button:hover img{
-    width: 18px;
-}
-
-
-
 @media screen and (min-width: 700px){
 
     .home-banner-text{

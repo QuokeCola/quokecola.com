@@ -128,7 +128,7 @@ export abstract class AppDelegate{
             window.history.state.data.website_identifier==="c1cb7484-6975-4676-a573-d65fa63e641e") {
             if(app_event instanceof MessageEvent) {
                 last_state_app_request = window.history.state.data;
-            } else if (app_event instanceof PopStateEvent) {
+            } else if (app_event instanceof PopStateEvent) { // For history back, we are not able to retrieve previous state's data from history.
                 last_state_app_request = AppDelegate.current_app_request;
             }
         }
@@ -144,19 +144,27 @@ export abstract class AppDelegate{
         }
         if(app_request.website_identifier === "c1cb7484-6975-4676-a573-d65fa63e641e") {
             if( app_request.app_name === this_ref.name){ // If user is using current app
-                if(last_state_app_request.app_name !== this_ref.name) { // If user is switching from other apps
+                // If user is switching from other apps
+                if(last_state_app_request.app_name !== this_ref.name) {
                     this_ref.awake(app_request.app_data); // Create layout & register DOM
-                    setTimeout(()=> {
+                    setTimeout(()=> { // Loading screen lift
                         ContentLoaderInterface.set_loading_status(false);
                     },10);
                 }
+                // Handle app request
                 this_ref.handle_app_requests(app_request.app_data);
+                // Update session data (buffer)
                 this_ref.current_session_app_data = app_request.app_data;
+                AppDelegate.current_app_request = app_request;
+                // Update browser related data
+                /// Update title
+                document.title = this_ref.name;
+                /// Update href
                 location.href = location.href.split("#")[0].toString()+"#"+this_ref.name+"#"+this_ref.data_to_url(app_request.app_data);
+                /// Update history
                 if (!(app_event instanceof PopStateEvent)){
                     history.pushState(app_request, this_ref.data_to_url(app_request.app_data)); // Update history
                 }
-                AppDelegate.current_app_request = app_request;
             } else if (
                 last_state_app_request.app_name === this_ref.name &&
                 app_request.app_name !== this_ref.name){ // If user is quitting current app
