@@ -30,7 +30,9 @@ export class HomepageDelegate extends AppDelegate{
     }
 
     handle_app_requests(app_data: any): boolean {
+        console.log(app_data)
         if (app_data==="reload"){
+            console.log("Reload layo")
             HomepageInterface.reload_banner();
             HomepageInterface.reload_selfie_imgs();
             HomepageInterface.reload_tiles_imgs();

@@ -122,12 +122,12 @@ export abstract class AppDelegate{
     private listener_function(this_ref: typeof this, app_event: MessageEvent|PopStateEvent) {
         // Retrieve last app request from history
         let last_state_app_request: AppRequests = new AppRequests();
-        if (window.history.state&&
-            window.history.state.data&&
-            window.history.state.data.website_identifier&&
-            window.history.state.data.website_identifier==="c1cb7484-6975-4676-a573-d65fa63e641e") {
+
+        if (window.history.state &&
+            window.history.state.website_identifier&&
+            window.history.state.website_identifier==="c1cb7484-6975-4676-a573-d65fa63e641e") {
             if(app_event instanceof MessageEvent) {
-                last_state_app_request = window.history.state.data;
+                last_state_app_request = window.history.state;
             } else if (app_event instanceof PopStateEvent) { // For history back, we are not able to retrieve previous state's data from history.
                 last_state_app_request = AppDelegate.current_app_request;
             }
@@ -137,15 +137,17 @@ export abstract class AppDelegate{
         let app_request : AppRequests;
         if(app_event instanceof MessageEvent) {
             app_request = app_event.data;
-        } else if (app_event instanceof PopStateEvent && app_event.state && app_event.state.data) {
-            app_request = app_event.state.data;
+        } else if (app_event instanceof PopStateEvent && app_event.state) {
+            app_request = app_event.state;
         } else { // Unknown source
             app_request = new AppRequests();
         }
+
         if(app_request.website_identifier === "c1cb7484-6975-4676-a573-d65fa63e641e") {
             if( app_request.app_name === this_ref.name){ // If user is using current app
                 // If user is switching from other apps
-                if(last_state_app_request.app_name !== this_ref.name) {
+                if(last_state_app_request.app_name !== this_ref.name || ContentLoaderInterface.get_loading_status()) {
+                    ContentLoaderInterface.set_app_layout("");
                     this_ref.awake(app_request.app_data); // Create layout & register DOM
                     setTimeout(()=> { // Loading screen lift
                         ContentLoaderInterface.set_loading_status(false);
@@ -160,10 +162,10 @@ export abstract class AppDelegate{
                 /// Update title
                 document.title = this_ref.name;
                 /// Update href
-                location.href = location.href.split("#")[0].toString()+"#"+this_ref.name+"#"+this_ref.data_to_url(app_request.app_data);
+                // location.href = location.href.split("#")[0].toString()+"#"+this_ref.name+"#"+this_ref.data_to_url(app_request.app_data);
                 /// Update history
                 if (!(app_event instanceof PopStateEvent)){
-                    history.pushState(app_request, this_ref.data_to_url(app_request.app_data)); // Update history
+                    window.history.pushState(app_request, this_ref.data_to_url(app_request.app_data)); // Update history
                 }
             } else if (
                 last_state_app_request.app_name === this_ref.name &&
@@ -177,7 +179,7 @@ export abstract class AppDelegate{
             }
         }
     }
-    constructor() {
+    protected constructor() {
         ContentLoaderInterface.initialize();
         NavigationBarInterface.initialize();
         window.addEventListener("message", (evt) => {

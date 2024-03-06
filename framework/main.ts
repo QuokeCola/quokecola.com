@@ -10,8 +10,11 @@ let app_delegates : AppDelegate[] = [homepage_delegate];
 request.url      = "#404";
 
 let url_levels = window.location.href.split("#")
+console.log(url_levels)
 if (url_levels.length === 1) {
     request.app_name = "HOME"
+    request.url = "#HOME"
+    url_levels.push("#HOME")
 }
 for (const app_delegate of app_delegates) {
     if (url_levels[1]===app_delegate.name) {
@@ -21,4 +24,5 @@ for (const app_delegate of app_delegates) {
         break;
     }
 }
+console.log(request)
 window.postMessage(request)

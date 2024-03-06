@@ -21,7 +21,7 @@
     height: 100%;
     animation: loading-animation 1.5s cubic-bezier(.8, 0.0, 0.0, 1.0) infinite;
     opacity: 1;
-    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
+    transition: none;
     background-size: 50% 50%;background-image: var(--loading-placeholder-background-img-light);
     z-index: 2;
     pointer-events: none;
@@ -36,7 +36,7 @@
     height: 100%;
     backdrop-filter: blur(40px);
     -webkit-backdrop-filter: blur(40px);
-    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
+    transition: none;
     z-index: 1;
     pointer-events: none;
 }

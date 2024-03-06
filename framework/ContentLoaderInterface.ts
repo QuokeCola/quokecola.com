@@ -66,6 +66,14 @@ export class ContentLoaderInterface {
         }
     }
 
+    public static get_loading_status():boolean {
+        if (ContentLoaderInterface.loading_status instanceof HTMLInputElement) {
+            return ContentLoaderInterface.loading_status.checked;
+        } else {
+            return true;
+        }
+    }
+
     /**
      * Update the grid when resizing and orientation change
      * @private
