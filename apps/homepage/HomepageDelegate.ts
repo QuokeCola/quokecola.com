@@ -27,6 +27,7 @@ export class HomepageDelegate extends AppDelegate{
     }
 
     url_to_data(url: string): any {
+        return "";
     }
 
     handle_app_requests(app_data: any): boolean {

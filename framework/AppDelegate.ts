@@ -161,11 +161,14 @@ export abstract class AppDelegate{
                 // Update browser related data
                 /// Update title
                 document.title = this_ref.name;
-                /// Update href
-                // location.href = location.href.split("#")[0].toString()+"#"+this_ref.name+"#"+this_ref.data_to_url(app_request.app_data);
                 /// Update history
                 if (!(app_event instanceof PopStateEvent)){
-                    window.history.pushState(app_request, this_ref.data_to_url(app_request.app_data)); // Update history
+                    // Get base url
+                    let url_levels = window.location.href.split("#");
+                    let url = url_levels[0];
+                    // Compose new url based on app data.
+                    url = url + "#"+this_ref.name+"#"+this_ref.data_to_url(app_request.app_data); // Get url.
+                    window.history.pushState(app_request, "", url);
                 }
             } else if (
                 last_state_app_request.app_name === this_ref.name &&
