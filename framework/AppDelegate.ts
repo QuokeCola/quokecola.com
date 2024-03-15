@@ -67,9 +67,13 @@ export abstract class AppDelegate{
      *  App Cache
      ***********************************************/
     /**
-     *
+     * The global variable that records the current app's request
      */
     static current_app_request : AppRequests;
+    /**
+     * The global variable that records the last app's request
+     */
+    static last_app_request : AppRequests;
     /**
      * Here stores the current app data (For buffer and reference).
      * @protected
@@ -109,7 +113,6 @@ export abstract class AppDelegate{
      * @private
      */
     private sleep(app_request: typeof this.app_data) : boolean {
-        this.last_session_app_data = this.current_session_app_data;
         return this.remove_layout(app_request.app_data);
     }
 
@@ -120,44 +123,36 @@ export abstract class AppDelegate{
      * @protected
      */
     private listener_function(this_ref: typeof this, app_event: MessageEvent|PopStateEvent) {
-        // Retrieve last app request from history
-        let last_state_app_request: AppRequests = new AppRequests();
-
-        if (window.history.state &&
-            window.history.state.website_identifier&&
-            window.history.state.website_identifier==="c1cb7484-6975-4676-a573-d65fa63e641e") {
-            if(app_event instanceof MessageEvent) {
-                last_state_app_request = window.history.state;
-            } else if (app_event instanceof PopStateEvent) { // For history back, we are not able to retrieve previous state's data from history.
-                last_state_app_request = AppDelegate.current_app_request;
-            }
+        // Initial start, there is no last app request.
+        if (!AppDelegate.last_app_request) {
+            AppDelegate.last_app_request = new AppRequests();
         }
 
         // Retrieve current app request from event
-        let app_request : AppRequests;
         if(app_event instanceof MessageEvent) {
-            app_request = app_event.data;
+            AppDelegate.current_app_request = app_event.data;
         } else if (app_event instanceof PopStateEvent && app_event.state) {
-            app_request = app_event.state;
+            AppDelegate.current_app_request = app_event.state;
         } else { // Unknown source
-            app_request = new AppRequests();
+            AppDelegate.current_app_request = new AppRequests();
         }
 
-        if(app_request.website_identifier === "c1cb7484-6975-4676-a573-d65fa63e641e") {
-            if( app_request.app_name === this_ref.name){ // If user is using current app
+        if(AppDelegate.current_app_request.website_identifier === "c1cb7484-6975-4676-a573-d65fa63e641e") {
+            if( AppDelegate.current_app_request.app_name === this_ref.name){ // If user is using current app
                 // If user is switching from other apps
-                if(last_state_app_request.app_name !== this_ref.name || ContentLoaderInterface.get_loading_status()) {
+                if(AppDelegate.last_app_request.app_name !== this_ref.name || ContentLoaderInterface.get_loading_status()) {
                     ContentLoaderInterface.set_app_layout("");
-                    this_ref.awake(app_request.app_data); // Create layout & register DOM
+                    this_ref.awake(AppDelegate.current_app_request.app_data); // Create layout & register DOM
                     setTimeout(()=> { // Loading screen lift
                         ContentLoaderInterface.set_loading_status(false);
                     },10);
                 }
-                // Handle app request
-                this_ref.handle_app_requests(app_request.app_data);
-                // Update session data (buffer)
-                this_ref.current_session_app_data = app_request.app_data;
-                AppDelegate.current_app_request = app_request;
+                // Update session data
+                this_ref.current_session_app_data = AppDelegate.current_app_request.app_data;
+
+                // Handle app request, only app data needed
+                this_ref.handle_app_requests(AppDelegate.current_app_request.app_data);
+
                 // Update browser related data
                 /// Update title
                 document.title = this_ref.name;
@@ -167,18 +162,20 @@ export abstract class AppDelegate{
                     let url_levels = window.location.href.split("#");
                     let url = url_levels[0];
                     // Compose new url based on app data.
-                    url = url + "#"+this_ref.name+"#"+this_ref.data_to_url(app_request.app_data); // Get url.
-                    window.history.pushState(app_request, "", url);
+                    url = url + "#"+this_ref.name+"#"+this_ref.data_to_url(AppDelegate.current_app_request.app_data); // Get url.
+                    window.history.pushState(AppDelegate.current_app_request, "", url);
                 }
+                this.last_session_app_data = this.current_session_app_data;
+                AppDelegate.last_app_request = AppDelegate.current_app_request;
             } else if (
-                last_state_app_request.app_name === this_ref.name &&
-                app_request.app_name !== this_ref.name){ // If user is quitting current app
+                AppDelegate.last_app_request.app_name === this_ref.name &&
+                AppDelegate.current_app_request.app_name !== this_ref.name){ // If user is quitting current app
                 ContentLoaderInterface.set_loading_status(true);
                 setTimeout(()=>{
-                    this_ref.sleep(app_request.app_data);
+                    this_ref.sleep(AppDelegate.current_app_request.app_data);
                 },400);
             } else { // Background service (If any)
-                this_ref.background_service(app_request.app_data)
+                this_ref.background_service(AppDelegate.current_app_request.app_data)
             }
         }
     }

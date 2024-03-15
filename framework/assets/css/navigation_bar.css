@@ -18,7 +18,7 @@ nav{
 
 .nav-scrollDown{
     background-color: rgba(255,255,255,0.5);
-    border-bottom: rgba(255,255,255,0.2) 1px solid;
+    border-bottom: rgba(150,150,150,0.2) 1px solid;
     backdrop-filter: blur(20px) brightness(100%) contrast(80%);
     -webkit-backdrop-filter: blur(20px) brightness(100%);
 }
@@ -227,13 +227,13 @@ nav .nav-menu-items:hover::after{
 
         opacity: 0;
         background-color: rgba(255,255,255,0.1);
-        border-bottom: rgba(255,255,255,0.2) 0 solid;
+        border-bottom: rgba(200,200,200,0.2) 0 solid;
     }
     /*Show menu buttons when checkbox is checked*/
     #nav-panel-status:checked ~ .nav-menu-panel div{
         height: 80px;
         opacity: 1;
-        border-bottom: rgba(255,255,255,0.2) 1px solid;
+        border-bottom: rgba(200,200,200,0.2) 1px solid;
     }
     .nav-langSwitchBtn{
         top: 23px;
