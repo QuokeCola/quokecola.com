@@ -1,6 +1,6 @@
-export interface ArticleBrowserData {
+export interface ArticleBrowserRequestData {
 
-    request_type : ArticleBrowserData.RequestType
+    request_type : ArticleBrowserRequestData.RequestType
     /**
      * The id or url of article
      * Null means it is not in reading but in browser page.
@@ -18,7 +18,7 @@ export interface ArticleBrowserData {
     page_index : number|null;
 }
 
-export namespace ArticleBrowserData
+export namespace ArticleBrowserRequestData
 {
     export enum RequestType
     {
@@ -26,4 +26,13 @@ export namespace ArticleBrowserData
         load_article,
         load_browser
     }
+}
+
+export interface ArticleBrowserArticleData {
+    "title": string,
+    "pic": string,
+    "time": string,
+    "src": string,
+    "abstract": string,
+    "tags": string[]
 }

@@ -4,8 +4,8 @@
     "pic": "Article10/mech_render.jpeg",
     "time": "08-12-2022 14:30",
     "src": "Article10/SeniorDesign.md",
-    "text": "Loft to death QwQ",
-    "class": [
+    "abstract": "Loft to death QwQ",
+    "tags": [
       "Mechanical Design",
       "Electrical Design",
       "ChibiOS",
@@ -17,8 +17,8 @@
     "pic": "Article9/image001.png",
     "time": "02-12-2022 00:59",
     "src": "Article9/Haptic2RR-Arm.md",
-    "text": "I choose the form of Gundam!",
-    "class": [
+    "abstract": "I choose the form of Gundam!",
+    "tags": [
       "Mechanical Design",
       "Electrical Design",
       "ChibiOS",
@@ -30,8 +30,8 @@
     "pic": "Article8/Loading.png",
     "time": "02-07-2022 12:40",
     "src": "Article8/MetaTeamGitHubIO.md",
-    "text": "New website is cool! Check it out!",
-    "class": [
+    "abstract": "New website is cool! Check it out!",
+    "tags": [
       "website",
       "frontend projects"
     ]
@@ -41,8 +41,8 @@
     "pic": "Article7/263592D56E7C40A0956A58EA78ED92A0.png",
     "time": "01-22-2022 2:38",
     "src": "Article7/RecentProjectsUpdatePreview.md",
-    "text": "Recent projects, maybe delayed QwQ",
-    "class": [
+    "abstract": "Recent projects, maybe delayed QwQ",
+    "tags": [
       "Mechanical Design",
       "Electrical Design"
     ]
@@ -52,8 +52,8 @@
     "pic": "Article6/Screen%20Shot%202021-12-16%20at%201.55.21%20PM.png",
     "time": "12-16-2021 15:19",
     "src": "Article6/WebsiteUpdateOverview.md",
-    "text": "Website updated!",
-    "class": [
+    "abstract": "Website updated!",
+    "tags": [
       "website",
       "javascript"
     ]
@@ -63,8 +63,8 @@
     "pic": "Article5/mad.gif",
     "time": "12-13-2021 11:41",
     "src": "Article5/OpenVirtualCOMPortforChibiOS.md",
-    "text": "First time to use virtual COM port on STM32!",
-    "class": [
+    "abstract": "First time to use virtual COM port on STM32!",
+    "tags": [
       "ChibiOS",
       "STM32"
     ]
@@ -74,8 +74,8 @@
     "pic": "Article4/title_pic.png",
     "time": "12-12-2021 10:41",
     "src": "Article4/article_browser.md",
-    "text": "A frontend application that allows you deploy your personal blog.",
-    "class": [
+    "abstract": "A frontend application that allows you deploy your personal blog.",
+    "tags": [
       "website",
       "javascript"
     ]
@@ -85,8 +85,8 @@
     "pic": "Article3/FrameOverview.jpg",
     "time": "12-12-2021 22:16",
     "src": "Article3/Adaptive_CoreXY_4Z_Moving_Platform.md",
-    "text": "An CoreXY 4z moving platform in any size.",
-    "class": [
+    "abstract": "An CoreXY 4z moving platform in any size.",
+    "tags": [
       "Mechanical Design"
     ]
   },
@@ -95,8 +95,8 @@
     "pic": "Article2/Remove3.jpg",
     "time": "12-11-2021 8:00",
     "src": "Article2/Extruder.md",
-    "text": "A CFRP extruder based on Voron Afterburner extruder",
-    "class": [
+    "abstract": "A CFRP extruder based on Voron Afterburner extruder",
+    "tags": [
       "3D printer",
       "Mechanical Design"
     ]
@@ -106,8 +106,8 @@
     "pic": "Article1/title_pic.jpeg",
     "time": "12-09-2021 14:34",
     "src": "Article1/HelloWorld.md",
-    "text": "Hi! Welcome to my personal blog!",
-    "class": [
+    "abstract": "Hi! Welcome to my personal blog!",
+    "tags": [
       "website",
       "javascript"
     ]

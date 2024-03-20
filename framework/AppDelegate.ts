@@ -1,6 +1,7 @@
 import {AppRequests} from "./AppRequests.js";
 import {ContentLoaderInterface} from "./ContentLoaderInterface.js";
 import {NavigationBarInterface} from "./NavigationBarInterface.js";
+import ContentLoaderStates = ContentLoaderInterface.ContentLoaderStates;
 
 /**
  * Base class for interface. This interface will automatically handle the requests based on app's name.
@@ -34,6 +35,12 @@ export abstract class AppDelegate{
     abstract create_layout(app_data: typeof this.app_data) : boolean;
 
     /**
+     * When the app interface is loaded, the delegate will call this function.
+     * @param app_data
+     */
+    abstract onload(app_data: typeof this.app_data) : boolean;
+
+    /**
      * Here implements the main logic of the app. Operating DOM to behave.
      * @return whether successfully handle request
      */
@@ -43,7 +50,7 @@ export abstract class AppDelegate{
      * Here implements when user switch to other apps, release resources.
      * @return Whether successfully sleep
      */
-    abstract remove_layout(app_data: typeof this.app_data) : boolean;
+    abstract quit(app_data: typeof this.app_data) : boolean;
 
     /**
      * Here implements the background service for the app.
@@ -85,36 +92,10 @@ export abstract class AppDelegate{
      */
     protected last_session_app_data : typeof this.app_data;
 
-    /************************************************
-     *  Prepared Methods
-     ***********************************************/
-    post_message(app_data: typeof this.app_data) : void {
-        window.postMessage(app_data);
-    }
-
 
     /************************************************
      *  App Schedule Framework -- Auto Call
      ***********************************************/
-
-    /**
-     * When user is switching from other apps to current app
-     * @param app_data The event send to application.
-     * @return Whether successfully awake.
-     * @private
-     */
-    private awake(app_data: typeof this.app_data) : boolean {
-        return this.create_layout(app_data)
-    }
-
-    /**
-     * When browser is switching to other apps.
-     * @return Whether successfully sleep.
-     * @private
-     */
-    private sleep(app_request: typeof this.app_data) : boolean {
-        return this.remove_layout(app_request.app_data);
-    }
 
     /**
      * This is the main service for app delegate.
@@ -138,14 +119,31 @@ export abstract class AppDelegate{
         }
 
         if(AppDelegate.current_app_request.website_identifier === "c1cb7484-6975-4676-a573-d65fa63e641e") {
+            // Block out the repeated requests when it's loading
+            if (ContentLoaderInterface.get_content_loader_state()!==ContentLoaderStates.READY) {return}
             if( AppDelegate.current_app_request.app_name === this_ref.name){ // If user is using current app
                 // If user is switching from other apps
-                if(AppDelegate.last_app_request.app_name !== this_ref.name || ContentLoaderInterface.get_loading_status()) {
-                    ContentLoaderInterface.set_app_layout("");
-                    this_ref.awake(AppDelegate.current_app_request.app_data); // Create layout & register DOM
-                    setTimeout(()=> { // Loading screen lift
-                        ContentLoaderInterface.set_loading_status(false);
-                    },10);
+                if(AppDelegate.last_app_request.app_name !== this_ref.name) {
+                    ContentLoaderInterface.load_app_layout(()=> { // Loading screen lift
+                        // Clear screen and customized css.
+                        ContentLoaderInterface.set_app_layout("");
+                        ContentLoaderInterface.clear_app_customized_css();
+                        this_ref.create_layout(AppDelegate.current_app_request.app_data); // Create layout
+                    });
+                    ContentLoaderInterface.app_onload(()=>{
+                        this_ref.current_session_app_data = AppDelegate.current_app_request.app_data;
+                        this_ref.onload(AppDelegate.current_app_request.app_data);
+                        document.title = this_ref.name;
+                        if (!(app_event instanceof PopStateEvent)){
+                            let url_levels = window.location.href.split("#");
+                            let url = url_levels[0];
+                            url = url + "#"+this_ref.name+"#"+this_ref.data_to_url(AppDelegate.current_app_request.app_data); // Get url.
+                            window.history.pushState(AppDelegate.current_app_request, "", url);
+                        }
+                        this.last_session_app_data = this.current_session_app_data;
+                        AppDelegate.last_app_request = AppDelegate.current_app_request;
+                    })
+                    return;
                 }
                 // Update session data
                 this_ref.current_session_app_data = AppDelegate.current_app_request.app_data;
@@ -153,9 +151,6 @@ export abstract class AppDelegate{
                 // Handle app request, only app data needed
                 this_ref.handle_app_requests(AppDelegate.current_app_request.app_data);
 
-                // Update browser related data
-                /// Update title
-                document.title = this_ref.name;
                 /// Update history
                 if (!(app_event instanceof PopStateEvent)){
                     // Get base url
@@ -170,10 +165,7 @@ export abstract class AppDelegate{
             } else if (
                 AppDelegate.last_app_request.app_name === this_ref.name &&
                 AppDelegate.current_app_request.app_name !== this_ref.name){ // If user is quitting current app
-                ContentLoaderInterface.set_loading_status(true);
-                setTimeout(()=>{
-                    this_ref.sleep(AppDelegate.current_app_request.app_data);
-                },400);
+                this_ref.quit(this.app_data);
             } else { // Background service (If any)
                 this_ref.background_service(AppDelegate.current_app_request.app_data)
             }

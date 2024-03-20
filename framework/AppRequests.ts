@@ -2,11 +2,8 @@ export class AppRequests {
     /**
      * Target app name
      */
-    app_name:string="HOME";
-    /**
-     * Request url
-     */
-    url:string="";
+    app_name:string="";
+
     /**
      * Request parsed data
      */

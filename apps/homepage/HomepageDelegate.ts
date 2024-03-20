@@ -9,7 +9,6 @@ export class HomepageDelegate extends AppDelegate{
         super();
         let app_request = new AppRequests()
         app_request.app_name = this.name;
-        app_request.url      = this.data_to_url("");
         app_request.app_data = "reload";
         NavigationBarInterface.add_btn(this.name, app_request);
     }
@@ -39,8 +38,14 @@ export class HomepageDelegate extends AppDelegate{
         return true;
     }
 
-    remove_layout(app_data: any): boolean {
-        HomepageInterface.remove_layout();
+    quit(app_data: any): boolean {
         return true;
+    }
+
+    onload(app_data: any): boolean {
+        HomepageInterface.reload_banner();
+        HomepageInterface.reload_tiles_imgs();
+        HomepageInterface.reload_selfie_imgs();
+        return false;
     }
 }

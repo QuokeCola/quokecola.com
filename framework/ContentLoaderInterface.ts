@@ -11,6 +11,9 @@ export class ContentLoaderInterface {
     private static horz_half_line_count = 0;
     private static initialized = false
     private static app_customized_css = new Map()
+    private static app_loading_callback :(()=> any) = ()=>{};
+    private static app_loaded_callback : (()=> any) = () => {};
+    private static content_loader_state: ContentLoaderInterface.ContentLoaderStates = 2;
     public static initialize() {
         if (!this.initialized) {
             ContentLoaderInterface.update_grid();
@@ -21,6 +24,19 @@ export class ContentLoaderInterface {
                 this.update_grid();
             });
             this.initialized = true;
+            this.set_loading_status(true);
+            if(this.content_window_obj) this.content_window_obj.ontransitionend = (ev)=> {
+                if (ev.target === this.content_window_obj && ev.propertyName==="transform") {
+                    if(ContentLoaderInterface.content_loader_state == 0 || ContentLoaderInterface.get_loading_status()) {
+                        ContentLoaderInterface.content_loader_state = 1;
+                        ContentLoaderInterface.set_loading_status(false);
+                        ContentLoaderInterface.app_loading_callback();
+                    } else if (ContentLoaderInterface.content_loader_state == 1) {
+                        ContentLoaderInterface.content_loader_state = 2;
+                        ContentLoaderInterface.app_loaded_callback();
+                    }
+                }
+            }
         }
     }
 
@@ -46,6 +62,14 @@ export class ContentLoaderInterface {
         }
     }
 
+    public static clear_app_customized_css() {
+        for (let css_link of this.app_customized_css.keys()) {
+            let head = document.head || document.getElementsByTagName('head')[0];
+            head.removeChild(this.app_customized_css.get(css_link))
+            this.app_customized_css.delete(css_link)
+        }
+    }
+
     /**
      * Set the layout for app.
      * @param html_code
@@ -60,13 +84,17 @@ export class ContentLoaderInterface {
      * Make the main screen load or not
      * @param status True: loading, False: Show content
      */
-    public static set_loading_status(status: boolean) {
+    private static set_loading_status(status: boolean) {
         if (ContentLoaderInterface.loading_status instanceof HTMLInputElement) {
             ContentLoaderInterface.loading_status.checked = status;
         }
     }
 
-    public static get_loading_status():boolean {
+    /**
+     * Get the check box's status.
+     * @private
+     */
+    private static get_loading_status():boolean {
         if (ContentLoaderInterface.loading_status instanceof HTMLInputElement) {
             return ContentLoaderInterface.loading_status.checked;
         } else {
@@ -128,5 +156,37 @@ export class ContentLoaderInterface {
                 ContentLoaderInterface.loading_grid_obj.appendChild(bottom_line);
             }
         }
+    }
+
+    /**
+     * @brief Call the function to load app interface.
+     * @param callback function to load the app layout.
+     */
+    static load_app_layout(callback:(()=> any)) {
+        ContentLoaderInterface.content_loader_state = 0;
+        ContentLoaderInterface.set_loading_status(true);
+        ContentLoaderInterface.app_loading_callback = callback;
+    }
+    /**
+     * @brief Call the function when app onloaded
+     * @param callback Callback function after the app is onload.
+     */
+    static app_onload(callback:(()=> any)) {
+        ContentLoaderInterface.app_loaded_callback = callback;
+    }
+
+    /**
+     * Get Content loader's state.
+     */
+    static get_content_loader_state() {
+        return this.content_loader_state;
+    }
+}
+
+export namespace ContentLoaderInterface {
+    export enum ContentLoaderStates{
+        LOADING_ANIMATION_PLAYING,
+        LOADED_ANIMATION_PLAYING,
+        READY
     }
 }

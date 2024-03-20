@@ -25,9 +25,6 @@ export class HomepageInterface {
                 const parser = new DOMParser()
                 let html_doc = parser.parseFromString(request.responseText,'text/html');
                 ContentLoaderInterface.set_app_layout(html_doc.body.children[0].innerHTML)
-                this.reload_banner();
-                this.reload_tiles_imgs();
-                this.reload_selfie_imgs();
             }
         }
     }
@@ -82,12 +79,5 @@ export class HomepageInterface {
             });
             image.src = img_url;
         }, wait_time);
-    }
-
-    static remove_layout() {
-        for(let url of this.css_urls) {
-            ContentLoaderInterface.remove_app_customize_css(url);
-        }
-        ContentLoaderInterface.set_app_layout("");
     }
 }
