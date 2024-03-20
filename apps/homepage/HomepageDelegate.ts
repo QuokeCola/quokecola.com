@@ -16,8 +16,8 @@ export class HomepageDelegate extends AppDelegate{
         return true;
     }
 
-    create_layout(app_data: any): boolean {
-        HomepageInterface.create_layout()
+    async create_layout(app_data: any):Promise<boolean> {
+        await HomepageInterface.create_layout()
         return true;
     }
 
@@ -29,7 +29,7 @@ export class HomepageDelegate extends AppDelegate{
         return "";
     }
 
-    handle_app_requests(app_data: any): boolean {
+    async handle_app_requests(app_data: any): Promise<boolean> {
         if (app_data==="reload"){
             HomepageInterface.reload_banner();
             HomepageInterface.reload_selfie_imgs();
@@ -38,11 +38,11 @@ export class HomepageDelegate extends AppDelegate{
         return true;
     }
 
-    quit(app_data: any): boolean {
+    async quit(app_data: any): Promise<boolean> {
         return true;
     }
 
-    onload(app_data: any): boolean {
+    async onload(app_data: any): Promise<boolean> {
         HomepageInterface.reload_banner();
         HomepageInterface.reload_tiles_imgs();
         HomepageInterface.reload_selfie_imgs();

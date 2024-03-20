@@ -13,20 +13,14 @@ export class HomepageInterface {
         "./apps/homepage/assets/images/project_terminal_tile_pic.png",
         "./apps/homepage/assets/images/project_pcb_tile_pic.png"
     ]
-    static create_layout() {
-        for(let url of this.css_urls) {
+    static async create_layout() {
+        for (let url of this.css_urls) {
             ContentLoaderInterface.set_app_customize_css(url);
         }
-        let request = new XMLHttpRequest();
-        request.open("GET", this.html_url)
-        request.send()
-        request.onreadystatechange=(e) => {
-            if (request.readyState==4&&request.status==200) {
-                const parser = new DOMParser()
-                let html_doc = parser.parseFromString(request.responseText,'text/html');
-                ContentLoaderInterface.set_app_layout(html_doc.body.children[0].innerHTML)
-            }
-        }
+        const response = await fetch(this.html_url);
+        const parser = new DOMParser()
+        let html_doc = parser.parseFromString(await response.text(), 'text/html');
+        ContentLoaderInterface.set_app_layout(html_doc.body.children[0].innerHTML)
     }
 
     static reload_banner() {

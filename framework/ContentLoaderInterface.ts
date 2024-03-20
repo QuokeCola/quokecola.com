@@ -12,7 +12,7 @@ export class ContentLoaderInterface {
     private static initialized = false
     private static app_customized_css = new Map()
     private static app_loading_callback :(()=> any) = ()=>{};
-    private static app_loaded_callback : (()=> any) = () => {};
+    private static app_onload_callback : (()=> any) = () => {};
     private static content_loader_state: ContentLoaderInterface.ContentLoaderStates = 2;
     public static initialize() {
         if (!this.initialized) {
@@ -25,15 +25,15 @@ export class ContentLoaderInterface {
             });
             this.initialized = true;
             this.set_loading_status(true);
-            if(this.content_window_obj) this.content_window_obj.ontransitionend = (ev)=> {
-                if (ev.target === this.content_window_obj && ev.propertyName==="transform") {
-                    if(ContentLoaderInterface.content_loader_state == 0 || ContentLoaderInterface.get_loading_status()) {
+            if(this.content_window_obj) this.content_window_obj.ontransitionend = async (ev) => {
+                if (ev.target === this.content_window_obj && ev.propertyName === "transform") {
+                    if (ContentLoaderInterface.content_loader_state == 0 || ContentLoaderInterface.get_loading_status()) {
                         ContentLoaderInterface.content_loader_state = 1;
                         ContentLoaderInterface.set_loading_status(false);
-                        ContentLoaderInterface.app_loading_callback();
+                        await ContentLoaderInterface.app_loading_callback();
                     } else if (ContentLoaderInterface.content_loader_state == 1) {
                         ContentLoaderInterface.content_loader_state = 2;
-                        ContentLoaderInterface.app_loaded_callback();
+                        ContentLoaderInterface.app_onload_callback();
                     }
                 }
             }
@@ -91,7 +91,7 @@ export class ContentLoaderInterface {
     }
 
     /**
-     * Get the check box's status.
+     * Get the checkbox status.
      * @private
      */
     private static get_loading_status():boolean {
@@ -168,11 +168,11 @@ export class ContentLoaderInterface {
         ContentLoaderInterface.app_loading_callback = callback;
     }
     /**
-     * @brief Call the function when app onloaded
+     * @brief Call the function when app onload
      * @param callback Callback function after the app is onload.
      */
     static app_onload(callback:(()=> any)) {
-        ContentLoaderInterface.app_loaded_callback = callback;
+        ContentLoaderInterface.app_onload_callback = callback;
     }
 
     /**

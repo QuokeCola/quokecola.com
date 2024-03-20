@@ -38,7 +38,7 @@ export class ArticleBrwoserDelegate extends AppDelegate{
         return false;
     }
 
-    create_layout(app_data: typeof this.app_data): boolean {
+    async create_layout(app_data: typeof this.app_data): Promise<boolean> {
         ContentLoaderInterface.set_app_layout("<div style='background-color: red; width: 100%;height: 100%'></div>>")
         return false;
     }
@@ -56,7 +56,7 @@ export class ArticleBrwoserDelegate extends AppDelegate{
         }
     }
 
-    handle_app_requests(app_data: typeof this.app_data): boolean {
+    async handle_app_requests(app_data: typeof this.app_data): Promise<boolean> {
         switch (app_data.request_type) {
             case ArticleBrowserRequestData.RequestType.load_article:
                 break;
@@ -70,7 +70,7 @@ export class ArticleBrwoserDelegate extends AppDelegate{
         return false;
     }
 
-    quit(app_data: typeof this.app_data): boolean {
+    async quit(app_data: typeof this.app_data): Promise<boolean> {
         ContentLoaderInterface.set_app_layout("");
         return false;
     }
@@ -101,7 +101,7 @@ export class ArticleBrwoserDelegate extends AppDelegate{
         }
     }
 
-    onload(app_data: any): boolean {
+    async onload(app_data: any): Promise<boolean> {
         return false;
     }
 
