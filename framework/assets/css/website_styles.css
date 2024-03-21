@@ -1,4 +1,5 @@
 html, body{ width: 100% ; height: 100%; position: fixed; font-family: "Blender Pro", serif; background-color: white;overflow: hidden; display: flex;}
+#content-screen{font-family: "IBM Plex Sans", serif}
 
 :root{
     --accent-color: rgb(20,100,255);

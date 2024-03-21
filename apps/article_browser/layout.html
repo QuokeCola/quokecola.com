@@ -2,13 +2,35 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>ARTICLE_BROWSER</title>
+    <title>BLOG</title>
 </head>
 <body>
 <div id="content-screen" class="content-screen">
-  <div id="copyright">
-    &#169; Chen Qian, 2019-2024
-  </div>
+    <div class="article-banner">
+        <h1 id="article-title-wrapper"><img src="/apps/article_browser/assets/images/left_arrow.svg"><p id="article-title-content">BLOG</p></h1>
+    </div>
+    <div class="article-main-wrapper">
+        <div id="article-main-content">
+        </div>
+        <div id="article-index-wrapper" style="display: none; opacity: 0.0">
+            <button id="article-index-btn-left"><</button><div id="article-index-content"></div><button id="article-index-btn-right">></button>
+        </div>
+    </div>
+    <div id="article-side-panel">
+        <div id="article-tags-wrapper" style="display: none; opacity: 0.0">
+            <h2>Tags</h2>
+            <div id="article-tags-content">
+            </div>
+        </div>
+        <div id="article-recommendations-wrapper" style="display: none; opacity: 0.0">
+            <h2>Recommended</h2>
+            <div id="article-recommendations-content">
+            </div>
+        </div>
+    </div>
+    <div id="copyright">
+        &#169; Chen Qian, 2019-2024
+    </div>
 </div>
 </body>
 </html>

@@ -1,0 +1,102 @@
+.article-card-wrapper{
+    cursor: default;
+    background-color: rgb(244,244,244);
+    position: relative;
+    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
+    margin-bottom: var(--article-grid-border-width);
+}
+
+#article-main-content > .article-card-wrapper {
+    height: 400px;
+}
+
+#article-main-content > .article-card-wrapper > p {
+    -webkit-line-clamp: 5;
+}
+
+.article-card-wrapper:hover{
+    background-color: rgb(200,200,200);
+}
+
+.article-card-wrapper > .article-card-image-wrapper{
+    width: 100%;
+    height: 200px;
+}
+
+.article-card-image-wrapper > img{
+    object-fit: cover;
+
+    width: 100%;
+    height: 200px;
+    position: absolute;
+}
+
+.article-card-wrapper > h1{
+    font-size: 18px;
+    font-weight: 500;
+    margin-left: 15px;
+    margin-right: 15px;
+
+    transition: all .5s cubic-bezier(.8, 0.0, 0.0, 1.0) .125s;
+}
+
+.article-card-wrapper > p{
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+
+    font-size: 15px;
+    font-weight: 300;
+    margin-left: 15px;
+    margin-right: 15px;
+    margin-bottom: 50px;
+    text-overflow: ellipsis;
+
+    transition: all .5s cubic-bezier(.8, 0.0, 0.0, 1.0) .25s;
+}
+
+.article-card-wrapper > .article-card-link-arrow{
+    position: absolute;
+    left: 15px;
+    bottom: 15px;
+    transition: all .5s cubic-bezier(.8, 0.0, 0.0, 1.0);
+}
+
+@media screen and (min-width: 800px) {
+    #article-main-content > .article-card-wrapper {
+        width: calc((100% - 2 * var(--article-grid-border-width)) / 3);
+    }
+
+    #article-main-content > .article-card-wrapper:nth-child(3n+1) {
+        margin-right: var(--article-grid-border-width);
+    }
+
+    #article-main-content > .article-card-wrapper:nth-child(3n+2) {
+        margin-right: var(--article-grid-border-width);
+    }
+
+    #article-main-content > .article-card-wrapper:nth-child(3n) {
+        margin-right: 0;
+    }
+}
+
+@media screen and (max-width: 799px) and (min-width: 550px){
+    #article-main-content > .article-card-wrapper {
+        width: calc((100% - var(--article-grid-border-width)) / 2);
+    }
+
+    #article-main-content > .article-card-wrapper:nth-child(2n+1) {
+        margin-right: var(--article-grid-border-width);
+    }
+
+    #article-main-content > .article-card-wrapper:nth-child(2n) {
+        margin-right: 0;
+    }
+}
+
+@media screen and (max-width: 549px) {
+    #article-main-content > .article-card-wrapper {
+        width: 100%;
+        margin-right: 0;
+    }
+}

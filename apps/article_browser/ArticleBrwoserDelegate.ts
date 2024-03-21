@@ -3,10 +3,11 @@ import {ArticleBrowserRequestData} from "./ArticleBrowserData.js";
 import {AppRequests} from "../../framework/AppRequests.js";
 import {NavigationBarInterface} from "../../framework/NavigationBarInterface.js";
 import {ContentLoaderInterface} from "../../framework/ContentLoaderInterface.js";
+import {ArticleBrowserInterface} from "./ArticleBrowserInterface.js";
 
 export class ArticleBrwoserDelegate extends AppDelegate{
     app_data: ArticleBrowserRequestData = {request_type: ArticleBrowserRequestData.RequestType.default, article_source: null, page_index: null, selected_tags: null};
-    name = "ARTICLES";
+    name = "BLOG";
 
     document_info : any;
 
@@ -39,7 +40,7 @@ export class ArticleBrwoserDelegate extends AppDelegate{
     }
 
     async create_layout(app_data: typeof this.app_data): Promise<boolean> {
-        ContentLoaderInterface.set_app_layout("<div style='background-color: red; width: 100%;height: 100%'></div>>")
+        await ArticleBrowserInterface.create_layouts();
         return false;
     }
 
@@ -65,7 +66,6 @@ export class ArticleBrwoserDelegate extends AppDelegate{
             case ArticleBrowserRequestData.RequestType.default:
                 // Pass through, default situation means to handle a request with no data inside, bring up default interface.
             default:
-
         }
         return false;
     }
@@ -99,6 +99,7 @@ export class ArticleBrwoserDelegate extends AppDelegate{
                 parsed_data.request_type   = ArticleBrowserRequestData.RequestType.load_article;
             }
         }
+        return parsed_data;
     }
 
     async onload(app_data: any): Promise<boolean> {

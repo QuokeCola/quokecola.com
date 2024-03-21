@@ -1,5 +1,6 @@
-import {AppRequests} from "../../framework/AppRequests";
+import {AppRequests} from "../../framework/AppRequests.js";
 import {ArticleBrowserRequestData} from "./ArticleBrowserData.js";
+import {ContentLoaderInterface} from "../../framework/ContentLoaderInterface.js";
 
 export class ArticleBrowserInterface {
     // Defines how many entries for a page
@@ -12,8 +13,21 @@ export class ArticleBrowserInterface {
     // Selected tag for article browser filter
     static selected_tags : string[];
 
-    static create_layouts() {
+    static html_url = "./apps/article_browser/layout.html";
+    static css_urls = [
+        "./apps/article_browser/assets/css/article_browser_article_card.css",
+        "./apps/article_browser/assets/css/article_browser_layout.css",
+        "./apps/article_browser/assets/css/article_browser_side_panel.css"];
 
+
+    static async create_layouts() {
+        for (let url of this.css_urls) {
+            ContentLoaderInterface.set_app_customize_css(url);
+        }
+        const response = await fetch(this.html_url);
+        const parser = new DOMParser()
+        let html_doc = parser.parseFromString(await response.text(), 'text/html');
+        ContentLoaderInterface.set_app_layout(html_doc.body.children[0].innerHTML)
     }
     static reload_tags(tags: string[]) {
         let tag_panel = document.getElementById("article-tags-content")
@@ -45,11 +59,10 @@ export class ArticleBrowserInterface {
                     request_type: ArticleBrowserRequestData.RequestType.load_browser,
                     selected_tags: this_ref.selected_tags
                 }
-                request.app_name="ARTICLES"
-
+                request.app_name="BLOG"
                 window.postMessage(request);
             }
-            tag_panel.appendChild(tag_btn)
+            tag_panel.appendChild(tag_btn);
         }
     }
 

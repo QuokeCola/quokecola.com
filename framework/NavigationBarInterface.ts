@@ -1,4 +1,5 @@
 import {AppRequests} from "./AppRequests.js";
+import {ContentLoaderInterface} from "./ContentLoaderInterface";
 
 export class NavigationBarInterface {
     private static nav_obj = document.getElementById("navigation-bar");
@@ -28,6 +29,9 @@ export class NavigationBarInterface {
         btn.innerText = title;
         btn.onclick = function () {
             window.postMessage(button_request);
+                if (NavigationBarInterface.link_panel_status instanceof HTMLInputElement) {
+                    NavigationBarInterface.link_panel_status.checked = false;
+                }
         }
         if (this.menu_panel_obj) {
             this.menu_panel_obj.appendChild(btn);

@@ -1,0 +1,100 @@
+#article-side-panel h2{
+    font-family: IBM Plex Sans, serif;
+    font-weight: 300;
+}
+
+#article-side-panel div:first-child > h2 {
+    margin-top: 0;
+}
+
+#article-tags-content {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#article-tags-wrapper{
+    transition: opacity linear .25s;
+}
+
+#article-recommendations-wrapper{
+    transition: opacity linear .25s;
+}
+
+#article-tags-content > button{
+    color: #555;
+
+    font-size: 10px;
+    padding: 5px 10px 5px 10px;
+    margin: 5px 5px 5px 0;
+    line-height: 1;
+    border: #555 solid 1px;
+    border-radius: 10px;
+
+    background-color: #fff;
+
+    user-select: none;
+    cursor: pointer;
+}
+
+#article-tags-content > .article-tag-selected{
+    background-color: #555;
+    color: #fff;
+}
+
+#article-recommendations-content {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#article-recommendations-content > .article-card-wrapper{
+    height: 350px;
+}
+
+#article-recommendations-content > .article-card-wrapper > p {
+    -webkit-line-clamp: 2;
+}
+
+@media screen and (min-width: 1000px) {
+    #article-recommendations-content > .article-card-wrapper{
+        width: 100%;
+    }
+}
+
+@media screen and (min-width: 800px) and (max-width: 999px) {
+    #article-recommendations-content > .article-card-wrapper {
+        width: calc((100% - 2 * var(--article-grid-border-width)) / 3);
+    }
+
+    #article-recommendations-content > .article-card-wrapper:nth-child(3n+1) {
+        margin-right: var(--article-grid-border-width);
+    }
+
+    #article-recommendations-content > .article-card-wrapper:nth-child(3n+2) {
+        margin-right: var(--article-grid-border-width);
+    }
+
+    #article-recommendations-content > .article-card-wrapper:nth-child(3n) {
+        margin-right: 0;
+    }
+}
+
+@media screen and (max-width: 799px) and (min-width: 550px){
+    #article-recommendations-content > .article-card-wrapper {
+        width: calc((100% - var(--article-grid-border-width)) / 2);
+    }
+
+    #article-recommendations-content > .article-card-wrapper:nth-child(2n+1) {
+        margin-right: var(--article-grid-border-width);
+    }
+
+    #article-recommendations-content > .article-card-wrapper:nth-child(2n) {
+        margin-right: 0;
+    }
+}
+
+@media screen and (max-width: 549px) {
+    #article-recommendations-content > .article-card-wrapper {
+        width: 100%;
+        margin-right: 0;
+    }
+}

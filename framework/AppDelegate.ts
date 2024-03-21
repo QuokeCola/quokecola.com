@@ -117,7 +117,6 @@ export abstract class AppDelegate{
         } else { // Unknown source
             AppDelegate.current_app_request = new AppRequests();
         }
-
         if (AppDelegate.current_app_request.website_identifier === "c1cb7484-6975-4676-a573-d65fa63e641e") {
             // Block out the repeated requests when it's loading
             if (ContentLoaderInterface.get_content_loader_state() !== ContentLoaderStates.READY) {
@@ -126,6 +125,7 @@ export abstract class AppDelegate{
             if (AppDelegate.current_app_request.app_name === this_ref.name) { // If user is using current app
                 // If user is switching from other apps
                 if (AppDelegate.last_app_request.app_name !== this_ref.name) {
+                    this_ref.current_session_app_data = AppDelegate.current_app_request.app_data;
                     ContentLoaderInterface.load_app_layout(async () => { // Loading screen lift
                         // Clear screen and customized css.
                         ContentLoaderInterface.set_app_layout("");
@@ -133,13 +133,12 @@ export abstract class AppDelegate{
                         await this_ref.create_layout(AppDelegate.current_app_request.app_data); // Create layout
                     });
                     ContentLoaderInterface.app_onload(() => {
-                        this_ref.current_session_app_data = AppDelegate.current_app_request.app_data;
                         this_ref.onload(AppDelegate.current_app_request.app_data);
                         document.title = this_ref.name;
                         if (!(app_event instanceof PopStateEvent)) {
                             let url_levels = window.location.href.split("#");
                             let url = url_levels[0];
-                            url = url + "#" + this_ref.name + "#" + this_ref.data_to_url(AppDelegate.current_app_request.app_data); // Get url.
+                            url = url + "#" + this_ref.name + "#" + this_ref.data_to_url(this_ref.current_session_app_data); // Get url.
                             window.history.pushState(AppDelegate.current_app_request, "", url);
                         }
                         this.last_session_app_data = this.current_session_app_data;
@@ -159,7 +158,7 @@ export abstract class AppDelegate{
                     let url_levels = window.location.href.split("#");
                     let url = url_levels[0];
                     // Compose new url based on app data.
-                    url = url + "#" + this_ref.name + "#" + this_ref.data_to_url(AppDelegate.current_app_request.app_data); // Get url.
+                    url = url + "#" + this_ref.name + "#" + this_ref.data_to_url(this_ref.current_session_app_data); // Get url.
                     window.history.pushState(AppDelegate.current_app_request, "", url);
                 }
                 this.last_session_app_data = this.current_session_app_data;

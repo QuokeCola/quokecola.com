@@ -1,0 +1,93 @@
+.article-banner {
+    margin: 80px var(--article-margin) 0 var(--article-margin);
+    width: calc(100% - 2 * var(--article-margin));
+    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
+}
+
+.article-banner > h1{
+    display: flex;
+    align-items: center;
+    font-family: IBM Plex Sans, serif;
+    font-weight: 300;
+    font-size: 20px;
+    pointer-events: none;
+
+    cursor: default;
+}
+
+.article-banner > h1 > img{
+    width: 0px;
+    height: 0px;
+    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
+}
+
+.article-banner > .entered_article >img{
+    width: 20px;
+    height: 20px;
+}
+
+.article-banner > .entered_article {
+    pointer-events: all;
+    cursor: pointer;
+}
+
+#article-main-content{
+    display: flex;
+    flex-wrap: wrap;
+    height: fit-content;
+    align-self: start;
+
+    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .25s;
+}
+
+#article-side{
+    height: fit-content;
+    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
+}
+
+.article-main-wrapper{
+    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
+}
+
+@media screen and (min-width: 1000px) {
+    :root{
+        --article-grid-border-width: 20px;
+        --article-margin: 80px;
+    }
+
+    .article-main-wrapper{
+        margin-left: var(--article-margin);
+        width: calc((100% - 2 * var(--article-margin)) * 0.75);
+    }
+
+    #article-side {
+        margin-right: var(--article-margin);
+        margin-left: var(--article-grid-border-width);
+        width: calc((100% - 2 * var(--article-margin)) * 0.25 - var(--article-grid-border-width));
+    }
+
+    #article-side > #article-recommendations-content {
+        display: block;
+    }
+}
+
+@media screen and (max-width: 999px) {
+    :root{
+        --article-grid-border-width: 10px;
+        --article-margin:40px;
+    }
+
+    .article-main-wrapper{
+        margin: 0 var(--article-margin) 0 var(--article-margin);
+        width: calc(100% - 2 * var(--article-margin));
+    }
+
+    #article-side {
+        margin: 0 var(--article-margin) 0 var(--article-margin);
+        width: calc(100% - 2 * var(--article-margin));
+    }
+
+    #article-side > #article-recommendations-content {
+        display: flex;
+    }
+}
