@@ -9,15 +9,25 @@ export class ArticleBrowserInterface {
     static recommendation_number = 3;
 
     // Load tags from database
-    static tags : string[];
+    private static tags : string[];
     // Selected tag for article browser filter
-    static selected_tags : string[];
+    private static selected_tags : string[];
 
     static html_url = "./apps/article_browser/layout.html";
     static css_urls = [
         "./apps/article_browser/assets/css/article_browser_article_card.css",
         "./apps/article_browser/assets/css/article_browser_layout.css",
         "./apps/article_browser/assets/css/article_browser_side_panel.css"];
+
+    static title_wrapper : HTMLElement|null;
+    static title_content: HTMLElement|null;
+    static main_content: HTMLElement|null;
+    static tag_wrapper: HTMLElement|null;
+    static tag_content: HTMLElement|null;
+    static index_wrapper: HTMLElement|null;
+    static index_content: HTMLElement|null;
+    static recommend_wrapper : HTMLElement|null;
+    static recommend_content : HTMLElement|null;
 
 
     static async create_layouts() {
@@ -28,12 +38,22 @@ export class ArticleBrowserInterface {
         const parser = new DOMParser()
         let html_doc = parser.parseFromString(await response.text(), 'text/html');
         ContentLoaderInterface.set_app_layout(html_doc.body.children[0].innerHTML)
+        ArticleBrowserInterface.title_wrapper = document.getElementById("article-title-wrapper")
+        ArticleBrowserInterface.title_content = document.getElementById("article-title-content")
+        ArticleBrowserInterface.main_content = document.getElementById("article-main-content")
+        ArticleBrowserInterface.tag_wrapper = document.getElementById("article-tags-wrapper")
+        ArticleBrowserInterface.tag_content = document.getElementById("article-tags-content")
+        ArticleBrowserInterface.index_wrapper = document.getElementById("article-index-wrapper")
+        ArticleBrowserInterface.index_content = document.getElementById("article-index-content")
+        ArticleBrowserInterface.recommend_wrapper = document.getElementById("article-recommendations-wrapper")
+        ArticleBrowserInterface.recommend_content = document.getElementById("article-recommendations-content")
     }
+
     static reload_tags(tags: string[]) {
         let tag_panel = document.getElementById("article-tags-content")
         if (!(tag_panel)) return
         let this_ref = this;
-        this.tags = tags;
+        ArticleBrowserInterface.tags = tags;
         for (let tag of tags) {
             let tag_btn = document.createElement("button")
             tag_btn.innerText = tag
@@ -74,7 +94,19 @@ export class ArticleBrowserInterface {
 
     }
 
-    static insert_recommendation() {
+    static add_recommendations() {
 
+    }
+
+    static add_articles(){
+
+    }
+
+    static get_selected_tags() {
+        return ArticleBrowserInterface.selected_tags;
+    }
+
+    static get_tags() {
+        return ArticleBrowserInterface.tags;
     }
 }

@@ -104,6 +104,10 @@ export abstract class AppDelegate{
      * @protected
      */
     private async listener_function(this_ref: typeof this, app_event: MessageEvent | PopStateEvent) {
+        // Block out the repeated requests when it's loading
+        if (ContentLoaderInterface.get_content_loader_state() !== ContentLoaderStates.READY) {
+            return
+        }
         // Initial start, there is no last app request.
         if (!AppDelegate.last_app_request) {
             AppDelegate.last_app_request = new AppRequests();
@@ -118,10 +122,7 @@ export abstract class AppDelegate{
             AppDelegate.current_app_request = new AppRequests();
         }
         if (AppDelegate.current_app_request.website_identifier === "c1cb7484-6975-4676-a573-d65fa63e641e") {
-            // Block out the repeated requests when it's loading
-            if (ContentLoaderInterface.get_content_loader_state() !== ContentLoaderStates.READY) {
-                return
-            }
+
             if (AppDelegate.current_app_request.app_name === this_ref.name) { // If user is using current app
                 // If user is switching from other apps
                 if (AppDelegate.last_app_request.app_name !== this_ref.name) {

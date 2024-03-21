@@ -164,8 +164,8 @@ horz-line:nth-child(odd){
     z-index: 1;
     align-self: center;
 
-    border: 3px solid rgba(0,0,0,1);
-    border-image: 8 url('../images/frame.png');
+    border: 6px solid rgba(0,0,0,1);
+    border-image: 16 url('../images/frame.png');
 
     background: rgba(255,255,255,.5);
     opacity: 0;

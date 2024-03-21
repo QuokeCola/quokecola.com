@@ -32,8 +32,8 @@ export class ContentLoaderInterface {
                         ContentLoaderInterface.set_loading_status(false);
                         await ContentLoaderInterface.app_loading_callback();
                     } else if (ContentLoaderInterface.content_loader_state == 1) {
+                        await ContentLoaderInterface.app_onload_callback();
                         ContentLoaderInterface.content_loader_state = 2;
-                        ContentLoaderInterface.app_onload_callback();
                     }
                 }
             }
