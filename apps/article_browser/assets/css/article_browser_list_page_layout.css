@@ -1,5 +1,5 @@
 #article-browser-list-tag-container{
-    position: sticky;
+    position: fixed;
     transition: all cubic-bezier(0.8, 0, 0.2, 1) 0.5s;
     top: 0;
     display: block;
@@ -13,7 +13,7 @@
     overflow-x: hidden;
 }
 
-#iseeee:checked #article-browser-list-tag-container{
+#article-browser-load-article-status:checked #article-browser-list-tag-container{
     backdrop-filter: blur(0px);
     -webkit-backdrop-filter: blur(0px);
 }
