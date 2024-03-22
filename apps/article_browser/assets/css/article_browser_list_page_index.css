@@ -1,0 +1,10 @@
+
+
+#article-browser-list-index > div {
+    display: flex;
+    width: 50px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+}

@@ -18,6 +18,7 @@ export class HomepageDelegate extends AppDelegate{
 
     async create_layout(app_data: any):Promise<boolean> {
         await HomepageInterface.create_layout()
+
         return true;
     }
 
@@ -46,6 +47,7 @@ export class HomepageDelegate extends AppDelegate{
         HomepageInterface.reload_banner();
         HomepageInterface.reload_tiles_imgs();
         HomepageInterface.reload_selfie_imgs();
+        NavigationBarInterface.set_scroll_down_blur_behavior(NavigationBarInterface.ScrollDownBlurBehavior.scroll_down_blur);
         return false;
     }
 }

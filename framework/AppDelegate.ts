@@ -92,7 +92,6 @@ export abstract class AppDelegate{
      */
     protected last_session_app_data : typeof this.app_data;
 
-
     /************************************************
      *  App Schedule Framework -- Auto Call
      ***********************************************/
@@ -173,6 +172,7 @@ export abstract class AppDelegate{
             }
         }
     }
+
     protected constructor() {
         ContentLoaderInterface.initialize();
         NavigationBarInterface.initialize();

@@ -1,54 +1,49 @@
 :root{
     --grid-gutter: 3rem;
+    --back-btn-width: 3rem;
 }
 
-.article-tag-container{
-    transition: all cubic-bezier(0.8, 0, 0.2, 1) 0.5s;
-    padding-left: calc(var(--grid-gutter) / 2);
-    padding-right: calc(var(--grid-gutter) / 2);
-    display: block;
-    flex-wrap: wrap;
+#article-browser-list-page {
+    position: absolute;
     width: 100%;
-    margin-top: var(--nav-height);
-    border-bottom: solid 1px #555555;
+    transition: all cubic-bezier(0.8, 0, 0.2, 1) 0.5s;
+    cursor: default;
+    height: auto;
+    left: 0px;
+    top: 0px;
 }
 
-.article-grid-container{
-    display: grid;
-    width: calc(100% + var(--grid-gutter));
-    padding: 0;
+#article-browser-list-page:before {
+    content: " ";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
     transition: all cubic-bezier(0.8, 0, 0.2, 1) 0.5s;
 }
 
-.article-quarter-tile {
-    padding-left: calc(var(--grid-gutter) / 2);
-    padding-right: calc(var(--grid-gutter) / 2);
+#article-browser-article-page {
+    position: absolute;
+    width: calc(100% - var(--back-btn-width));
+    transition: all cubic-bezier(0.8, 0, 0.2, 1) 0.5s;
+    top: 0px;
+    left: calc(100%);
     display: flex;
-    flex-direction: column;
-    min-width: 0;
-    transition: all cubic-bezier(0.8, 0, 0.2, 1) 0.5s;
+    height: 0;
+    overflow: hidden;
 }
 
-@media screen and (min-width: 1000px) {
-    .article-grid-container{
-        grid-template-columns: repeat(4, 1fr);
-        margin-right: calc(var(--grid-gutter) / -2);
-        margin-left: calc(var(--grid-gutter) / -2);
-    }
+#article-browser-load-article-status:checked ~ #article-browser-list-page {
+    left: calc(-100% + var(--back-btn-width));
 }
 
-@media screen and (max-width: 999px) and (min-width: 550px) {
-    .article-grid-container{
-        grid-template-columns: repeat(2, 1fr);
-        margin-right: calc(var(--grid-gutter) / -2);
-        margin-left: calc(var(--grid-gutter) / -2);
-    }
+#article-browser-load-article-status:checked ~ #article-browser-list-page:before {
+    background-color: white;
 }
 
-@media screen and (max-width: 549px) {
-    .article-grid-container{
-        grid-template-columns: 1fr;
-        margin-right: 0px;
-        margin-left: 0px;
-    }
+#article-browser-load-article-status:checked ~ #article-browser-article-page {
+    height: auto;
+    background-color: red;
+    left: var(--back-btn-width);
+    overflow: auto;
 }

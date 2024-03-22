@@ -104,6 +104,7 @@ export class ArticleBrwoserDelegate extends AppDelegate{
     }
 
     async onload(app_data: any): Promise<boolean> {
+        NavigationBarInterface.set_scroll_down_blur_behavior(NavigationBarInterface.ScrollDownBlurBehavior.clear);
         return false;
     }
 

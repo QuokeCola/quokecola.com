@@ -15,8 +15,11 @@ export class ArticleBrowserInterface {
 
     static html_url = "./apps/article_browser/layout.html";
     static css_urls = [
-        "./apps/article_browser/assets/css/article_browser_card.css",
-        "./apps/article_browser/assets/css/article_browser_tags.css",
+        "./apps/article_browser/assets/css/article_browser_list_page_card.css",
+        "./apps/article_browser/assets/css/article_browser_list_page_tags.css",
+        "./apps/article_browser/assets/css/article_browser_list_page_index.css",
+        "./apps/article_browser/assets/css/article_browser_list_page_layout.css",
+        "./apps/article_browser/assets/css/article_browser_article_layout.css",
         "./apps/article_browser/assets/css/article_browser_layout.css"];
 
     static title_wrapper : HTMLElement|null;
