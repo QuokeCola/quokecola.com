@@ -1,0 +1,16 @@
+.article-tag{
+    color: #555;
+    font-size: 10px;
+    padding: 5px 10px 5px 10px;
+    margin: 5px 5px 5px 0;
+    line-height: 1;
+    border: #555 solid 1px;
+    border-radius: 10px;
+    background-color: #fff;
+    user-select: none;
+    cursor: pointer;
+}
+.article-tag-selected{
+    background-color: #555;
+    color: #fff;
+}

@@ -5,29 +5,22 @@
     <title>BLOG</title>
 </head>
 <body>
-<div id="content-screen" class="content-screen">
-    <div class="article-banner">
-        <h1 id="article-title-wrapper"><img src="/apps/article_browser/assets/images/left_arrow.svg"><p id="article-title-content">BLOG</p></h1>
+<div id="content-screen" class="content-screen" style="width: 100%; height: 100%; display: flex;flex-wrap: wrap;position: absolute">
+    <div class="article-tag-container">
+        <button class="article-tag article-tag-selected">tag 1</button>
+        <button class="article-tag ">feaoifjaeoijfoiajfioiafjaejoijoiafjojoifjiajfoijoajfoijaoifajoifjaiofjioawjofiwjaiofjwaoifjeowajfoi</button>
+        <button class="article-tag article-tag-selected">feaoifjaeoijfoiajfioiafjaejoijoiafjojoifjiajfoijoajfoijaoifajoifjaiofjioawjofiwjaiofjwaoifjeowajfoi</button>
+        <button class="article-tag article-tag-selected">feaoifjaeoijfoiajfioiafjaejoijoiafjojoifjiajfoijoajfoijaoifajoifjaiofjioawjofiwjaiofjwaeawfawfafwfaw</button>
     </div>
-    <div class="article-main-wrapper">
-        <div id="article-main-content">
-        </div>
-        <div id="article-index-wrapper" style="display: none; opacity: 0.0">
-            <button id="article-index-btn-left"><</button><div id="article-index-content"></div><button id="article-index-btn-right">></button>
-        </div>
-    </div>
-    <div id="article-side-panel">
-        <div id="article-tags-wrapper" style="display: none; opacity: 0.0">
-            <h2>Tags</h2>
-            <div id="article-tags-content">
-            </div>
-        </div>
-        <div id="article-recommendations-wrapper" style="display: none; opacity: 0.0">
-            <h2>Recommended</h2>
-            <div id="article-recommendations-content">
-            </div>
-        </div>
-    </div>
+    <ul class="article-grid-container">
+        <li class="article-quarter-tile">
+            <div class="article-card-img"></div>
+            <h1>Test</h1>
+            <p>
+                This is test text.
+            </p>
+        </li>
+    </ul>
     <div id="copyright">
         &#169; Chen Qian, 2019-2024
     </div>

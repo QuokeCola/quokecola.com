@@ -15,9 +15,9 @@ export class ArticleBrowserInterface {
 
     static html_url = "./apps/article_browser/layout.html";
     static css_urls = [
-        "./apps/article_browser/assets/css/article_browser_article_card.css",
-        "./apps/article_browser/assets/css/article_browser_layout.css",
-        "./apps/article_browser/assets/css/article_browser_side_panel.css"];
+        "./apps/article_browser/assets/css/article_browser_card.css",
+        "./apps/article_browser/assets/css/article_browser_tags.css",
+        "./apps/article_browser/assets/css/article_browser_layout.css"];
 
     static title_wrapper : HTMLElement|null;
     static title_content: HTMLElement|null;
@@ -95,11 +95,9 @@ export class ArticleBrowserInterface {
     }
 
     static add_recommendations() {
-
     }
 
     static add_articles(){
-
     }
 
     static get_selected_tags() {

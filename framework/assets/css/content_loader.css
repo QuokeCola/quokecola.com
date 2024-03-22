@@ -10,10 +10,8 @@
     --loading-text: "LOADING";
     --loading-color: var(--rm-yellow);
 }
-.content-screen{
 
-    align-self: center;
-
+#content-screen{
     position: absolute;
     top: 0;left: 0;
     width: 100%;
@@ -33,10 +31,12 @@
 
     display: flex;
     flex-wrap: wrap;
+    align-content: flex-start;
 
     scroll-behavior: smooth;
 }
-.content-screen::-webkit-scrollbar { width: 0 !important }
+
+#content-screen::-webkit-scrollbar { width: 0 !important }
 
 #loading-status:checked ~ .content-screen{
     opacity: 0;

@@ -1,6 +1,10 @@
 /********************************************//**
  *                  Nav Bar
  ***********************************************/
+:root{
+    --nav-height: 80px;
+}
+
 nav{
     width: 100%;
     position: fixed;
@@ -95,7 +99,7 @@ nav .nav-menu-items:hover::after{
 /*Layout for PC*/
 @media screen and (min-width: 700px) {
     nav{
-        height: 80px;
+        height: var(--nav-height);
         align-items: center;
         display: flex;
     }
@@ -219,7 +223,7 @@ nav .nav-menu-items:hover::after{
     }
     /*In mobile layout, menu buttons are hidden when checkbox is uncheck*/
     nav .nav-menu-items{
-        line-height: 80px;
+        line-height: var(--nav-height);
 
         padding: 0 5% 0 5%;
         height: 0;
@@ -231,7 +235,7 @@ nav .nav-menu-items:hover::after{
     }
     /*Show menu buttons when checkbox is checked*/
     #nav-panel-status:checked ~ .nav-menu-panel div{
-        height: 80px;
+        height: var(--nav-height);
         opacity: 1;
         border-bottom: rgba(200,200,200,0.2) 1px solid;
     }
