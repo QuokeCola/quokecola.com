@@ -10,7 +10,9 @@
     user-select: none;
     cursor: pointer;
 }
+
 .article-tag-selected{
     background-color: #555;
     color: #fff;
 }
+

@@ -20,6 +20,9 @@ export class ArticleBrowserInterface {
         "./apps/article_browser/assets/css/article_browser_list_page_index.css",
         "./apps/article_browser/assets/css/article_browser_list_page_layout.css",
         "./apps/article_browser/assets/css/article_browser_article_layout.css",
+        "./apps/article_browser/assets/css/article_browser_article_container.css",
+        "./apps/article_browser/assets/css/article_browser_article_side_container.css",
+        "./apps/article_browser/assets/css/article_browser_article_back_button.css",
         "./apps/article_browser/assets/css/article_browser_layout.css"];
 
     static title_wrapper : HTMLElement|null;

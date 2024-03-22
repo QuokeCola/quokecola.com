@@ -1,23 +1,37 @@
 #article-browser-list-tag-container{
-    position: fixed;
+    position: sticky;
     transition: all cubic-bezier(0.8, 0, 0.2, 1) 0.5s;
     top: 0;
     display: block;
     flex-wrap: wrap;
     width: calc(100% - var(--grid-gutter));
     padding: calc(var(--nav-height)) calc(var(--grid-gutter) / 2) 20px;
-    border-bottom: solid 1px rgba(200,200,200,0.5);
+    border-bottom: solid 1px var(--article-browser-border-color);
     background-color: rgba(255,255,255,0.5);
     backdrop-filter: blur(40px);
     -webkit-backdrop-filter: blur(40px);
-    overflow-x: hidden;
+    margin-bottom: -1px;
 }
 
-#article-browser-load-article-status:checked #article-browser-list-tag-container{
+#article-browser-load-article-status:checked ~ #article-browser-list-page > #article-browser-list-tag-container{
     backdrop-filter: blur(0px);
     -webkit-backdrop-filter: blur(0px);
+    background-color: rgba(255,255,255,1.0);
 }
 
+#article-browser-list-grid-container:before{
+    z-index: 0;
+    position: absolute;
+    content: " ";
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255,255,255,0);
+    transition: all cubic-bezier(0.8,0,0.2,1) 0.5s;
+}
+
+#article-browser-load-article-status:checked ~ #article-browser-list-page > #article-browser-list-grid-container:before{
+    background-color: var(--back-btn-color);
+}
 
 #article-browser-list-grid-container{
     display: inline-grid;
@@ -25,9 +39,9 @@
     padding: 0;
     transition: all cubic-bezier(0.8, 0, 0.2, 1) 0.5s;
     grid-gap: 1px;
-    background-color: #555555;
-    border-bottom: solid 1px #555555;
-    border-top: solid 1px #555555;
+    background-color: var(--article-browser-border-color);
+    border-bottom: solid 1px var(--article-browser-border-color);
+    border-top: solid 1px var(--article-browser-border-color);
     overflow-x: hidden;
 }
 

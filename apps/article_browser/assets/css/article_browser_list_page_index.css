@@ -7,4 +7,5 @@
     justify-content: center;
     cursor: pointer;
     user-select: none;
+    border-bottom: solid 1px var(--article-browser-border-color);
 }

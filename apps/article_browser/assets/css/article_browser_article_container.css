@@ -1,0 +1,10 @@
+#article-browser-article-article-banner{
+    width: 100%;
+    height: 18rem;
+    background-color: rebeccapurple;
+    background-size: cover;
+}
+
+#article-browser-article-md-container{
+    margin: 2rem calc(var(--grid-gutter) / 2) 2rem;
+}

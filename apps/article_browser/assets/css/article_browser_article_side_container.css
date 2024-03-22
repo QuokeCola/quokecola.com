@@ -1,0 +1,20 @@
+#article-browser-article-side-container {
+    padding: calc(var(--nav-height)) calc(var(--grid-gutter) / 2) 2rem;
+}
+
+#article-browser-article-side-container > h1{
+    font-weight: normal;
+    display: block;
+    margin-bottom: 0;
+}
+
+#article-browser-article-side-container > img {
+    width: 30px;
+    margin-left: 0;
+    transition: all cubic-bezier(0.8,0,0.2,1) 0.25s;
+    align-content: center;
+}
+
+#article-browser-article-side-container:hover > img {
+    margin-left: 10px;
+}

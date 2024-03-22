@@ -1,0 +1,30 @@
+#article-browser-article-back-button{
+    position: fixed;
+    width: calc(var(--back-btn-width) + 1px);
+    height: 100%;
+    top: 0;
+    left: calc(100%);
+    background-color: white;
+    transition: all cubic-bezier(0.8, 0, 0.2, 1) 0.5s;
+}
+
+#article-browser-load-article-status:checked ~ #article-browser-article-page > #article-browser-article-back-button {
+    left: 0;
+}
+
+#article-browser-article-back-button-icon {
+    position: absolute;
+    width: var(--back-btn-icon-size);
+    left: calc((var(--back-btn-width) - var(--back-btn-icon-size))/2);
+    bottom: calc((var(--back-btn-width) - var(--back-btn-icon-size))/2);
+    transition: all cubic-bezier(0.8, 0, 0.2, 1) 0.5s;
+    user-select: none;
+}
+
+#article-browser-article-back-button:hover {
+    background-color: #CCCCCC;
+}
+
+#article-browser-article-back-button:hover #article-browser-article-back-button-icon{
+    left: calc((var(--back-btn-width) - var(--back-btn-icon-size))/2 - 10px);
+}

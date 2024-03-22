@@ -60,7 +60,6 @@ export class ArticleBrwoserDelegate extends AppDelegate{
     async handle_app_requests(app_data: typeof this.app_data): Promise<boolean> {
         switch (app_data.request_type) {
             case ArticleBrowserRequestData.RequestType.load_article:
-
                 break;
             case ArticleBrowserRequestData.RequestType.load_browser:
                 break;
