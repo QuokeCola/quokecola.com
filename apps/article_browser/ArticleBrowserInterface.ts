@@ -1,7 +1,6 @@
 import {AppRequests} from "../../framework/AppRequests.js";
 import {ArticleBrowserRequestData} from "./ArticleBrowserData.js";
 import {ContentLoaderInterface} from "../../framework/ContentLoaderInterface.js";
-import {marked} from "marked";
 import {NavigationBarInterface} from "../../framework/NavigationBarInterface.js";
 
 export class ArticleBrowserInterface {
@@ -35,6 +34,9 @@ export class ArticleBrowserInterface {
     private static md_container_obj:HTMLElement|null;
     private static recommendation_card:HTMLElement|null;
     private static back_button_obj:HTMLElement|null;
+    private static article_banner: HTMLElement|null;
+    private static article_html:Element;
+    private static banner_img_src:string;
 
     private static state : ArticleBrowserInterface.ArticleBrowserStates = 0;
 
@@ -66,6 +68,8 @@ export class ArticleBrowserInterface {
         ArticleBrowserInterface.recommendation_card = document.getElementById("article-browser-article-recommendation-card");
         // Article page: back button to go back to list page.
         ArticleBrowserInterface.back_button_obj = document.getElementById("article-browser-article-back-button");
+        // Article page: banner image.
+        ArticleBrowserInterface.article_banner = document.getElementById("article-browser-article-article-banner");
     }
 
     static reload_tags(tags: string[]) {
@@ -105,14 +109,35 @@ export class ArticleBrowserInterface {
         }
     }
 
-    static load_article(article_HTML: Element) {
+    static load_article(article_HTML: Element, banner_img_url: string) {
         NavigationBarInterface.set_scroll_down_blur_behavior(NavigationBarInterface.ScrollDownBlurBehavior.scroll_down_blur);
         // DOM check
         if (!(ArticleBrowserInterface.load_article_status_obj instanceof HTMLInputElement) ||
             !(ArticleBrowserInterface.md_container_obj) ||
-            !(ArticleBrowserInterface.article_page_obj)) {
+            !(ArticleBrowserInterface.article_page_obj) ||
+            !(ArticleBrowserInterface.article_banner)) {
             return;
         }
+
+        // Update Banner Image
+        if (!ArticleBrowserInterface.article_banner.classList.contains("loading-components-light")&&
+            !ArticleBrowserInterface.article_banner.classList.contains("loaded-components-light")) {
+            ArticleBrowserInterface.article_banner.classList.add("loading-components-light");
+        }
+        if(ArticleBrowserInterface.article_banner.classList.contains("loaded-components-light")) {
+            ArticleBrowserInterface.article_banner.classList.replace("loaded-components-light",
+                "loading-components-light");
+        }
+        let banner_image = new Image()
+        banner_image.onload = () => {
+            if(ArticleBrowserInterface.article_banner && banner_image.src === ArticleBrowserInterface.banner_img_src) {
+                ArticleBrowserInterface.article_banner.style.backgroundImage = "url("+banner_image.src+")";
+            }
+            ArticleBrowserInterface.article_banner?.classList.replace("loading-components-light",
+                "loaded-components-light");
+        }
+        banner_image.src = banner_img_url;
+        ArticleBrowserInterface.banner_img_src = banner_image.src;
 
         // Check HTML, replace all img labels with wrapper for loading optimization.
         let img_instances = article_HTML.querySelectorAll("img");
@@ -123,20 +148,21 @@ export class ArticleBrowserInterface {
             img_wrapper_instance.classList.add("loading-components-light");
             img_wrapper_instance.classList.add("article-browser-article-md-container-images");
             img_wrapper_instance.appendChild(img_instance);
-
             let image_src = new Image();
             image_src.addEventListener("load", ()=> {
                 img_wrapper_instance.classList.replace("loading-components-light","loaded-components-light");
             });
             image_src.src = img_instance.src;
-        })
-        // Loader state machine
+        });
+        ArticleBrowserInterface.article_html = article_HTML;
+
+        // Loader state machine, load content.
         switch (ArticleBrowserInterface.state) {
             // Normal load.
             case ArticleBrowserInterface.ArticleBrowserStates.LIST_READY:
                 // Replace md_container content;
                 ArticleBrowserInterface.md_container_obj.innerHTML=""
-                article_HTML.childNodes.forEach((node)=> {
+                ArticleBrowserInterface.article_html.childNodes.forEach((node)=> {
                     ArticleBrowserInterface.md_container_obj?.appendChild(node);
                 })
 
@@ -148,12 +174,42 @@ export class ArticleBrowserInterface {
                 ArticleBrowserInterface.load_article_status_obj.checked = true;
                 ArticleBrowserInterface.state = ArticleBrowserInterface.ArticleBrowserStates.LIST_TO_ARTICLE;
                 break;
-            case ArticleBrowserInterface.ArticleBrowserStates.LIST_TO_ARTICLE:
-            case ArticleBrowserInterface.ArticleBrowserStates.ARTICLE_READY:
-
-                break;
             case ArticleBrowserInterface.ArticleBrowserStates.ARTICLE_TO_LIST:
                 ArticleBrowserInterface.load_article_status_obj.checked = true;
+                ArticleBrowserInterface.state = ArticleBrowserInterface.ArticleBrowserStates.LIST_TO_ARTICLE;
+                // Fall through to load content.
+            case ArticleBrowserInterface.ArticleBrowserStates.LIST_TO_ARTICLE:
+                // Fall through for list to article and article ready to load content.
+            case ArticleBrowserInterface.ArticleBrowserStates.ARTICLE_READY:
+                if (!ArticleBrowserInterface.md_container_obj.classList.contains("article-browser-fade")){
+                    ArticleBrowserInterface.md_container_obj.classList.add("article-browser-fade");
+                }
+                // Monitor the css, preventing stuck situation.
+                let style = window.getComputedStyle(ArticleBrowserInterface.md_container_obj,':before');
+                if (style['backgroundColor']==="rgb(255, 255, 255)") {
+                    if (ArticleBrowserInterface.md_container_obj) {
+                        ArticleBrowserInterface.md_container_obj.innerHTML=""
+                        ArticleBrowserInterface.article_html.childNodes.forEach((node)=> {
+                            ArticleBrowserInterface.md_container_obj?.appendChild(node);
+                        });
+                        ArticleBrowserInterface.md_container_obj.classList.remove("article-browser-fade");
+                        ArticleBrowserInterface.md_container_obj.ontransitionend = ()=> {}
+                    }
+                } else {
+                    ArticleBrowserInterface.md_container_obj.ontransitionend = (ev)=>{
+                        // Replace md_container content;
+                        if (ev.propertyName==="background-color"&&ev.target===ArticleBrowserInterface.md_container_obj) {
+                            if (ArticleBrowserInterface.md_container_obj) {
+                                ArticleBrowserInterface.md_container_obj.innerHTML=""
+                                ArticleBrowserInterface.article_html.childNodes.forEach((node)=> {
+                                    ArticleBrowserInterface.md_container_obj?.appendChild(node);
+                                });
+                                ArticleBrowserInterface.md_container_obj.classList.remove("article-browser-fade");
+                                ArticleBrowserInterface.md_container_obj.ontransitionend = ()=> {}
+                            }
+                        }
+                    }
+                }
                 break;
         }
     }
@@ -183,11 +239,5 @@ export namespace ArticleBrowserInterface {
         LIST_TO_ARTICLE,
         ARTICLE_READY,
         ARTICLE_TO_LIST
-    }
-    export enum MdContainerStates {
-        READY,
-        FADE_IN,
-        FADED,
-        FADE_OUT
     }
 }

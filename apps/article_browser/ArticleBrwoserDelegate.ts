@@ -60,10 +60,10 @@ export class ArticleBrwoserDelegate extends AppDelegate{
     }
 
     async handle_app_requests(app_data: typeof this.app_data): Promise<boolean> {
-        const response = await fetch("./apps/article_browser/markdown_directory/"+this.document_info[0].src);
+        const response = await fetch("./apps/article_browser/markdown_directory/"+this.document_info[1].src);
         let parser = new DOMParser();
         let html_doc = parser.parseFromString(await marked_wrapper.parse(await response.text()),'text/html');
-        ArticleBrowserInterface.load_article(html_doc.body);
+        ArticleBrowserInterface.load_article(html_doc.body, "./apps/article_browser/markdown_directory/"+this.document_info[1].pic);
         switch (app_data.request_type) {
             case ArticleBrowserRequestData.RequestType.load_article:
                 break;

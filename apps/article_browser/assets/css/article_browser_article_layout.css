@@ -14,41 +14,30 @@
 
 @media screen and (min-width: 1000px) {
     #article-browser-article-side-container {
-        width: 0px;
-    }
-
-    #article-browser-load-article-status:checked ~ #article-browser-article-page > #article-browser-article-side-container {
         width: calc(25% - 1px - var(--grid-gutter));
         top: 0;
+        padding: calc(var(--nav-height)) calc(var(--grid-gutter)/2) 2rem;
     }
+
 
     #article-browser-article-container {
-        width: 0px;
-    }
-
-    #article-browser-load-article-status:checked ~ #article-browser-article-page > #article-browser-article-container {
         width: calc(75% - 1px);
+        padding: 0 calc(var(--grid-gutter)/2) 0;
     }
 }
 
 @media screen and (max-width: 999px) {
 
     #article-browser-article-side-container {
-        width: 0%;
-    }
-
-    #article-browser-load-article-status:checked ~ #article-browser-article-page > #article-browser-article-side-container {
         width: 100%;
         bottom: 0;
         border-right: none;
         border-left: solid 1px var(--article-browser-border-color);
+        padding: calc(var(--nav-height)) calc(var(--grid-gutter)/2) 2rem;
     }
 
     #article-browser-article-container {
-        width: 0px;
-    }
-
-    #article-browser-load-article-status:checked ~ #article-browser-article-page > #article-browser-article-container {
-        width: 100%
+        width: 100%;
+        padding: 0 calc(var(--grid-gutter)/2) 0;
     }
 }
