@@ -4,6 +4,8 @@ import {AppRequests} from "../../framework/AppRequests.js";
 import {NavigationBarInterface} from "../../framework/NavigationBarInterface.js";
 import {ContentLoaderInterface} from "../../framework/ContentLoaderInterface.js";
 import {ArticleBrowserInterface} from "./ArticleBrowserInterface.js";
+import {marked_wrapper} from "../../framework/dependencies/marked_min_wrapper.js";
+
 
 export class ArticleBrwoserDelegate extends AppDelegate{
     app_data: ArticleBrowserRequestData = {request_type: ArticleBrowserRequestData.RequestType.default, article_source: null, page_index: null, selected_tags: null};
@@ -58,6 +60,10 @@ export class ArticleBrwoserDelegate extends AppDelegate{
     }
 
     async handle_app_requests(app_data: typeof this.app_data): Promise<boolean> {
+        const response = await fetch("./apps/article_browser/markdown_directory/"+this.document_info[0].src);
+        let parser = new DOMParser();
+        let html_doc = parser.parseFromString(await marked_wrapper.parse(await response.text()),'text/html');
+        ArticleBrowserInterface.load_article(html_doc.body);
         switch (app_data.request_type) {
             case ArticleBrowserRequestData.RequestType.load_article:
                 break;

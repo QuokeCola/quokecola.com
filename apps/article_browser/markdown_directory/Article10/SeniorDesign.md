@@ -13,23 +13,22 @@ The previous design has several problems.
 
 ## Solution
 To solve this problem, I re-design the mechanical structure.
-![rendered_img](/apps/article_browser/markdown_directory/Article10/CAD.png)
+<img src="/apps/article_browser/markdown_directory/Article10/CAD.png" alt="rendered_img" style="width:20rem">
 
 The base was re-designed according to a real-people arm. It was lofted with four curves to fit user's hand.
 The carbon fiber mechanism on the top is a structure to adjust the width of device to fit different user's hand. We applied cotton 
 on the inner surface, so user will be more comfortable when wearing this device.
-![user_experience](/apps/article_browser/markdown_directory/Article10/ue.JPG)
+<img src="/apps/article_browser/markdown_directory/Article10/ue.JPG" alt="user_experience" style="width:20rem">
 
 The new structure uses two motors to drive the first joint, so it can provide larger torque and render forces in different direction.
-![duo_motor](/apps/article_browser/markdown_directory/Article10/arm_motor.JPG)
+<img src="/apps/article_browser/markdown_directory/Article10/arm_motor.JPG" alt="duo_motor" style="width:20rem">
 
 In the new design, the YAW and PITCH axis is switched, so the projection of end effector always lies on user's hand.
-![mechanical_structure](/apps/article_browser/markdown_directory/Article10/mech_render.jpeg)
-
+<img src="/apps/article_browser/markdown_directory/Article10/mech_render.jpeg" alt="mechanical_structure" style="width:20rem">
 The shape render end effector is also re-designed. In previous design, 3D printed part is moving alone the carbon fiber rod,
 the friction would significantly change, which is not smooth enough. We replaced the carbon fiber rod with a steel one, as well as 
 add bearing between the surface, applied WD-40 on rod, to make it smoother.
-![finger](/apps/article_browser/markdown_directory/Article10/finger.JPG)
+<img src="/apps/article_browser/markdown_directory/Article10/finger.JPG" alt="finger" style="width:20rem">
 
 Here is our test:
 

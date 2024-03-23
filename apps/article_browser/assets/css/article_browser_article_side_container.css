@@ -6,6 +6,7 @@
     font-weight: normal;
     display: block;
     margin-bottom: 0;
+
 }
 
 #article-browser-article-side-container > img {
@@ -17,4 +18,18 @@
 
 #article-browser-article-side-container:hover > img {
     margin-left: 10px;
+}
+
+#article-browser-article-side-container:hover > h1 {
+
+}
+
+.article-browser-article-recommendation-card > h1 {
+    user-select: none;
+    cursor: pointer;
+}
+
+.article-browser-article-recommendation-card > h1:hover{
+    text-decoration: underline;
+    color: var(--accent-color);
 }

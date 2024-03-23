@@ -6,9 +6,13 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true,
-    "allowJs": true
+    "allowJs": true,
+    "moduleResolution": "Node"
   },
   "include": [
     "./**/*"
+  ],
+  "plugins": [
+    {"marked": "marked/marked.min.js"}
   ]
 }
