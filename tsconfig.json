@@ -4,15 +4,17 @@
     "module": "es6",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "strict": true,
+    "strict": false,
     "skipLibCheck": true,
     "allowJs": true,
-    "moduleResolution": "Node"
+    "moduleResolution": "Node",
+    "outDir": "./lib"
   },
   "include": [
-    "./**/*"
+    "./**/*.ts"
   ],
   "plugins": [
-    {"marked": "marked/marked.min.js"}
+//    {"marked_wrapper": "framework/dependencies/marked_min_wrapper.js",
+//    }
   ]
 }
