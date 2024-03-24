@@ -12,6 +12,7 @@ export class ArticleBrwoserDelegate extends AppDelegate{
 
     document_info : ArticleBrowserArticleData[]=[];
     list_page_num : number = 8;
+    tag_list : string[] = [];
 
     constructor() {
         super();
@@ -48,7 +49,10 @@ export class ArticleBrwoserDelegate extends AppDelegate{
                 }
             }
         }
-        ArticleBrowserInterface.write_tags(tags);
+        if (app_data.selected_tags){
+            ArticleBrowserInterface.write_tags(tags, app_data.selected_tags);
+        }
+        this.tag_list = tags;
         return false;
     }
 
@@ -82,6 +86,8 @@ export class ArticleBrwoserDelegate extends AppDelegate{
             case ArticleBrowserAppData.RequestType.load_article:
                 if (app_data.article_source) {
                     await ArticleBrowserInterface.load_article(app_data.article_source);
+                    let recommendation_index = Math.floor(Math.random()*this.document_info.length);
+                    ArticleBrowserInterface.set_recommendation_article(this.document_info[recommendation_index]);
                 }
                 break;
             case ArticleBrowserAppData.RequestType.load_browser:
@@ -118,6 +124,9 @@ export class ArticleBrwoserDelegate extends AppDelegate{
                 list_document = list_document.slice(start_index, end_index);
                 await ArticleBrowserInterface.load_list(list_document);
                 ArticleBrowserInterface.set_index(total_index_number, app_data.page_index);
+                if (this.tag_list.length > 0 && app_data.selected_tags) {
+                    ArticleBrowserInterface.write_tags(this.tag_list, app_data.selected_tags);
+                }
                 break;
             case ArticleBrowserAppData.RequestType.default:
                 // Pass through, default situation means to handle a request with no data inside, bring up default interface.

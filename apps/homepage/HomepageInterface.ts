@@ -1,4 +1,8 @@
 import {ContentLoaderInterface} from "../../framework/ContentLoaderInterface.js";
+import {AppRequests} from "../../framework/AppRequests.js";
+import {ArticleBrowserAppData, ArticleBrowserArticleData} from "../article_browser/ArticleBrowserData.js";
+import RequestType = ArticleBrowserAppData.RequestType;
+
 export class HomepageInterface {
     static home_banner_imgs_url:string = "./apps/homepage/assets/images/banner_img.JPG"
     static home_selfie_img_url:string = "./apps/homepage/assets/images/selfie.jpeg"
@@ -21,6 +25,32 @@ export class HomepageInterface {
         const parser = new DOMParser()
         let html_doc = parser.parseFromString(await response.text(), 'text/html');
         ContentLoaderInterface.set_app_layout(html_doc.body.children[0].innerHTML)
+        let banner_button = document.getElementById("home-banner-button");
+        if (banner_button){
+            banner_button.onclick = ()=>{
+                let request = new AppRequests();
+                let document_data : ArticleBrowserArticleData = {
+                    abstract: "Loft to death QwQ",
+                    pic: "Article10/mech_render.jpeg",
+                    src: "Article10/SeniorDesign.md",
+                    tags: ["Mechanical Design",
+                        "Electrical Design",
+                        "ChibiOS",
+                        "STM32"],
+                    time: "08-12-2022 14:30",
+                    title: "Haptic Device II"
+                }
+                let app_data:ArticleBrowserAppData = {
+                    article_source: document_data,
+                    page_index: null,
+                    request_type: RequestType.load_article,
+                    selected_tags: null
+                }
+                request.app_name = "BLOG"
+                request.app_data = app_data;
+                window.postMessage(request);
+            }
+        }
     }
 
     static reload_banner() {

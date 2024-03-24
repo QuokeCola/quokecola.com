@@ -59,64 +59,65 @@ export class ArticleBrowserInterface {
         ContentLoaderInterface.set_app_layout(html_doc.body.children[0].innerHTML);
         // UI there are two screens, one is list page that has tile to show all articles, another is article page show the specified article.
         // List page.
-        ArticleBrowserInterface.list_page_obj = document.getElementById("article-browser-list-page");
+        this.list_page_obj = document.getElementById("article-browser-list-page");
         // The handler to switch between different pages
-        ArticleBrowserInterface.load_article_status_obj = document.getElementById("article-browser-load-article-status");
+        this.load_article_status_obj = document.getElementById("article-browser-load-article-status");
         // List page: tag container to filter articles.
-        ArticleBrowserInterface.list_tag_container_obj = document.getElementById("article-browser-list-tag-container");
+        this.list_tag_container_obj = document.getElementById("article-browser-list-tag-container");
         // List page: grid container that contains the article thumbnails.
-        ArticleBrowserInterface.list_grid_obj = document.getElementById("article-browser-list-grid-container");
+        this.list_grid_obj = document.getElementById("article-browser-list-grid-container");
         // List page: page index for grid container.
-        ArticleBrowserInterface.list_index_container_obj = document.getElementById("article-browser-list-index");
+        this.list_index_container_obj = document.getElementById("article-browser-list-index");
         // Article page.
-        ArticleBrowserInterface.article_page_obj = document.getElementById("article-browser-article-page");
+        this.article_page_obj = document.getElementById("article-browser-article-page");
         // Article page: where show the markdown.
-        ArticleBrowserInterface.article_container_obj = document.getElementById("article-browser-article-md-container");
+        this.article_container_obj = document.getElementById("article-browser-article-md-container");
         // Article page: side panel recommendation reading.
-        ArticleBrowserInterface.article_recommendation_card = document.getElementById("article-browser-article-recommendation-card");
+        this.article_recommendation_card = document.getElementById("article-browser-article-recommendation-card");
         // Article page: back button to go back to list page.
-        ArticleBrowserInterface.back_button_obj = document.getElementById("article-browser-article-back-button");
+        this.back_button_obj = document.getElementById("article-browser-article-back-button");
         // Article page: banner image.
-        ArticleBrowserInterface.article_banner = document.getElementById("article-browser-article-article-banner");
-        if (ArticleBrowserInterface.article_page_obj) {
-            ArticleBrowserInterface.article_page_obj.ontransitionend = (ev)=>{
-                if (ev.target === ArticleBrowserInterface.article_page_obj && ev.propertyName === "left"
-                    && ArticleBrowserInterface.load_article_status_obj instanceof HTMLInputElement) {
-                    if (ArticleBrowserInterface.load_article_status_obj.checked) {
-                        ArticleBrowserInterface.state = ArticleBrowserInterface.ArticleBrowserStates.ARTICLE_READY
+        this.article_banner = document.getElementById("article-browser-article-article-banner");
+        if (this.article_page_obj) {
+            this.article_page_obj.ontransitionend = (ev)=>{
+                if (ev.target === this.article_page_obj && ev.propertyName === "left"
+                    && this.load_article_status_obj instanceof HTMLInputElement) {
+                    if (this.load_article_status_obj.checked) {
+                        this.state = this.ArticleBrowserStates.ARTICLE_READY
                     } else {
-                        ArticleBrowserInterface.state = ArticleBrowserInterface.ArticleBrowserStates.LIST_READY;
-                        if (ArticleBrowserInterface.article_container_obj) {
-                            ArticleBrowserInterface.clear_element_content(ArticleBrowserInterface.article_container_obj);
+                        this.state = this.ArticleBrowserStates.LIST_READY;
+                        if (this.article_container_obj) {
+                            this.clear_element_content(this.article_container_obj);
                         }
                     }
                 }
             };
         }
-        if (ArticleBrowserInterface.back_button_obj) {
-            ArticleBrowserInterface.back_button_obj.onclick = () => {
+        if (this.back_button_obj) {
+            this.back_button_obj.onclick = () => {
                 let app_data : ArticleBrowserAppData = {
                     request_type: ArticleBrowserAppData.RequestType.load_browser,
                     article_source: null,
-                    selected_tags: ArticleBrowserInterface.selected_tags,
-                    page_index: ArticleBrowserInterface.current_index
+                    selected_tags: this.selected_tags,
+                    page_index: this.current_index
                 }
-                ArticleBrowserInterface.post_data(app_data);
+                this.post_data(app_data);
             }
         }
     }
 
-    static write_tags(tags: string[]) {
-        if (!ArticleBrowserInterface.list_tag_container_obj) return;
-        ArticleBrowserInterface.tags = tags;
+    static write_tags(tags: string[], selected_tags: string[]) {
+        if (!this.list_tag_container_obj) return;
+        this.tags = tags;
         // Clear all HTML
-        ArticleBrowserInterface.clear_element_content(ArticleBrowserInterface.list_tag_container_obj);
-        ArticleBrowserInterface.tag_collection = [];
+        this.clear_element_content(this.list_tag_container_obj);
+        this.tag_collection = [];
+        this.selected_tags = selected_tags;
         for (let tag of tags) {
             let tag_btn = document.createElement("button")
             tag_btn.innerText = tag;
             tag_btn.classList.add("article-tag")
-            if (ArticleBrowserInterface.selected_tags.includes(tag)) tag_btn.classList.add("article-tag-selected");
+            if (this.selected_tags.includes(tag)) tag_btn.classList.add("article-tag-selected");
             tag_btn.onclick = function () {
                 if(tag_btn.classList.contains("article-tag-selected")) {
                     // If tag has been selected, deselect it and remove it from list
@@ -130,19 +131,18 @@ export class ArticleBrowserInterface {
                         selected_tags.push(tag_b.innerText);
                     }
                 }
-                ArticleBrowserInterface.selected_tags = selected_tags;
                 let request = new AppRequests();
                 request.app_data={
                     article_source: null,
                     page_index: 1,
                     request_type: ArticleBrowserAppData.RequestType.load_browser,
-                    selected_tags: ArticleBrowserInterface.selected_tags
+                    selected_tags: selected_tags
                 }
                 request.app_name="BLOG"
                 window.postMessage(request);
             }
-            ArticleBrowserInterface.tag_collection.push(tag_btn);
-            ArticleBrowserInterface.list_tag_container_obj.appendChild(tag_btn);
+            this.tag_collection.push(tag_btn);
+            this.list_tag_container_obj.appendChild(tag_btn);
         }
     }
 
@@ -150,67 +150,67 @@ export class ArticleBrowserInterface {
         NavigationBarInterface.set_scroll_down_blur_behavior(NavigationBarInterface.ScrollDownBlurBehavior.scroll_down_blur);
         ContentLoaderInterface.to_top();
         // DOM check
-        if (!(ArticleBrowserInterface.load_article_status_obj instanceof HTMLInputElement) ||
-            !(ArticleBrowserInterface.article_container_obj) ||
-            !(ArticleBrowserInterface.article_page_obj) ||
-            !(ArticleBrowserInterface.article_banner)) {
+        if (!(this.load_article_status_obj instanceof HTMLInputElement) ||
+            !(this.article_container_obj) ||
+            !(this.article_page_obj) ||
+            !(this.article_banner)) {
             return;
         }
 
         // Update Banner Image
-        if (!ArticleBrowserInterface.article_banner.classList.contains("loading-components-light")&&
-            !ArticleBrowserInterface.article_banner.classList.contains("loaded-components-light")) {
-            ArticleBrowserInterface.article_banner.classList.add("loading-components-light");
+        if (!this.article_banner.classList.contains("loading-components-light")&&
+            !this.article_banner.classList.contains("loaded-components-light")) {
+            this.article_banner.classList.add("loading-components-light");
         }
-        if(ArticleBrowserInterface.article_banner.classList.contains("loaded-components-light")) {
-            ArticleBrowserInterface.article_banner.classList.replace("loaded-components-light",
+        if(this.article_banner.classList.contains("loaded-components-light")) {
+            this.article_banner.classList.replace("loaded-components-light",
                 "loading-components-light");
         }
         let banner_image_loader = new Image()
         banner_image_loader.onload = () => {
-            if(ArticleBrowserInterface.article_banner && banner_image_loader.src === ArticleBrowserInterface.article_banner_src) {
-                ArticleBrowserInterface.article_banner.style.backgroundImage = "url("+banner_image_loader.src+")";
+            if(this.article_banner && banner_image_loader.src === this.article_banner_src) {
+                this.article_banner.style.backgroundImage = "url("+banner_image_loader.src+")";
             }
-            ArticleBrowserInterface.article_banner?.classList.replace("loading-components-light",
+            this.article_banner?.classList.replace("loading-components-light",
                 "loaded-components-light");
         }
-        banner_image_loader.src = ArticleBrowserInterface.markdown_directory + article_data.pic;
-        ArticleBrowserInterface.article_banner_src = banner_image_loader.src;
-        ArticleBrowserInterface.article_container_content = await ArticleBrowserInterface.generate_article_content(article_data);
+        banner_image_loader.src = this.markdown_directory + article_data.pic;
+        this.article_banner_src = banner_image_loader.src;
+        this.article_container_content = await this.generate_article_content(article_data);
 
         // Loader state machine, load content.
-        switch (ArticleBrowserInterface.state) {
+        switch (this.state) {
             // Normal load.
-            case ArticleBrowserInterface.ArticleBrowserStates.LIST_READY:
+            case this.ArticleBrowserStates.LIST_READY:
                 // Replace md_container content;
-                ArticleBrowserInterface.write_article_content(ArticleBrowserInterface.article_container_content);
-                ArticleBrowserInterface.load_article_status_obj.checked = true;
-                ArticleBrowserInterface.state = ArticleBrowserInterface.ArticleBrowserStates.LIST_TO_ARTICLE;
+                this.write_article_content(this.article_container_content);
+                this.load_article_status_obj.checked = true;
+                this.state = this.ArticleBrowserStates.LIST_TO_ARTICLE;
                 break;
-            case ArticleBrowserInterface.ArticleBrowserStates.ARTICLE_TO_LIST:
-                ArticleBrowserInterface.load_article_status_obj.checked = true;
-                ArticleBrowserInterface.state = ArticleBrowserInterface.ArticleBrowserStates.LIST_TO_ARTICLE;
+            case this.ArticleBrowserStates.ARTICLE_TO_LIST:
+                this.load_article_status_obj.checked = true;
+                this.state = this.ArticleBrowserStates.LIST_TO_ARTICLE;
                 // Fall through to load content.
-            case ArticleBrowserInterface.ArticleBrowserStates.LIST_TO_ARTICLE:
+            case this.ArticleBrowserStates.LIST_TO_ARTICLE:
                 // Fall through for list to article and article ready to load content.
-            case ArticleBrowserInterface.ArticleBrowserStates.ARTICLE_READY:
-                if (!ArticleBrowserInterface.article_container_obj.classList.contains("article-browser-fade")){
-                    ArticleBrowserInterface.article_container_obj.classList.add("article-browser-fade");
+            case this.ArticleBrowserStates.ARTICLE_READY:
+                if (!this.article_container_obj.classList.contains("article-browser-fade")){
+                    this.article_container_obj.classList.add("article-browser-fade");
                 }
                 // Monitor the css, preventing stuck situation.
-                let style = window.getComputedStyle(ArticleBrowserInterface.article_container_obj,':before');
+                let style = window.getComputedStyle(this.article_container_obj,':before');
                 if (style['backgroundColor']==="rgb(255, 255, 255)" ) {
-                    ArticleBrowserInterface.write_article_content(ArticleBrowserInterface.article_container_content);
-                    ArticleBrowserInterface.article_container_obj.classList.remove("article-browser-fade");
-                    ArticleBrowserInterface.article_container_obj.ontransitionend = ()=> {}
+                    this.write_article_content(this.article_container_content);
+                    this.article_container_obj.classList.remove("article-browser-fade");
+                    this.article_container_obj.ontransitionend = ()=> {}
                 } else {
-                    ArticleBrowserInterface.article_container_obj.ontransitionend = (ev)=>{
+                    this.article_container_obj.ontransitionend = (ev)=>{
                         // Replace md_container content;
-                        if (ev.propertyName==="background-color"&&ev.target===ArticleBrowserInterface.article_container_obj &&
-                            ArticleBrowserInterface.article_container_obj) {
-                            ArticleBrowserInterface.write_article_content(ArticleBrowserInterface.article_container_content);
-                            ArticleBrowserInterface.article_container_obj.classList.remove("article-browser-fade");
-                            ArticleBrowserInterface.article_container_obj.ontransitionend = ()=> {}
+                        if (ev.propertyName==="background-color"&&ev.target===this.article_container_obj &&
+                            this.article_container_obj) {
+                            this.write_article_content(this.article_container_content);
+                            this.article_container_obj.classList.remove("article-browser-fade");
+                            this.article_container_obj.ontransitionend = ()=> {}
                         }
                     }
                 }
@@ -221,57 +221,57 @@ export class ArticleBrowserInterface {
     static async load_list(article_data_array: ArticleBrowserArticleData[]) {
         NavigationBarInterface.set_scroll_down_blur_behavior(NavigationBarInterface.ScrollDownBlurBehavior.clear);
         ContentLoaderInterface.to_top();
-        if (!(ArticleBrowserInterface.load_article_status_obj instanceof HTMLInputElement) ||
-            !ArticleBrowserInterface.article_container_obj ||
-            !ArticleBrowserInterface.list_page_obj ||
-            !ArticleBrowserInterface.list_grid_obj) {
+        if (!(this.load_article_status_obj instanceof HTMLInputElement) ||
+            !this.article_container_obj ||
+            !this.list_page_obj ||
+            !this.list_grid_obj) {
             return
         }
-        ArticleBrowserInterface.list_grid_content = ArticleBrowserInterface.generate_article_cards(article_data_array);
+        this.list_grid_content = this.generate_article_cards(article_data_array);
 
-        switch (ArticleBrowserInterface.state) {
-            case ArticleBrowserInterface.ArticleBrowserStates.LIST_TO_ARTICLE:
-                ArticleBrowserInterface.load_article_status_obj.checked = false;
-                ArticleBrowserInterface.state = ArticleBrowserInterface.ArticleBrowserStates.ARTICLE_TO_LIST;
+        switch (this.state) {
+            case this.ArticleBrowserStates.LIST_TO_ARTICLE:
+                this.load_article_status_obj.checked = false;
+                this.state = this.ArticleBrowserStates.ARTICLE_TO_LIST;
                 // Fall through
-            case ArticleBrowserInterface.ArticleBrowserStates.ARTICLE_TO_LIST:
+            case this.ArticleBrowserStates.ARTICLE_TO_LIST:
                 // Fall through
-            case ArticleBrowserInterface.ArticleBrowserStates.LIST_READY:
-                if (!ArticleBrowserInterface.list_page_obj.classList.contains("article-browser-fade")){
-                    ArticleBrowserInterface.list_page_obj.classList.add("article-browser-fade");
+            case this.ArticleBrowserStates.LIST_READY:
+                if (!this.list_page_obj.classList.contains("article-browser-fade")){
+                    this.list_page_obj.classList.add("article-browser-fade");
                 }
                 // Monitor the css, preventing stuck situation.
-                let style = window.getComputedStyle(ArticleBrowserInterface.list_page_obj,':before');
+                let style = window.getComputedStyle(this.list_page_obj,':before');
                 if (style['backgroundColor']==="rgb(255, 255, 255)") {
-                    ArticleBrowserInterface.write_list_content(ArticleBrowserInterface.list_grid_content);
-                    ArticleBrowserInterface.list_page_obj.classList.remove("article-browser-fade");
-                    ArticleBrowserInterface.list_page_obj.ontransitionend = ()=> {}
+                    this.write_list_content(this.list_grid_content);
+                    this.list_page_obj.classList.remove("article-browser-fade");
+                    this.list_page_obj.ontransitionend = ()=> {}
                 } else {
-                    ArticleBrowserInterface.list_page_obj.ontransitionend = (ev)=>{
+                    this.list_page_obj.ontransitionend = (ev)=>{
                         // Replace md_container content;
-                        if (ev.propertyName==="background-color"&&ev.target===ArticleBrowserInterface.list_page_obj
-                            && ArticleBrowserInterface.list_page_obj) {
-                            ArticleBrowserInterface.write_list_content(ArticleBrowserInterface.list_grid_content);
-                            ArticleBrowserInterface.list_page_obj.classList.remove("article-browser-fade");
-                            ArticleBrowserInterface.list_page_obj.ontransitionend = ()=> {}
+                        if (ev.propertyName==="background-color"&&ev.target===this.list_page_obj
+                            && this.list_page_obj) {
+                            this.write_list_content(this.list_grid_content);
+                            this.list_page_obj.classList.remove("article-browser-fade");
+                            this.list_page_obj.ontransitionend = ()=> {}
                         }
                     }
                 }
                 break;
-            case ArticleBrowserInterface.ArticleBrowserStates.ARTICLE_READY:
-                ArticleBrowserInterface.write_list_content(ArticleBrowserInterface.list_grid_content);
-                ArticleBrowserInterface.load_article_status_obj.checked = false;
-                ArticleBrowserInterface.state = ArticleBrowserInterface.ArticleBrowserStates.ARTICLE_TO_LIST;
+            case this.ArticleBrowserStates.ARTICLE_READY:
+                this.write_list_content(this.list_grid_content);
+                this.load_article_status_obj.checked = false;
+                this.state = this.ArticleBrowserStates.ARTICLE_TO_LIST;
                 break;
         }
     }
 
     static set_index(total_index: number, current_index: number) {
-        if (!ArticleBrowserInterface.list_index_container_obj) {
+        if (!this.list_index_container_obj) {
             return;
         }
-        ArticleBrowserInterface.current_index = current_index;
-        ArticleBrowserInterface.clear_element_content(ArticleBrowserInterface.list_index_container_obj);
+        this.current_index = current_index;
+        this.clear_element_content(this.list_index_container_obj);
         let left_btn = document.createElement("div");
         left_btn.innerText = "<"
         left_btn.onclick = ()=>{
@@ -279,7 +279,7 @@ export class ArticleBrowserInterface {
                 let app_data : ArticleBrowserAppData = {
                     request_type: ArticleBrowserAppData.RequestType.load_browser,
                     article_source: null,
-                    selected_tags: ArticleBrowserInterface.selected_tags,
+                    selected_tags: this.selected_tags,
                     page_index: current_index - 1
                 }
                 this.post_data(app_data)
@@ -292,13 +292,13 @@ export class ArticleBrowserInterface {
                 let app_data : ArticleBrowserAppData = {
                     request_type: ArticleBrowserAppData.RequestType.load_browser,
                     article_source: null,
-                    selected_tags: ArticleBrowserInterface.selected_tags,
+                    selected_tags: this.selected_tags,
                     page_index: current_index + 1
                 }
                 this.post_data(app_data)
             }
         }
-        ArticleBrowserInterface.list_index_container_obj.appendChild(left_btn)
+        this.list_index_container_obj.appendChild(left_btn)
         for (let i = 0; i < total_index; i++) {
             let index_btn = document.createElement("div");
             index_btn.innerText = (i+1).toString();
@@ -309,26 +309,26 @@ export class ArticleBrowserInterface {
                 let app_data : ArticleBrowserAppData = {
                     request_type: ArticleBrowserAppData.RequestType.load_browser,
                     article_source: null,
-                    selected_tags: ArticleBrowserInterface.selected_tags,
+                    selected_tags: this.selected_tags,
                     page_index: i+1
                 }
-                ArticleBrowserInterface.post_data(app_data);
+                this.post_data(app_data);
             }
-            ArticleBrowserInterface.list_index_container_obj.appendChild(index_btn);
+            this.list_index_container_obj.appendChild(index_btn);
         }
-        ArticleBrowserInterface.list_index_container_obj.appendChild(right_btn);
+        this.list_index_container_obj.appendChild(right_btn);
     }
 
     static get_selected_tags() {
-        return ArticleBrowserInterface.selected_tags;
+        return this.selected_tags;
     }
 
     static get_tags() {
-        return ArticleBrowserInterface.tags;
+        return this.tags;
     }
 
     private static async generate_article_content(article_data: ArticleBrowserArticleData) : Promise<Element> {
-        const response = await fetch(ArticleBrowserInterface.markdown_directory+article_data.src);
+        const response = await fetch(this.markdown_directory+article_data.src);
         let parser = new DOMParser();
         let html_doc = parser.parseFromString(await marked_wrapper.parse(await response.text()),'text/html').body;
         // Check HTML, replace all img labels with wrapper for loading optimization.
@@ -350,10 +350,10 @@ export class ArticleBrowserInterface {
     }
 
     private static write_article_content(html_element: Element) {
-        if (ArticleBrowserInterface.article_container_obj) {
-            ArticleBrowserInterface.clear_element_content(ArticleBrowserInterface.article_container_obj);
+        if (this.article_container_obj) {
+            this.clear_element_content(this.article_container_obj);
             for (let child of html_element.childNodes) {
-                ArticleBrowserInterface.article_container_obj.appendChild(child);
+                this.article_container_obj.appendChild(child);
             }
         }
     }
@@ -402,19 +402,28 @@ export class ArticleBrowserInterface {
                     request_type: ArticleBrowserAppData.RequestType.load_article,
                     selected_tags: null
                 };
-                ArticleBrowserInterface.post_data(app_data);
+                this.post_data(app_data);
             }
             article_link_content.push(card_instance);
-            image_loader.src = ArticleBrowserInterface.markdown_directory + article_data.pic;
+            image_loader.src = this.markdown_directory + article_data.pic;
         }
         return article_link_content;
     }
+    
+    static set_recommendation_article (article_info : ArticleBrowserArticleData) {
+        if (!this.article_recommendation_card) {
+            return
+        }
+        let article_cards = this.generate_article_cards([article_info])
+        this.clear_element_content(this.article_recommendation_card)
+        this.article_recommendation_card.appendChild(article_cards[0]);
+    }
 
     private static write_list_content(html_element: HTMLElement[]) {
-        if (ArticleBrowserInterface.list_grid_obj) {
-            ArticleBrowserInterface.clear_element_content(ArticleBrowserInterface.list_grid_obj);
+        if (this.list_grid_obj) {
+            this.clear_element_content(this.list_grid_obj);
             for (let child of html_element) {
-                ArticleBrowserInterface.list_grid_obj.appendChild(child);
+                this.list_grid_obj.appendChild(child);
             }
         }
     }

@@ -1,7 +1,6 @@
 #article-browser-article-container {
     border: none;
     transition: all cubic-bezier(0.8, 0, 0.2, 1) 0.5s;
-    border-left: solid 1px var(--article-browser-border-color);
     border-right: solid 1px var(--article-browser-border-color);
 }
 

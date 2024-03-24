@@ -57,7 +57,7 @@
     #article-browser-list-grid-container{
         grid-template-columns: repeat(4, 1fr);
     }
-    .article-browser-list-quarter-tile:nth-child(4n+1):before {
+    #article-browser-list-grid-container > .article-browser-list-quarter-tile:nth-child(4n+1):before {
         border-bottom: 1px solid var(--article-browser-border-color);
         content: "";
         position: absolute;
@@ -68,7 +68,7 @@
         margin-left: calc(-50vw);
         pointer-events: none;
     }
-    .article-browser-list-quarter-tile:nth-child(4n):before {
+    #article-browser-list-grid-container > .article-browser-list-quarter-tile:nth-child(4n):before {
         border-bottom: 1px solid var(--article-browser-border-color);
         content: "";
         position: absolute;

@@ -20,16 +20,9 @@
     margin-left: 10px;
 }
 
-#article-browser-article-side-container:hover > h1 {
-
+#article-browser-article-recommendation-card > .article-browser-list-quarter-tile {
+    padding: 0 !important;
 }
-
-.article-browser-article-recommendation-card > h1 {
-    user-select: none;
-    cursor: pointer;
-}
-
-.article-browser-article-recommendation-card > h1:hover{
-    text-decoration: underline;
-    color: var(--accent-color);
+#article-browser-article-recommendation-card > .article-browser-list-quarter-tile:hover {
+    background-color: white;
 }
