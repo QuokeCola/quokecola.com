@@ -1,7 +1,7 @@
 #article-browser-article-container {
     border: none;
     transition: all cubic-bezier(0.8, 0, 0.2, 1) 0.5s;
-    border-right: solid 1px var(--article-browser-border-color);
+
 }
 
 #article-browser-article-side-container {
@@ -21,6 +21,7 @@
 
     #article-browser-article-container {
         width: calc(75% - 1px);
+        border-right: solid 1px var(--article-browser-border-color);
     }
 }
 
@@ -36,5 +37,6 @@
 
     #article-browser-article-container {
         width: 100%;
+        border-right: none;
     }
 }
