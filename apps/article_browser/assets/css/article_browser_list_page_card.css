@@ -17,6 +17,7 @@
     display: block;
     align-self: flex-end;
     position: relative;
+    width: 100%;
 }
 
 .article-browser-list-quarter-tile:hover {

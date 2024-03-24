@@ -30,7 +30,7 @@
         width: 100%;
         bottom: 0;
         border-right: none;
-        border-left: solid 1px var(--article-browser-border-color);
+        border-top: solid 1px var(--article-browser-border-color);
         padding: calc(var(--nav-height)) calc(var(--grid-gutter)/2) 2rem;
     }
 

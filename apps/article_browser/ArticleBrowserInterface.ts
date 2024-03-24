@@ -84,6 +84,9 @@ export class ArticleBrowserInterface {
                     && this.load_article_status_obj instanceof HTMLInputElement) {
                     if (this.load_article_status_obj.checked) {
                         this.state = this.ArticleBrowserStates.ARTICLE_READY
+                        if (this.list_grid_obj) {
+                            this.clear_element_content(this.list_grid_obj);
+                        }
                     } else {
                         this.state = this.ArticleBrowserStates.LIST_READY;
                         if (this.article_container_obj) {
