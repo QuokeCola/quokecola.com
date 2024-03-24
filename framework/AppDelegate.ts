@@ -68,7 +68,7 @@ export abstract class AppDelegate{
      * Here implements the method that parse url to user data
      * @param url The url.
      */
-    abstract url_to_data(url: string) : typeof this.app_data;
+    abstract url_to_data(url: string) : Promise<typeof this.app_data>;
 
     /************************************************
      *  App Cache

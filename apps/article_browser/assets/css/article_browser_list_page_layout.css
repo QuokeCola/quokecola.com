@@ -11,6 +11,7 @@
     backdrop-filter: blur(40px);
     -webkit-backdrop-filter: blur(40px);
     margin-bottom: -1px;
+    z-index: 1;
 }
 
 #article-browser-load-article-status:checked ~ #article-browser-list-page > #article-browser-list-tag-container{
@@ -26,17 +27,17 @@
     transition: all cubic-bezier(0.8, 0, 0.2, 1) 0.5s;
     grid-gap: 1px;
     background-color: var(--article-browser-border-color);
-    border-bottom: solid 1px var(--article-browser-border-color);
-    border-top: solid 1px var(--article-browser-border-color);
-    overflow-x: hidden;
+    overflow-x: visible;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .article-browser-list-quarter-tile {
-    padding-left: calc(var(--grid-gutter) / 2);
-    padding-right: calc(var(--grid-gutter) / 2);
-    padding-top: calc(var(--grid-gutter) / 2);
+    position: relative;
+    padding: calc(var(--grid-gutter) / 2);
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     min-width: 0;
     transition: all cubic-bezier(0.8, 0, 0.2, 1) 0.5s;
     background-color: white;
@@ -49,11 +50,34 @@
     width: 100%;
     justify-content: flex-end;
     border-bottom: solid 1px var(--article-browser-border-color);
+    border-top: solid 1px var(--article-browser-border-color);
 }
 
 @media screen and (min-width: 1000px) {
     #article-browser-list-grid-container{
         grid-template-columns: repeat(4, 1fr);
+    }
+    .article-browser-list-quarter-tile:nth-child(4n+1):before {
+        border-bottom: 1px solid var(--article-browser-border-color);
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 100%;
+        margin-left: calc(-50vw);
+        pointer-events: none;
+    }
+    .article-browser-list-quarter-tile:nth-child(4n):before {
+        border-bottom: 1px solid var(--article-browser-border-color);
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 100%;
+        margin-right: calc(-50vw);
+        pointer-events: none;
     }
 }
 

@@ -18,7 +18,6 @@ export class HomepageDelegate extends AppDelegate{
 
     async create_layout(app_data: any):Promise<boolean> {
         await HomepageInterface.create_layout()
-
         return true;
     }
 

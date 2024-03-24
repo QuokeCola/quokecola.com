@@ -1,23 +1,23 @@
 import {AppDelegate} from "../../framework/AppDelegate.js";
-import {ArticleBrowserRequestData} from "./ArticleBrowserData.js";
+import {ArticleBrowserArticleData, ArticleBrowserAppData} from "./ArticleBrowserData.js";
 import {AppRequests} from "../../framework/AppRequests.js";
 import {NavigationBarInterface} from "../../framework/NavigationBarInterface.js";
 import {ContentLoaderInterface} from "../../framework/ContentLoaderInterface.js";
 import {ArticleBrowserInterface} from "./ArticleBrowserInterface.js";
-import {marked_wrapper} from "../../framework/dependencies/marked_min_wrapper.js";
 
 
 export class ArticleBrwoserDelegate extends AppDelegate{
-    app_data: ArticleBrowserRequestData = {request_type: ArticleBrowserRequestData.RequestType.default, article_source: null, page_index: null, selected_tags: null};
+    app_data: ArticleBrowserAppData = {request_type: ArticleBrowserAppData.RequestType.default, article_source: null, page_index: null, selected_tags: null};
     name = "BLOG";
 
-    document_info : any;
+    document_info : ArticleBrowserArticleData[]=[];
+    list_page_num : number = 8;
 
     constructor() {
         super();
         let app_request = new AppRequests()
-        let app_data : ArticleBrowserRequestData = {
-            request_type: ArticleBrowserRequestData.RequestType.load_browser,
+        let app_data : ArticleBrowserAppData = {
+            request_type: ArticleBrowserAppData.RequestType.load_browser,
             article_source: null,
             selected_tags: [],
             page_index: 1
@@ -25,34 +25,52 @@ export class ArticleBrwoserDelegate extends AppDelegate{
         app_request.app_name = this.name;
         app_request.app_data = app_data;
         NavigationBarInterface.add_btn(this.name, app_request);
-
-        let json = new XMLHttpRequest()
-        json.open("get", "./apps/article_browser/markdown_directory/article_list.json");
-        let _this_ref = this;
-        json.onload = function () {
-            if (json.status === 200) {
-                _this_ref.document_info = JSON.parse(json.responseText);
-            }
-        }
-        json.send(null);
     }
 
     background_service(app_data: typeof this.app_data): boolean {
         return false;
     }
 
+    async load_json() {
+        const response = await fetch("./apps/article_browser/markdown_directory/article_list.json")
+        this.document_info = JSON.parse(await response.text());
+    }
+
     async create_layout(app_data: typeof this.app_data): Promise<boolean> {
+        await this.load_json();
         await ArticleBrowserInterface.create_layouts();
+        await this.handle_app_requests(app_data);
+        let tags:string[] = [];
+        for (let document_i of this.document_info) {
+            for(let tag of document_i.tags) {
+                if (tags.indexOf(tag) < 0) {
+                    tags.push(tag);
+                }
+            }
+        }
+        ArticleBrowserInterface.write_tags(tags);
         return false;
     }
 
     data_to_url(app_data: typeof this.app_data): string {
         switch (app_data.request_type) {
-            case ArticleBrowserRequestData.RequestType.load_article:
-                return app_data.article_source!.replace("$","^").replace("#","*");
-            case ArticleBrowserRequestData.RequestType.load_browser:
-                return ["","$"+app_data.selected_tags!.join("$"), app_data.page_index!.toString()].join("#");
-            case ArticleBrowserRequestData.RequestType.default:
+            case ArticleBrowserAppData.RequestType.load_article:
+                if (app_data.article_source) {
+                    let url_level = app_data.article_source.src.split("/");
+                    let article_title = url_level[url_level.length-1];
+                    return article_title.replace("$","^").replace("#","*").replace(" ","-");
+                } else {
+                    return ""
+                }
+
+            case ArticleBrowserAppData.RequestType.load_browser:
+                if (app_data.selected_tags) {
+                    return ["$"+app_data.selected_tags.join("$"), app_data.page_index!.toString()].join("#");
+                } else {
+                    return ["$", app_data.page_index!.toString()].join("#");
+                }
+
+            case ArticleBrowserAppData.RequestType.default:
                 // Pass through
             default:
                 return "";
@@ -60,16 +78,48 @@ export class ArticleBrwoserDelegate extends AppDelegate{
     }
 
     async handle_app_requests(app_data: typeof this.app_data): Promise<boolean> {
-        const response = await fetch("./apps/article_browser/markdown_directory/"+this.document_info[1].src);
-        let parser = new DOMParser();
-        let html_doc = parser.parseFromString(await marked_wrapper.parse(await response.text()),'text/html');
-        ArticleBrowserInterface.load_article(html_doc.body, "./apps/article_browser/markdown_directory/"+this.document_info[1].pic);
         switch (app_data.request_type) {
-            case ArticleBrowserRequestData.RequestType.load_article:
+            case ArticleBrowserAppData.RequestType.load_article:
+                if (app_data.article_source) {
+                    await ArticleBrowserInterface.load_article(app_data.article_source);
+                }
                 break;
-            case ArticleBrowserRequestData.RequestType.load_browser:
+            case ArticleBrowserAppData.RequestType.load_browser:
+                let start_index = 0;
+                let end_index = 0;
+                let list_document = [];
+                // Filter the candidate documents
+                if (!app_data.selected_tags) {
+                    list_document = this.document_info;
+                } else {
+                    if (app_data.selected_tags.length === 0) {
+                        list_document = this.document_info
+                    } else {
+                        for (let document_data of this.document_info) {
+                            if (app_data.selected_tags.every(function (val) {
+                                return document_data.tags.indexOf(val) >= 0;
+                            })) {
+                                list_document.push(document_data);
+                            }
+                        }
+                    }
+                }
+                // Get indexes
+                let total_index_number = Math.ceil(list_document.length / this.list_page_num);
+                if(total_index_number === 0){
+                    app_data.page_index = 1;
+                } else if (!app_data.page_index || app_data.page_index > total_index_number) {
+                    end_index = Math.min(list_document.length, this.list_page_num);
+                    app_data.page_index = 1
+                } else {
+                    start_index = (app_data.page_index - 1) * this.list_page_num;
+                    end_index = Math.min(list_document.length, (app_data.page_index) * this.list_page_num);
+                }
+                list_document = list_document.slice(start_index, end_index);
+                await ArticleBrowserInterface.load_list(list_document);
+                ArticleBrowserInterface.set_index(total_index_number, app_data.page_index);
                 break;
-            case ArticleBrowserRequestData.RequestType.default:
+            case ArticleBrowserAppData.RequestType.default:
                 // Pass through, default situation means to handle a request with no data inside, bring up default interface.
             default:
         }
@@ -81,28 +131,47 @@ export class ArticleBrwoserDelegate extends AppDelegate{
         return false;
     }
 
-    url_to_data(url: string): any {
-        let parsed_data : ArticleBrowserRequestData={request_type: ArticleBrowserRequestData.RequestType.default, article_source: null, page_index: null, selected_tags: null};
+    async url_to_data(url: string): Promise<ArticleBrowserAppData> {
+        await this.load_json();
+        let parsed_data: ArticleBrowserAppData = {
+            request_type: ArticleBrowserAppData.RequestType.load_browser,
+            article_source: null,
+            page_index: null,
+            selected_tags: null
+        };
         let url_levels = url.split("#")
-        for(let url_level of url_levels) {
-            if(url_level.match("/^[1-9][0-9]*$/")) {
+        for (let url_level of url_levels) {
+            if (url_level.match("^[1-9]\\d*$")) {
                 parsed_data.page_index = Number(url_level);
-                parsed_data.request_type = ArticleBrowserRequestData.RequestType.load_browser;
+                parsed_data.request_type = ArticleBrowserAppData.RequestType.load_browser;
                 if (!parsed_data.selected_tags) {
                     parsed_data.selected_tags = [];
                 }
-            } else if(url_level.includes("$")) {
+            } else if (url_level.includes("$")) {
                 parsed_data.selected_tags = url_level.split("$");
-                parsed_data.selected_tags.filter(function (tags: string) {
+                parsed_data.selected_tags = parsed_data.selected_tags.filter(function (tags: string) {
                     return tags !== "";
                 });
-                parsed_data.request_type = ArticleBrowserRequestData.RequestType.load_browser;
+                for (let i = 0; i < parsed_data.selected_tags.length; i++) {
+                    parsed_data.selected_tags[i] = parsed_data.selected_tags[i].replace("%20"," ")
+                }
+                parsed_data.request_type = ArticleBrowserAppData.RequestType.load_browser;
                 if (!parsed_data.page_index) {
                     parsed_data.page_index = 1;
                 }
             } else {
-                parsed_data.article_source = url_level;
-                parsed_data.request_type   = ArticleBrowserRequestData.RequestType.load_article;
+                let article_file_name = url_level
+                    .replace("-", " ")
+                    .replace("*", "#")
+                    .replace("^", "$");
+                if (article_file_name !== "") {
+                    for (let article_info of this.document_info) {
+                        if (article_info.src.includes(article_file_name)) {
+                            parsed_data.article_source = article_info;
+                            parsed_data.request_type = ArticleBrowserAppData.RequestType.load_article;
+                        }
+                    }
+                }
             }
         }
         return parsed_data;

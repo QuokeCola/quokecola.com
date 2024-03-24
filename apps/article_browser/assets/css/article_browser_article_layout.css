@@ -22,7 +22,6 @@
 
     #article-browser-article-container {
         width: calc(75% - 1px);
-        padding: 0 calc(var(--grid-gutter)/2) 0;
     }
 }
 
@@ -38,6 +37,5 @@
 
     #article-browser-article-container {
         width: 100%;
-        padding: 0 calc(var(--grid-gutter)/2) 0;
     }
 }

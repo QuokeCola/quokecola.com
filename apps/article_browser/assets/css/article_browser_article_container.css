@@ -9,7 +9,8 @@
 
 #article-browser-article-md-container{
     position: relative;
-    margin: 2rem calc(var(--grid-gutter) / 2) 2rem;
+    padding: 2rem calc(var(--grid-gutter) / 2) 2rem;
+    background-color: white;
 }
 
 .article-browser-article-md-container-images{
@@ -25,11 +26,13 @@
     position: absolute;
     width: 100%;
     height: 100%;
-    margin-left: calc(-1*var(--grid-gutter)/2);
-    padding-left: calc(var(--grid-gutter)/2);
-    padding-right: calc(var(--grid-gutter)/2);
     left: 0;
     top: 0;
     transition: all cubic-bezier(0.8,0,0.2,1) 0.25s;
     z-index: 2;
+    pointer-events: none;
+}
+
+#article-browser-article-md-container img{
+    max-width: 100%;
 }
