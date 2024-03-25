@@ -132,8 +132,8 @@ export abstract class AppDelegate{
                         ContentLoaderInterface.clear_app_customized_css();
                         await this_ref.create_layout(AppDelegate.current_app_request.app_data); // Create layout
                     });
-                    ContentLoaderInterface.app_onload(() => {
-                        this_ref.onload(AppDelegate.current_app_request.app_data);
+                    ContentLoaderInterface.app_onload(async () => {
+                        await this_ref.onload(AppDelegate.current_app_request.app_data);
                         document.title = this_ref.name;
                         if (!(app_event instanceof PopStateEvent)) {
                             let url_levels = window.location.href.split("#");
