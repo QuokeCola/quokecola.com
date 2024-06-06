@@ -392,6 +392,7 @@ export class ArticleBrowserInterface {
             image_instance.classList.add("article-browser-list-card-img");
             image_instance.classList.add("loading-components-light");
             let image_loader = new Image();
+
             image_loader.addEventListener("load",()=>{
                 title_instance.classList.replace("loading-components-light","loaded-components-light");
                 detail_instance.classList.replace("loading-components-light","loaded-components-light");
@@ -408,7 +409,30 @@ export class ArticleBrowserInterface {
                 this.post_data(app_data);
             }
             article_link_content.push(card_instance);
-            image_loader.src = this.markdown_directory + article_data.pic;
+            const config = { attributes: true, childList: true, subtree: true };
+
+            // Callback function to execute when mutations are observed
+            const callback = (mutationList, observer) => {
+                for (const mutation of mutationList) {
+                    if (mutation.type === "childList") {
+                        if (mutation.addedNodes.length > 0){
+                            if (mutation.addedNodes[0]===card_instance){
+                                image_loader.src = this.markdown_directory + article_data.pic;
+                                observer.disconnect();
+                            }
+                        }
+                    }
+                }
+            };
+
+            // Create an observer instance linked to the callback function
+            const observer = new MutationObserver(callback);
+
+            // Start observing the target node for configured mutations
+            observer.observe(this.list_grid_obj, config);
+
+            // Later, you can stop observing
+            // image_loader.src = this.markdown_directory + article_data.pic;
         }
         return article_link_content;
     }

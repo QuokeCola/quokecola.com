@@ -4,6 +4,7 @@
     background-size: cover;
     background-position: center;
     position: relative;
+    z-index: 0;
 }
 
 .article-browser-list-card-img:before{
@@ -18,6 +19,7 @@
     align-self: flex-end;
     position: relative;
     width: 100%;
+    z-index: 0;
 }
 
 .article-browser-list-quarter-tile:hover {
@@ -34,6 +36,7 @@
     cursor: default;
     font-size: 24px;
     position: relative;
+    z-index: 0;
 }
 
 .article-browser-list-detail > .article-browser-list-card-tags {
