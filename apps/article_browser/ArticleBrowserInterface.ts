@@ -426,10 +426,11 @@ export class ArticleBrowserInterface {
             };
 
             // Create an observer instance linked to the callback function
-            const observer = new MutationObserver(callback);
-
+            const list_page_observer = new MutationObserver(callback);
+            const article_page_observer = new MutationObserver(callback);
             // Start observing the target node for configured mutations
-            observer.observe(this.list_grid_obj, config);
+            list_page_observer.observe(this.list_page_obj, config);
+            article_page_observer.observe(this.article_page_obj, config);
 
             // Later, you can stop observing
             // image_loader.src = this.markdown_directory + article_data.pic;
