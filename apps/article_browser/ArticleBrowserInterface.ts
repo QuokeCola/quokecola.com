@@ -195,8 +195,10 @@ export class ArticleBrowserInterface {
                 this.state = this.ArticleBrowserStates.LIST_TO_ARTICLE;
                 // Fall through to load content.
             case this.ArticleBrowserStates.LIST_TO_ARTICLE:
+                this.load_article_status_obj.checked = true;
                 // Fall through for list to article and article ready to load content.
             case this.ArticleBrowserStates.ARTICLE_READY:
+                this.load_article_status_obj.checked = true;
                 if (!this.article_container_obj.classList.contains("article-browser-fade")){
                     this.article_container_obj.classList.add("article-browser-fade");
                 }
@@ -238,8 +240,10 @@ export class ArticleBrowserInterface {
                 this.state = this.ArticleBrowserStates.ARTICLE_TO_LIST;
                 // Fall through
             case this.ArticleBrowserStates.ARTICLE_TO_LIST:
+                this.load_article_status_obj.checked = false;
                 // Fall through
             case this.ArticleBrowserStates.LIST_READY:
+                this.load_article_status_obj.checked = false;
                 if (!this.list_page_obj.classList.contains("article-browser-fade")){
                     this.list_page_obj.classList.add("article-browser-fade");
                 }
