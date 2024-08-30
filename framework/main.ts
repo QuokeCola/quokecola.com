@@ -1,12 +1,12 @@
 import {HomepageDelegate} from "../apps/homepage/HomepageDelegate.js";
 import {AppRequests} from "./AppRequests.js";
 import {AppDelegate} from "./AppDelegate.js";
-import {ArticleBrwoserDelegate} from "../apps/article_browser/ArticleBrwoserDelegate.js";
+import {ArticleBrowserDelegate} from "../apps/article_browser/ArticleBrowserDelegate.js";
 import {ContentLoaderInterface} from "./ContentLoaderInterface.js";
 
 // Analyzing hyper ref.
 let homepage_delegate = new HomepageDelegate();
-let articlebr_delegate  = new ArticleBrwoserDelegate();
+let articlebr_delegate  = new ArticleBrowserDelegate();
 let request = new AppRequests();
 let app_delegates : AppDelegate[] = [homepage_delegate, articlebr_delegate];
 

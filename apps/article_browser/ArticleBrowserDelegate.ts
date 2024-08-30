@@ -6,7 +6,7 @@ import {ContentLoaderInterface} from "../../framework/ContentLoaderInterface.js"
 import {ArticleBrowserInterface} from "./ArticleBrowserInterface.js";
 
 
-export class ArticleBrwoserDelegate extends AppDelegate{
+export class ArticleBrowserDelegate extends AppDelegate{
     app_data: ArticleBrowserAppData = {request_type: ArticleBrowserAppData.RequestType.default, article_source: null, page_index: null, selected_tags: null};
     name = "BLOG";
 
