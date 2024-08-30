@@ -33,8 +33,11 @@ export class ArticleBrwoserDelegate extends AppDelegate{
     }
 
     async load_json() {
-        const response = await fetch("./apps/article_browser/markdown_directory/article_list.json")
-        this.document_info = JSON.parse(await response.text());
+        let response = await fetch("./apps/article_browser/markdown_directory/article_list.json")
+        while (!response.ok) {
+            response = await fetch("./apps/article_browser/markdown_directory/article_list.json")
+        }
+	this.document_info = JSON.parse(await response.text());
     }
 
     async create_layout(app_data: typeof this.app_data): Promise<boolean> {
