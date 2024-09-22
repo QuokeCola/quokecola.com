@@ -10,7 +10,7 @@ let articlebr_delegate  = new ArticleBrowserDelegate();
 let request = new AppRequests();
 let app_delegates : AppDelegate[] = [homepage_delegate, articlebr_delegate];
 
-let url_levels = window.location.href.split("#")
+let url_levels = window.location.href.split(/#|%23/)
 try {
     if (url_levels.length === 1 || url_levels[1] === "") {
         request.app_name = "HOME"
