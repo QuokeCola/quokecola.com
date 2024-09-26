@@ -14,7 +14,6 @@ export class ContentLoaderInterface {
     private static app_loading_callback :(()=> any) = () => {};
     private static app_onload_callback : (()=> any) = () => {};
     private static content_loader_state: ContentLoaderInterface.ContentLoaderStates = 2;
-    private static content_window_running_animation_count = 0;
     public static initialize() {
         if (!this.initialized) {
             ContentLoaderInterface.update_grid();
@@ -27,30 +26,10 @@ export class ContentLoaderInterface {
             this.initialized = true;
             this.set_loading_status(true);
             if (this.content_window_obj) {
-                this.loading_grid_obj.addEventListener("transitionstart", async (ev) => {
-                    if (ev.target === this.content_window_obj) {
-                        this.content_window_running_animation_count++;
-                    }
-                })
-
                 this.content_window_obj.addEventListener("transitionend", async (ev) => {
-                    if (ev.target === this.content_window_obj) {
-                        this.content_window_running_animation_count--;
-                        if (this.content_window_running_animation_count<=0) {
-                            if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
-                                setTimeout(async ()=>{
-                                    if (ContentLoaderInterface.content_loader_state == 0 ||
-                                        ContentLoaderInterface.get_loading_status()) {
-                                        ContentLoaderInterface.content_loader_state = 1;
-                                        await ContentLoaderInterface.app_loading_callback();
-                                        ContentLoaderInterface.set_loading_status(false);
-                                    } else if (ContentLoaderInterface.content_loader_state == 1) {
-                                        await ContentLoaderInterface.app_onload_callback();
-                                        ContentLoaderInterface.content_loader_state = 2;
-                                    }
-                                    this.content_window_running_animation_count = 0;
-                                },200)
-                            } else {
+                    if (ev.target === this.content_window_obj && ev.propertyName === "transform") {
+                        if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
+                            setTimeout(async ()=>{
                                 if (ContentLoaderInterface.content_loader_state == 0 ||
                                     ContentLoaderInterface.get_loading_status()) {
                                     ContentLoaderInterface.content_loader_state = 1;
@@ -60,7 +39,16 @@ export class ContentLoaderInterface {
                                     await ContentLoaderInterface.app_onload_callback();
                                     ContentLoaderInterface.content_loader_state = 2;
                                 }
-                                this.content_window_running_animation_count = 0;
+                            },200)
+                        } else {
+                            if (ContentLoaderInterface.content_loader_state == 0 ||
+                                ContentLoaderInterface.get_loading_status()) {
+                                ContentLoaderInterface.content_loader_state = 1;
+                                await ContentLoaderInterface.app_loading_callback();
+                                ContentLoaderInterface.set_loading_status(false);
+                            } else if (ContentLoaderInterface.content_loader_state == 1) {
+                                await ContentLoaderInterface.app_onload_callback();
+                                ContentLoaderInterface.content_loader_state = 2;
                             }
                         }
                     }
