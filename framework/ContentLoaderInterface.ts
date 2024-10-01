@@ -11,7 +11,7 @@ export class ContentLoaderInterface {
     private static horz_half_line_count = 0;
     private static initialized = false
     private static app_customized_css = new Map()
-    private static app_loading_callback :(()=> any) = ()=>{};
+    private static app_loading_callback :(()=> any) = () => {};
     private static app_onload_callback : (()=> any) = () => {};
     private static content_loader_state: ContentLoaderInterface.ContentLoaderStates = 2;
     public static initialize() {
@@ -25,17 +25,34 @@ export class ContentLoaderInterface {
             });
             this.initialized = true;
             this.set_loading_status(true);
-            if(this.content_window_obj) this.content_window_obj.ontransitionend = async (ev) => {
-                if (ev.target === this.content_window_obj && ev.propertyName === "transform") {
-                    if (ContentLoaderInterface.content_loader_state == 0 || ContentLoaderInterface.get_loading_status()) {
-                        ContentLoaderInterface.content_loader_state = 1;
-                        ContentLoaderInterface.set_loading_status(false);
-                        await ContentLoaderInterface.app_loading_callback();
-                    } else if (ContentLoaderInterface.content_loader_state == 1) {
-                        await ContentLoaderInterface.app_onload_callback();
-                        ContentLoaderInterface.content_loader_state = 2;
+            if (this.content_window_obj) {
+                this.content_window_obj.addEventListener("transitionend", async (ev) => {
+                    if (ev.target === this.content_window_obj && ev.propertyName === "transform") {
+                        if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
+                            setTimeout(async ()=>{
+                                if (ContentLoaderInterface.content_loader_state == 0 ||
+                                    ContentLoaderInterface.get_loading_status()) {
+                                    ContentLoaderInterface.content_loader_state = 1;
+                                    await ContentLoaderInterface.app_loading_callback();
+                                    ContentLoaderInterface.set_loading_status(false);
+                                } else if (ContentLoaderInterface.content_loader_state == 1) {
+                                    await ContentLoaderInterface.app_onload_callback();
+                                    ContentLoaderInterface.content_loader_state = 2;
+                                }
+                            },200)
+                        } else {
+                            if (ContentLoaderInterface.content_loader_state == 0 ||
+                                ContentLoaderInterface.get_loading_status()) {
+                                ContentLoaderInterface.content_loader_state = 1;
+                                await ContentLoaderInterface.app_loading_callback();
+                                ContentLoaderInterface.set_loading_status(false);
+                            } else if (ContentLoaderInterface.content_loader_state == 1) {
+                                await ContentLoaderInterface.app_onload_callback();
+                                ContentLoaderInterface.content_loader_state = 2;
+                            }
+                        }
                     }
-                }
+                })
             }
         }
     }
