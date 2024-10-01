@@ -3,9 +3,24 @@ import {ArticleBrowserArticleData, ArticleBrowserAppData} from "./ArticleBrowser
 import {ContentLoaderInterface} from "../../framework/ContentLoaderInterface";
 import {NavigationBarInterface} from "../../framework/NavigationBarInterface";
 
-import { Marked } from 'marked';
 import { markedHighlight } from "marked-highlight";
-import hljs from 'highlight.js';
+
+import hljs from 'highlight.js/lib/core'; // Import the core library
+
+// Import only the languages you need
+import javascript from 'highlight.js/lib/languages/javascript';
+import typescript from 'highlight.js/lib/languages/typescript';
+import css from "highlight.js/lib/languages/css";
+import hljs_json from "highlight.js/lib/languages/json";
+import cpp from "highlight.js/lib/languages/cpp";
+
+hljs.registerLanguage('javascript', javascript);
+hljs.registerLanguage('typescript', typescript);
+hljs.registerLanguage('css', css);
+hljs.registerLanguage('json', hljs_json);
+hljs.registerLanguage('cpp', cpp);
+
+import { Marked } from 'marked';
 
 
 const marked = new Marked(

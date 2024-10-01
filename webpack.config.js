@@ -19,5 +19,5 @@ module.exports = {
             },
         ],
     },
-    mode: 'development', // Set to 'development' for easier debugging
+    mode: 'production', // Set to 'development' for easier debugging
 };
