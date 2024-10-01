@@ -137,8 +137,8 @@ nav .nav-menu-items:hover::after{
         justify-content: center;
 
         flex-wrap: wrap;
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
+        /*backdrop-filter: blur(20px);*/
+        /*-webkit-backdrop-filter: blur(20px);*/
     }
 
     /********************************************//**
@@ -239,6 +239,12 @@ nav .nav-menu-items:hover::after{
         opacity: 1;
         border-bottom: rgba(200,200,200,0.2) 1px solid;
     }
+
+    #navigation-bar:has(#nav-panel-status:checked) {
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+    }
+
     .nav-langSwitchBtn{
         top: 23px;
     }

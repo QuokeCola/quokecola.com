@@ -1,5 +1,15 @@
 [
   {
+    "title": "PLC Programming I: Prelude",
+    "pic": "Article11/Banner.JPEG",
+    "time": "09-30-2024 19:40",
+    "src": "Article11/IntroToPLC.md",
+    "abstract": "Logic rules and wires obey!",
+    "tags": [
+      "PLC Programming"
+    ]
+  },
+  {
     "title": "Haptic Device II",
     "pic": "Article10/mech_render.jpeg",
     "time": "08-12-2022 14:30",

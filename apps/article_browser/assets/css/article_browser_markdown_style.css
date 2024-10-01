@@ -1,0 +1,18 @@
+blockquote {
+    background: #efefef;
+    border-left: 5px solid #AAAAAA;
+
+    padding-block-start: 1em;
+    padding-block-end: 1em;
+    padding-inline-start: 40px;
+    padding-inline-end: 40px;
+
+    margin: 0;
+}
+
+pre {
+    /*background: #efefef;*/
+    /*padding: 2em;*/
+    border-top: #555555 1px solid;
+    border-bottom: #555555 1px solid;
+}

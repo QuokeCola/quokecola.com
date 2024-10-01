@@ -1,7 +1,7 @@
-import {AppDelegate} from "../../framework/AppDelegate.js";
-import {HomepageInterface} from "./HomepageInterface.js";
-import {NavigationBarInterface} from "../../framework/NavigationBarInterface.js";
-import {AppRequests} from "../../framework/AppRequests.js";
+import {AppDelegate} from "../../framework/AppDelegate";
+import {HomepageInterface} from "./HomepageInterface";
+import {NavigationBarInterface} from "../../framework/NavigationBarInterface";
+import {AppRequests} from "../../framework/AppRequests";
 export class HomepageDelegate extends AppDelegate{
     app_data: any;
     name: string = "HOME";

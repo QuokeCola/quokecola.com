@@ -1,9 +1,9 @@
-import {AppDelegate} from "../../framework/AppDelegate.js";
-import {ArticleBrowserArticleData, ArticleBrowserAppData} from "./ArticleBrowserData.js";
-import {AppRequests} from "../../framework/AppRequests.js";
-import {NavigationBarInterface} from "../../framework/NavigationBarInterface.js";
-import {ContentLoaderInterface} from "../../framework/ContentLoaderInterface.js";
-import {ArticleBrowserInterface} from "./ArticleBrowserInterface.js";
+import {AppDelegate} from "../../framework/AppDelegate";
+import {ArticleBrowserArticleData, ArticleBrowserAppData} from "./ArticleBrowserData";
+import {AppRequests} from "../../framework/AppRequests";
+import {NavigationBarInterface} from "../../framework/NavigationBarInterface";
+import {ContentLoaderInterface} from "../../framework/ContentLoaderInterface";
+import {ArticleBrowserInterface} from "./ArticleBrowserInterface";
 
 
 export class ArticleBrowserDelegate extends AppDelegate{
@@ -190,7 +190,11 @@ export class ArticleBrowserDelegate extends AppDelegate{
     }
 
     async onload(app_data: any): Promise<boolean> {
-        NavigationBarInterface.set_scroll_down_blur_behavior(NavigationBarInterface.ScrollDownBlurBehavior.clear);
+        if (app_data.article_source) {
+            NavigationBarInterface.set_scroll_down_blur_behavior(NavigationBarInterface.ScrollDownBlurBehavior.scroll_down_blur);
+        } else {
+            NavigationBarInterface.set_scroll_down_blur_behavior(NavigationBarInterface.ScrollDownBlurBehavior.clear);
+        }
         return false;
     }
 

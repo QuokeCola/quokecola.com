@@ -1,6 +1,6 @@
-import {AppRequests} from "./AppRequests.js";
-import {ContentLoaderInterface} from "./ContentLoaderInterface.js";
-import {NavigationBarInterface} from "./NavigationBarInterface.js";
+import {AppRequests} from "./AppRequests";
+import {ContentLoaderInterface} from "./ContentLoaderInterface";
+import {NavigationBarInterface} from "./NavigationBarInterface";
 import ContentLoaderStates = ContentLoaderInterface.ContentLoaderStates;
 
 /**

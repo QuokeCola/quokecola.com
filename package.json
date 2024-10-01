@@ -4,12 +4,20 @@
   "description": "",
   "main": "framework/main.ts",
   "scripts": {
-    "build": "tsc --build",
-    "clean": "tsc --build --clean"
+    "build": "webpack",
+    "clean": "webpack serve --open"
+  },
+  "devDependencies": {
+    "ts-loader": "^9.0.0",
+    "typescript": "^5.3.3",
+    "webpack": "^5.95.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.1.0"
   },
   "dependencies": {
-    "typescript": "^5.3.3",
-    "marked": ""
+    "marked": "^14.1.2",
+    "highlight.js": "^11.10.0",
+    "marked-highlight": "^2.1.4"
   },
   "private": true
 }

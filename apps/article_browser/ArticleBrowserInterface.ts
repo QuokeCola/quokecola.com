@@ -1,8 +1,22 @@
-import {AppRequests} from "../../framework/AppRequests.js";
-import {ArticleBrowserArticleData, ArticleBrowserAppData} from "./ArticleBrowserData.js";
-import {ContentLoaderInterface} from "../../framework/ContentLoaderInterface.js";
-import {NavigationBarInterface} from "../../framework/NavigationBarInterface.js";
-import {marked_wrapper} from "../../framework/dependencies/marked_min_wrapper.js";
+import {AppRequests} from "../../framework/AppRequests";
+import {ArticleBrowserArticleData, ArticleBrowserAppData} from "./ArticleBrowserData";
+import {ContentLoaderInterface} from "../../framework/ContentLoaderInterface";
+import {NavigationBarInterface} from "../../framework/NavigationBarInterface";
+
+import { Marked } from 'marked';
+import { markedHighlight } from "marked-highlight";
+import hljs from 'highlight.js';
+
+
+const marked = new Marked(
+    markedHighlight({
+        langPrefix: 'hljs language-',
+        highlight(code, lang, info) {
+            const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+            return hljs.highlight(code, { language }).value;
+        }
+    })
+);
 
 export class ArticleBrowserInterface {
     // Defines how many entries for a page
@@ -26,7 +40,9 @@ export class ArticleBrowserInterface {
         "./apps/article_browser/assets/css/article_browser_article_container.css",
         "./apps/article_browser/assets/css/article_browser_article_side_container.css",
         "./apps/article_browser/assets/css/article_browser_article_back_button.css",
-        "./apps/article_browser/assets/css/article_browser_layout.css"];
+        "./apps/article_browser/assets/css/article_browser_layout.css",
+        "./apps/article_browser/assets/css/article_browser_markdown_style.css"
+    ];
     private static list_page_obj: HTMLElement|null;
     private static load_article_status_obj : HTMLElement|null;
 
@@ -337,7 +353,7 @@ export class ArticleBrowserInterface {
     private static async generate_article_content(article_data: ArticleBrowserArticleData) : Promise<Element> {
         const response = await fetch(this.markdown_directory+article_data.src);
         let parser = new DOMParser();
-        let html_doc = parser.parseFromString(await marked_wrapper.parse(await response.text()),'text/html').body;
+        let html_doc = parser.parseFromString(await marked.parse(await response.text()),'text/html').body;
         // Check HTML, replace all img labels with wrapper for loading optimization.
         let img_instances = html_doc.querySelectorAll("img");
         for(let img_instance of img_instances) {

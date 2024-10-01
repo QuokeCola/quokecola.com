@@ -1,6 +1,6 @@
-import {ContentLoaderInterface} from "../../framework/ContentLoaderInterface.js";
-import {AppRequests} from "../../framework/AppRequests.js";
-import {ArticleBrowserAppData, ArticleBrowserArticleData} from "../article_browser/ArticleBrowserData.js";
+import {ContentLoaderInterface} from "../../framework/ContentLoaderInterface";
+import {AppRequests} from "../../framework/AppRequests";
+import {ArticleBrowserAppData, ArticleBrowserArticleData} from "../article_browser/ArticleBrowserData";
 import RequestType = ArticleBrowserAppData.RequestType;
 
 export class HomepageInterface {

@@ -1,5 +1,5 @@
-import {AppRequests} from "./AppRequests.js";
-import {ContentLoaderInterface} from "./ContentLoaderInterface.js";
+import {AppRequests} from "./AppRequests";
+import {ContentLoaderInterface} from "./ContentLoaderInterface";
 
 export class NavigationBarInterface {
     private static nav_obj = document.getElementById("navigation-bar");
