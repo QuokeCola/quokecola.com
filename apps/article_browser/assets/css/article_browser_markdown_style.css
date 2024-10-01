@@ -16,3 +16,9 @@ pre {
     border-top: #555555 1px solid;
     border-bottom: #555555 1px solid;
 }
+
+code:not(.hljs) {
+    background: #efefef;
+    padding: 5px;
+    border-radius: 5px;
+}
