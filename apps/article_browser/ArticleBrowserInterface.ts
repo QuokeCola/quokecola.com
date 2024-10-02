@@ -13,12 +13,14 @@ import typescript from 'highlight.js/lib/languages/typescript';
 import css from "highlight.js/lib/languages/css";
 import hljs_json from "highlight.js/lib/languages/json";
 import cpp from "highlight.js/lib/languages/cpp";
+import plaintext from "highlight.js/lib/languages/plaintext";
 
 hljs.registerLanguage('javascript', javascript);
 hljs.registerLanguage('typescript', typescript);
 hljs.registerLanguage('css', css);
 hljs.registerLanguage('json', hljs_json);
 hljs.registerLanguage('cpp', cpp);
+hljs.registerLanguage('plaintext', plaintext);
 
 import { Marked } from 'marked';
 
