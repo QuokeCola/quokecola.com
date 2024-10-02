@@ -41,7 +41,7 @@ export class HomepageInterface {
                     title: "Haptic Device II"
                 }
                 let app_data:ArticleBrowserAppData = {
-                    article_source: document_data,
+                    article_data: document_data,
                     page_index: null,
                     request_type: RequestType.load_article,
                     selected_tags: null

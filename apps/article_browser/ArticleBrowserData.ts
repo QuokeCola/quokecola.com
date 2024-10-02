@@ -5,7 +5,7 @@ export interface ArticleBrowserAppData {
      * The id or url of article
      * Null means it is not in reading but in browser page.
      */
-    article_source : ArticleBrowserArticleData|null;
+    article_data : ArticleBrowserArticleData|null;
 
     /**
      * For browser page, user can select tags to filter the results.

@@ -2,12 +2,15 @@ import {HomepageDelegate} from "../apps/homepage/HomepageDelegate";
 import {AppRequests} from "./AppRequests";
 import {AppDelegate} from "./AppDelegate";
 import {ArticleBrowserDelegate} from "../apps/article_browser/ArticleBrowserDelegate";
+import {FriendsDelegate} from "../apps/friends/FriendsDelegate";
 
 // Analyzing hyper ref.
 let homepage_delegate = new HomepageDelegate();
 let articlebr_delegate  = new ArticleBrowserDelegate();
+let friends_delegate = new FriendsDelegate();
 let request = new AppRequests();
-let app_delegates : AppDelegate[] = [homepage_delegate, articlebr_delegate];
+let app_delegates : AppDelegate[] = [homepage_delegate, articlebr_delegate, friends_delegate];
+
 
 let url_levels = window.location.href.split(/#|%23/)
 try {

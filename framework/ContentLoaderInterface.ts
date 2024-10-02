@@ -180,9 +180,11 @@ export class ContentLoaderInterface {
      * @param callback function to load the app layout.
      */
     static load_app_layout(callback:(()=> any)) {
-        ContentLoaderInterface.content_loader_state = 0;
-        ContentLoaderInterface.set_loading_status(true);
-        ContentLoaderInterface.app_loading_callback = callback;
+        if (ContentLoaderInterface.content_loader_state == 2) {
+            ContentLoaderInterface.content_loader_state = 0;
+            ContentLoaderInterface.set_loading_status(true);
+            ContentLoaderInterface.app_loading_callback = callback;
+        }
     }
     /**
      * @brief Call the function when app onload

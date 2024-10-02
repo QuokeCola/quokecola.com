@@ -131,7 +131,7 @@ export class ArticleBrowserInterface {
             this.back_button_obj.onclick = () => {
                 let app_data : ArticleBrowserAppData = {
                     request_type: ArticleBrowserAppData.RequestType.load_browser,
-                    article_source: null,
+                    article_data: null,
                     selected_tags: this.selected_tags,
                     page_index: this.current_index
                 }
@@ -316,7 +316,7 @@ export class ArticleBrowserInterface {
             if (current_index > 1) {
                 let app_data : ArticleBrowserAppData = {
                     request_type: ArticleBrowserAppData.RequestType.load_browser,
-                    article_source: null,
+                    article_data: null,
                     selected_tags: this.selected_tags,
                     page_index: current_index - 1
                 }
@@ -329,7 +329,7 @@ export class ArticleBrowserInterface {
             if (current_index < total_index) {
                 let app_data : ArticleBrowserAppData = {
                     request_type: ArticleBrowserAppData.RequestType.load_browser,
-                    article_source: null,
+                    article_data: null,
                     selected_tags: this.selected_tags,
                     page_index: current_index + 1
                 }
@@ -346,7 +346,7 @@ export class ArticleBrowserInterface {
             index_btn.onclick = ()=>{
                 let app_data : ArticleBrowserAppData = {
                     request_type: ArticleBrowserAppData.RequestType.load_browser,
-                    article_source: null,
+                    article_data: null,
                     selected_tags: this.selected_tags,
                     page_index: i+1
                 }
@@ -436,7 +436,7 @@ export class ArticleBrowserInterface {
             });
             card_instance.onclick = ()=>{
                 let app_data:ArticleBrowserAppData = {
-                    article_source: article_data,
+                    article_data: article_data,
                     page_index: null,
                     request_type: ArticleBrowserAppData.RequestType.load_article,
                     selected_tags: null

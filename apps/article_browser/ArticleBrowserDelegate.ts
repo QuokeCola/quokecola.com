@@ -7,7 +7,7 @@ import {ArticleBrowserInterface} from "./ArticleBrowserInterface";
 
 
 export class ArticleBrowserDelegate extends AppDelegate{
-    app_data: ArticleBrowserAppData = {request_type: ArticleBrowserAppData.RequestType.default, article_source: null, page_index: null, selected_tags: null};
+    app_data: ArticleBrowserAppData = {request_type: ArticleBrowserAppData.RequestType.default, article_data: null, page_index: null, selected_tags: null};
     name = "BLOG";
 
     document_info : ArticleBrowserArticleData[]=[];
@@ -19,7 +19,7 @@ export class ArticleBrowserDelegate extends AppDelegate{
         let app_request = new AppRequests()
         let app_data : ArticleBrowserAppData = {
             request_type: ArticleBrowserAppData.RequestType.load_browser,
-            article_source: null,
+            article_data: null,
             selected_tags: [],
             page_index: 1
         }
@@ -62,8 +62,8 @@ export class ArticleBrowserDelegate extends AppDelegate{
     data_to_url(app_data: typeof this.app_data): string {
         switch (app_data.request_type) {
             case ArticleBrowserAppData.RequestType.load_article:
-                if (app_data.article_source) {
-                    let url_level = app_data.article_source.src.split("/");
+                if (app_data.article_data) {
+                    let url_level = app_data.article_data.src.split("/");
                     let article_title = url_level[url_level.length-1];
                     return article_title.replace("$","^").replace("#","*").replace(" ","-");
                 } else {
@@ -87,8 +87,8 @@ export class ArticleBrowserDelegate extends AppDelegate{
     async handle_app_requests(app_data: typeof this.app_data): Promise<boolean> {
         switch (app_data.request_type) {
             case ArticleBrowserAppData.RequestType.load_article:
-                if (app_data.article_source) {
-                    await ArticleBrowserInterface.load_article(app_data.article_source);
+                if (app_data.article_data) {
+                    await ArticleBrowserInterface.load_article(app_data.article_data);
                     let recommendation_index = Math.floor(Math.random()*this.document_info.length);
                     ArticleBrowserInterface.set_recommendation_article(this.document_info[recommendation_index]);
                 }
@@ -139,7 +139,7 @@ export class ArticleBrowserDelegate extends AppDelegate{
     }
 
     async quit(app_data: typeof this.app_data): Promise<boolean> {
-        ContentLoaderInterface.set_app_layout("");
+        // ContentLoaderInterface.set_app_layout("");
         return false;
     }
 
@@ -147,7 +147,7 @@ export class ArticleBrowserDelegate extends AppDelegate{
         await this.load_json();
         let parsed_data: ArticleBrowserAppData = {
             request_type: ArticleBrowserAppData.RequestType.load_browser,
-            article_source: null,
+            article_data: null,
             page_index: null,
             selected_tags: null
         };
@@ -179,7 +179,7 @@ export class ArticleBrowserDelegate extends AppDelegate{
                 if (article_file_name !== "") {
                     for (let article_info of this.document_info) {
                         if (article_info.src.includes(article_file_name)) {
-                            parsed_data.article_source = article_info;
+                            parsed_data.article_data = article_info;
                             parsed_data.request_type = ArticleBrowserAppData.RequestType.load_article;
                         }
                     }
