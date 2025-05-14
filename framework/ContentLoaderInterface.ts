@@ -204,7 +204,7 @@ export class ContentLoaderInterface {
     public static to_top() {
         if (ContentLoaderInterface.content_window_obj) {
             let c = ContentLoaderInterface.content_window_obj.scrollTop;
-            if (c > 0) {
+            if (c > 8) {
                 ContentLoaderInterface.content_window_obj.scrollTo({left: 0, top: c-c/8, behavior: "instant"});
                 window.requestAnimationFrame(()=>{ContentLoaderInterface.to_top()});
             }
