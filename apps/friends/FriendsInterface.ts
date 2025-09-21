@@ -9,6 +9,7 @@ export class FriendsInterface {
     static css_urls: string[] = [
         "./apps/friends/assets/css/friends_layout.css"]
     private static canvas : HTMLElement;
+    private static canvas_container;
     private static renderer;
     private static camera;
     private static scene;
@@ -22,6 +23,7 @@ export class FriendsInterface {
 
     private static edges;
     private static edgeLines;
+    private static resize_observer;
     static async create_layout() {
         for (let url of this.css_urls) {
             ContentLoaderInterface.set_app_customize_css(url);
@@ -30,10 +32,10 @@ export class FriendsInterface {
         const parser = new DOMParser();
         let html_doc = parser.parseFromString(await response.text(), 'text/html');
         ContentLoaderInterface.set_app_layout(html_doc.body.children[0].innerHTML);
-
+        this.canvas_container = document.getElementById("friends-canvas-container")
         this.canvas = document.getElementById("friends-threejs-canvas");
         const canvas = this.canvas as HTMLCanvasElement;
-
+        /// ThreeJS Start
         this.renderer = new THREE.WebGLRenderer({ antialias: true, canvas: canvas });
         this.renderer.setSize(canvas.clientWidth, canvas.clientHeight);
         this.renderer.setPixelRatio(window.devicePixelRatio);
@@ -72,8 +74,21 @@ export class FriendsInterface {
 
         this.renderer.render(this.scene, this.camera);
         requestAnimationFrame(this.render.bind(this));
-    }
 
+        /// ThreeJS End
+
+        /// THREE JS Resize
+        this.resize_observer = new ResizeObserver(()=>{
+            FriendsInterface.renderer.setSize(FriendsInterface.canvas_container.clientWidth, FriendsInterface.canvas_container.clientHeight);
+            FriendsInterface.renderer.setPixelRatio(window.devicePixelRatio);
+            FriendsInterface.camera.aspect = FriendsInterface.canvas_container.clientWidth / FriendsInterface.canvas_container.clientHeight;
+            FriendsInterface.camera.updateProjectionMatrix();
+            FriendsInterface.renderer.render(this.scene, this.camera);
+            console.log("Resized!");
+        })
+        this.resize_observer.observe(this.canvas_container)
+    }
+    /// ThreeJS Start
     static render(time) {
         time *= 0.001;  // convert time to seconds
 
@@ -85,5 +100,6 @@ export class FriendsInterface {
 
         requestAnimationFrame(this.render.bind(this));
     }
+    /// ThreeJS End
 
 }
