@@ -4,7 +4,8 @@ import {NavigationBarInterface} from "../../framework/NavigationBarInterface";
 import {AppRequests} from "../../framework/AppRequests";
 export class FriendsDelegate extends AppDelegate{
     app_data: any;
-    name: string = "HELLO_3JS";
+    name: string = "BLOGROLL";
+    friends_if: FriendsInterface;
     constructor() {
         super();
         let app_request = new AppRequests()
@@ -16,7 +17,7 @@ export class FriendsDelegate extends AppDelegate{
     }
 
     async create_layout(app_data: any):Promise<boolean> {
-        await FriendsInterface.create_layout()
+        this.friends_if = await FriendsInterface.create_layout()
         return true;
     }
 
@@ -36,6 +37,7 @@ export class FriendsDelegate extends AppDelegate{
     }
 
     async quit(app_data: any): Promise<boolean> {
+        this.friends_if.destroy()
         return true;
     }
 

@@ -1,0 +1,278 @@
+/* --- Canvas Container --- */
+#friends-canvas-container {
+    width: 100%;
+    font-family: "IBM Plex Sans", serif;
+    font-weight: normal;
+    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
+    border-bottom: #CCCCCC solid 1px;
+}
+
+#friends-canvas-container h1 {
+    position: absolute;
+    font-family: "IBM Plex Sans", serif;
+    font-weight: normal;
+    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
+}
+
+#friends-threejs-canvas {
+    display: block; /* Removes bottom margin/gap from canvas */
+    width: 100%;
+    height: 100%;
+}
+
+/* --- Responsive Logic --- */
+
+/* When screen is larger than 700px */
+@media (min-width: 700px) {
+    #friends-canvas-container {
+        height: 60vh;
+    }
+
+    /* --- Text Overlay --- */
+    #friends-canvas-container h1 {
+        /* Critical: allows mouse to pass through text so the particles still flee */
+        pointer-events: none;
+
+        margin-left: 15px;
+        margin-right: 15px;
+        color: #111;
+        z-index: 10; /* Ensure text is above canvas */
+
+        /* Responsive Font Sizing */
+        font-size: clamp(2rem, 3rem, 5rem); /* Fluid sizing */
+    }
+}
+
+/* When screen is smaller than 600px */
+@media (max-width: 699px) {
+    #friends-canvas-container {
+        height: 60vh;
+    }
+
+    #friends-canvas-container h1 {
+        left: 20px !important;
+        bottom: 10% !important;
+    }
+}
+
+.friends-section-wrapper{
+    display: flex;
+    flex-wrap: wrap;
+
+    width: calc(100% - 80px);
+
+    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
+}
+
+.friends-section-wrapper > h1{
+    position: relative;
+    font-size: 24px;
+    font-weight: 500;
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+.friends-section-wrapper > p{
+    font-size: 15px;
+    font-weight: 300;
+    margin-left: 15px;
+    margin-right: 15px;
+    margin-bottom: 50px;
+}
+
+.friends-section-wrapper > p > a{
+    position: relative;
+    text-decoration: none;
+    color: var(--accent-color);
+}
+
+.friends-section-wrapper > p > a::after{
+    content: " ";
+    left: 0;
+    top: 0;
+    position: absolute;
+    width: 0;
+    height: 100%;
+    border-bottom: var(--accent-color) solid 1px;
+    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
+}
+
+.friends-section-wrapper > p > a:hover::after{
+    width: 100%;
+}
+
+.friends-div-line{
+    width: 50px;
+    height: 1px;
+    background-color: rgb(150,150,150);
+
+    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
+}
+
+.friends-section-wrapper > .friends-div-line{
+    margin-left: 15px;
+}
+
+.friends-link-button{
+    display: block;
+    text-align: center;
+
+    padding: 10px 20px;
+    border: black solid 2px;
+    font-size: 15px;
+    border-radius: 25px;
+    margin-top: 20px;
+    font-weight: 500;
+
+    transition: cubic-bezier(0.5,0.0, 0.5, 1.0) .15s;
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: default;
+}
+
+.friends-link-button:hover{
+    background-color: #CCCCCC;
+}
+
+.friends-quarter-size-tile{
+    background-color: rgb(244,244,244);
+    position: relative;
+    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
+
+    cursor: pointer;
+}
+
+.friends-quarter-size-tile:hover{
+    background-color: rgb(220,220,220);
+}
+
+.friends-quarter-size-tile > .friends-card-image{
+    position: relative;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 200px;
+    background-size: cover;
+    background-position-x: center;
+}
+
+.friends-quarter-size-tile > h1{
+    position: relative;
+    font-size: 18px;
+    font-weight: 500;
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+.friends-quarter-size-tile > p{
+    font-size: 15px;
+    font-weight: 300;
+    margin-left: 15px;
+    margin-right: 15px;
+    margin-bottom: 50px;
+}
+
+.friends-quarter-size-tile > .friends-card-link-arrow{
+    position: absolute;
+    left: 15px;
+    bottom: 15px;
+}
+
+.friends-link-button > img{
+    transition: all cubic-bezier(1.0, 0.0, 0.0, 1.0) .75s;
+    transform-origin: right;
+    width: 0;
+    margin-bottom: 2px;
+    vertical-align: middle;
+}
+
+.friends-link-button:hover img{
+    width: 18px;
+}
+
+.friends-half-size-tile{
+    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
+    margin-bottom: var(--friends-grid-border-width);
+}
+
+#friends-selfie-wrapper{
+    position: relative;
+}
+
+#friends-selfie{
+    width: 100%;
+    height: 100%;
+    /*padding-bottom: 75%;*/
+}
+
+@media screen and (min-width: 900px){
+    :root{
+        --friends-grid-border-width: 20px
+    }
+
+    .friends-half-size-tile{
+        width: calc(50% - var(--friends-grid-border-width)/2);
+    }
+
+    .friends-div-line{
+        margin: 100px 0 100px 0;
+    }
+
+    .friends-half-size-tile:nth-child(2n+1){
+        margin-right: var(--friends-grid-border-width);
+    }
+
+}
+
+@media screen and (max-width: 899px) {
+
+    :root{
+        --friends-grid-border-width: 10px
+    }
+
+    .friends-half-size-tile{
+        width: 100%;
+    }
+
+    .friends-div-line{
+        margin: 30px 0 30px 0;
+    }
+
+}
+
+@media screen and (min-width: 550px) {
+
+    .friends-quarter-size-tile{
+        width: calc(50% - var(--friends-grid-border-width)/2);
+        height: 100%;
+    }
+
+    .friends-quarter-size-tile:nth-child(2n+1){
+        margin-right: var(--friends-grid-border-width);
+    }
+}
+
+@media screen and (max-width: 549px) {
+
+    .friends-quarter-size-tile{
+        width: 100%
+    }
+
+    .friends-quarter-size-tile:nth-child(2n+1){
+        margin-bottom: var(--friends-grid-border-width);
+        margin-right: 0;
+    }
+}
+
+@media screen and (min-width: 700px) {
+    .friends-section-wrapper{
+        margin: 0 80px 0 80px;
+    }
+}
+
+@media screen and (max-width: 699px) {
+    .friends-section-wrapper{
+        margin: 0 40px 0 40px;
+    }
+}
+
