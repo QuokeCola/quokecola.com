@@ -48,11 +48,6 @@
     #friends-canvas-container {
         height: 60vh;
     }
-
-    #friends-canvas-container h1 {
-        left: 20px !important;
-        bottom: 10% !important;
-    }
 }
 
 .friends-section-wrapper{
@@ -158,6 +153,7 @@
 
 .friends-quarter-size-tile > h1{
     position: relative;
+    left: 0;
     font-size: 18px;
     font-weight: 500;
     margin-left: 15px;
