@@ -17,7 +17,7 @@ export class FriendsInterface {
     // Particle System
     private particleGeometry: THREE.BufferGeometry;
     private particlesMesh: THREE.Points;
-    private readonly particleCount = 80; // Increased slightly for density
+    private readonly particleCount = 100; // Increased slightly for density
 
     // Physics / Orbit Data
     private orbitData: Float32Array;
@@ -125,10 +125,10 @@ export class FriendsInterface {
             // Radius: Tighter distribution (3 to 25)
             this.orbitData[i4] = 10 + Math.sin(i/this.particleCount*2*Math.PI) * 5;
             // Speed: faster (multiplied by 3.5)
-            this.orbitData[i4 + 1] = 0.5 + (Math.sin(i/this.particleCount*2*Math.PI));
+            this.orbitData[i4 + 1] = 1 + 0.01*(Math.sin(i/this.particleCount*2*Math.PI));
             // Tilt
-            this.orbitData[i4 + 2] = (Math.sin(i/this.particleCount*2*Math.PI)) * Math.PI/4;
-            this.orbitData[i4 + 3] = (Math.cos(i/this.particleCount*2*Math.PI)) * Math.PI/4;
+            this.orbitData[i4 + 2] = (Math.sin(i/this.particleCount*2*Math.PI)/10) * Math.PI;
+            this.orbitData[i4 + 3] = (Math.cos(i/this.particleCount*2*Math.PI)/10) * Math.PI;
         }
 
         this.particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
@@ -198,9 +198,9 @@ export class FriendsInterface {
                 const angle = time * speed + i;
 
                 // --- A. ORBIT MATH ---
-                let x = Math.cos(angle) * radius;
+                let x = Math.sin(angle) * Math.cos(angle) * radius;
                 let z = Math.sin(angle) * radius;
-                let y = 0;
+                let y = Math.cos(angle) * radius;
 
                 // Apply Tilt X
                 const y1 = y * Math.cos(tiltX) - z * Math.sin(tiltX);
