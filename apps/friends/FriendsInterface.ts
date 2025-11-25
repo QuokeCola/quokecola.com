@@ -17,7 +17,7 @@ export class FriendsInterface {
     // Particle System
     private particleGeometry: THREE.BufferGeometry;
     private particlesMesh: THREE.Points;
-    private readonly particleCount = 2000; // Increased slightly for density
+    private readonly particleCount = 80; // Increased slightly for density
 
     // Physics / Orbit Data
     private orbitData: Float32Array;
@@ -98,7 +98,7 @@ export class FriendsInterface {
 
         // ZOOM IN: Reduced Z from 40 to 22
         // ASYMMETRY: Moved X to -8 (Camera moves left -> Objects shift right)
-        this.camera.position.set(0, 0, 8);
+        this.camera.position.set(-3, 2, 15);
         this.camera.lookAt(0, 0, 0); // Look slightly off-center
 
         this.scene = new THREE.Scene();
@@ -123,12 +123,12 @@ export class FriendsInterface {
             positions[i3] = 0; positions[i3 + 1] = 0; positions[i3 + 2] = 0;
 
             // Radius: Tighter distribution (3 to 25)
-            this.orbitData[i4] = 3 + i4/this.particleCount * 25;
+            this.orbitData[i4] = 10 + Math.sin(i/this.particleCount*2*Math.PI) * 5;
             // Speed: faster (multiplied by 3.5)
-            this.orbitData[i4 + 1] = (i4/this.particleCount - 0.5)*2;
+            this.orbitData[i4 + 1] = 0.5 + (Math.sin(i/this.particleCount*2*Math.PI));
             // Tilt
-            this.orbitData[i4 + 2] = (i4/this.particleCount - 0.5) * 2 * Math.PI;
-            this.orbitData[i4 + 3] = (i4/this.particleCount - 0.5) * 2 * Math.PI;
+            this.orbitData[i4 + 2] = (Math.sin(i/this.particleCount*2*Math.PI)) * Math.PI/4;
+            this.orbitData[i4 + 3] = (Math.cos(i/this.particleCount*2*Math.PI)) * Math.PI/4;
         }
 
         this.particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
@@ -198,8 +198,8 @@ export class FriendsInterface {
                 const angle = time * speed + i;
 
                 // --- A. ORBIT MATH ---
-                let x = Math.cos(angle+Math.sin(angle)/2) * radius;
-                let z = Math.sin(angle+Math.sin(angle)/2) * radius;
+                let x = Math.cos(angle) * radius;
+                let z = Math.sin(angle) * radius;
                 let y = 0;
 
                 // Apply Tilt X
@@ -266,7 +266,7 @@ export class FriendsInterface {
             this.camera_movement_x = (0.96)*this.camera_movement_x + 0.04*this.mouse.x
             this.camera_movement_y = (0.96)*this.camera_movement_y + 0.04*this.mouse.y
         }
-        this.camera.position.set(this.camera_movement_x, this.camera_movement_y, 10);
+        this.camera.position.set(this.camera_movement_x-3, this.camera_movement_y+4, 15);
         this.renderer.render(this.scene, this.camera);
         this.animationFrameId = requestAnimationFrame(this.render);
     }
