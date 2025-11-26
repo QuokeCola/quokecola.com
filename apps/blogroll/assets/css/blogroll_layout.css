@@ -114,13 +114,17 @@
 }
 
 #blogroll-list-container > .blogroll-card > .blogroll-card-text > h1{
+    white-space: nowrap;      /* Forces text onto a single line */
     position: relative;
     font-family: "IBM Plex Sans", serif;
     font-weight: normal;
     font-size: 24px;
+    max-width: 100%;
+    display: block;
     margin: 0;
     overflow: hidden;
     text-overflow: ellipsis;
+    overflow-wrap: break-word;   /* preferred */
 }
 
 #blogroll-list-container > .blogroll-card > .blogroll-card-text > p{
