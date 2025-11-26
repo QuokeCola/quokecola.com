@@ -1,0 +1,294 @@
+:root {
+    --left-right-margin: 15px;
+    --link-btn-gray: rgb(200,200,200);
+}
+/* --- Canvas Container --- */
+#blogroll-canvas-container {
+    width: 100%;
+    font-family: "IBM Plex Sans", serif;
+    font-weight: normal;
+    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
+    border-bottom: #CCCCCC solid 1px;
+}
+
+#blogroll-canvas-container h1 {
+    position: absolute;
+    font-family: "IBM Plex Sans", serif;
+    font-weight: normal;
+    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
+}
+
+#blogroll-threejs-canvas {
+    display: block; /* Removes bottom margin/gap from canvas */
+    width: 100%;
+    height: 100%;
+}
+
+/*  --- Section Wrapper --- */
+.blogroll-section-wrapper{
+    display: flex;
+    flex-wrap: wrap;
+
+    width: calc(100% - 80px);
+
+    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
+}
+
+.blogroll-section-wrapper > h1{
+    position: relative;
+    font-size: 24px;
+    font-weight: 500;
+    margin-left: var(--left-right-margin);
+    margin-right: var(--left-right-margin);
+}
+
+.blogroll-section-wrapper > p{
+    font-size: 15px;
+    font-weight: 300;
+    margin-left: var(--left-right-margin);
+    margin-right: var(--left-right-margin);
+    margin-bottom: 50px;
+}
+
+.blogroll-section-wrapper > p > a{
+    position: relative;
+    text-decoration: none;
+    color: var(--accent-color);
+}
+
+.blogroll-section-wrapper > p > a::after{
+    content: " ";
+    left: 0;
+    top: 0;
+    position: absolute;
+    width: 0;
+    height: 100%;
+    border-bottom: var(--accent-color) solid 1px;
+    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
+}
+
+.blogroll-section-wrapper > p > a:hover::after{
+    width: 100%;
+}
+
+.blogroll-div-line{
+    width: 50px;
+    height: 1px;
+    background-color: rgb(150,150,150);
+
+    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
+}
+
+.blogroll-section-wrapper > .blogroll-div-line{
+    margin-left: var(--left-right-margin);
+}
+
+#blogroll-list-container {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#blogroll-list-container > .blogroll-card{
+    position: relative;
+    height: 80px;
+    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
+    margin-bottom: var(--blogroll-grid-border-width);
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+#blogroll-list-container > .blogroll-card > .blogroll-card-image {
+    position: relative;
+    z-index: 0;
+    margin: 5px;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background-size: cover;
+}
+
+#blogroll-list-container > .blogroll-card > .blogroll-card-text {
+    margin-left: 10px;
+    width: calc(100% - 90px);
+}
+
+#blogroll-list-container > .blogroll-card > .blogroll-card-text > h1{
+    position: relative;
+    font-family: "IBM Plex Sans", serif;
+    font-weight: normal;
+    font-size: 24px;
+    margin: 0;
+}
+
+#blogroll-list-container > .blogroll-card > .blogroll-card-text > p{
+    position: relative;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;   /* limit to 2 lines */
+    -webkit-box-orient: vertical;
+    width: 100%;
+    height: fit-content;
+    font-family: "IBM Plex Sans", serif;
+    font-weight: normal;
+    font-size: 14px;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    overflow-wrap: break-word;   /* preferred */
+}
+
+#blogroll-list-container > .blogroll-card::after {
+    content: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='black'/%3E%3Cpath d='M8 16.956h12.604l-3.844 4.106 1.252 1.338L24 16l-5.988-6.4-1.252 1.338 3.844 4.106H8v1.912z' fill='white'/%3E%3C/svg%3E");
+    z-index: 1;
+    /* CSS Styling */
+    display: block; /* Flex is unnecessary if content is an image */
+    position: absolute;
+    width: 30px;    /* Set size here instead of inside SVG */
+    height: 30px;   /* Set size here instead of inside SVG */
+    top: calc(50% - 15px);
+    left: calc(50% - 15px);
+    transform: rotate(-45deg); /* Move rotation here */
+
+    /* Positioning (assuming parent is relative) */
+    pointer-events: none; /* Usually better for decorative icons */
+    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
+    opacity: 0;
+}
+
+#blogroll-list-container > .blogroll-card::before {
+    content: " ";
+    z-index: 1;
+    /* CSS Styling */
+    display: block; /* Flex is unnecessary if content is an image */
+    position: absolute;
+    width: 100%;    /* Set size here instead of inside SVG */
+    height: 100%;   /* Set size here instead of inside SVG */
+    top: 0;
+    left: 0;
+
+    cursor: initial;
+    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
+    opacity: 0;
+    background: -webkit-linear-gradient(
+            45deg,
+            var(--link-btn-gray) 0, var(--link-btn-gray) 10%, white 10%, white 50%,
+            var(--link-btn-gray) 50%, var(--link-btn-gray) 60%, white 60%, white
+    );
+    background-size: 10px 10px;
+
+    border: 6px solid rgba(0,0,0,1);
+    border-image: 16 url('../../../../framework/assets/images/frame.png');
+    box-sizing: border-box;
+
+    animation: loading-strip-move 2s linear;
+    -webkit-animation: loading-strip-move 2s linear;
+    animation-iteration-count: infinite;
+}
+
+#blogroll-list-container > .blogroll-card:hover::before{
+    opacity: 1;
+}
+
+#blogroll-list-container > .blogroll-card:hover::after{
+    opacity: 1;
+}
+
+
+/* When screen is smaller than 600px */
+@media screen and (min-width: 550px) {
+    .blogroll-card {
+        width: calc((100% - var(--blogroll-grid-border-width) - var(--left-right-margin)*2)/2);
+    }
+
+    .blogroll-card:nth-child(2n+1){
+        margin-right: var(--blogroll-grid-border-width);
+        margin-left: var(--left-right-margin);
+    }
+}
+
+@media screen and (max-width: 549px) {
+    .blogroll-card {
+        width: 100%;
+        margin-left: var(--left-right-margin);
+        margin-right: var(--left-right-margin);
+    }
+}
+
+@media screen and (min-width: 700px) {
+    .blogroll-section-wrapper{
+        margin: 0 80px 0 80px;
+    }
+
+    #blogroll-canvas-container {
+        height: 60vh;
+    }
+
+    /* --- Text Overlay --- */
+    #blogroll-canvas-container h1 {
+        /* Critical: allows mouse to pass through text so the particles still flee */
+        pointer-events: none;
+
+        margin-left: var(--left-right-margin);
+        margin-right: var(--left-right-margin);
+        color: #111;
+        z-index: 10; /* Ensure text is above canvas */
+
+        /* Responsive Font Sizing */
+        font-size: clamp(2rem, 3rem, 5rem); /* Fluid sizing */
+    }
+}
+
+@media screen and (max-width: 699px) {
+    .blogroll-section-wrapper{
+        margin: 0 40px 0 40px;
+    }
+    #blogroll-canvas-container {
+        height: 60vh;
+    }
+    #blogroll-canvas-container h1 {
+        font-size: clamp(1.5rem, 2rem, 2rem); /* Fluid sizing */
+    }
+}
+
+@media screen and (min-width: 900px){
+    :root{
+        --blogroll-grid-border-width: 20px
+    }
+
+    .blogroll-div-line{
+        margin: 100px 0 100px 0;
+    }
+
+    .blogroll-card {
+        width: calc((100% - 3*var(--blogroll-grid-border-width) - 2*var(--left-right-margin))/4);
+    }
+
+    .blogroll-card:nth-child(4n+1), .blogroll-card:nth-child(4n+2), .blogroll-card:nth-child(4n+3){
+        margin-right: var(--blogroll-grid-border-width);
+    }
+
+    .blogroll-card:nth-child(4n+3){
+        margin-left: 0;
+    }
+
+    .blogroll-card:nth-child(4n+1) {
+        margin-left: var(--left-right-margin);
+    }
+
+    .blogroll-card:nth-child(4n) {
+        margin-right: var(--left-right-margin);
+    }
+}
+
+@media screen and (max-width: 899px) {
+
+    :root{
+        --blogroll-grid-border-width: 10px
+    }
+
+    .blogroll-div-line{
+        margin: 30px 0 30px 0;
+    }
+
+}
+

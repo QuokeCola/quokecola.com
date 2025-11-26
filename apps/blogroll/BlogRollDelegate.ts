@@ -1,28 +1,29 @@
 import {AppDelegate} from "../../framework/AppDelegate";
-import {FriendsInterface} from "./FriendsInterface";
+import {BlogRollInterface} from "./BlogRollInterface";
 import {NavigationBarInterface} from "../../framework/NavigationBarInterface";
 import {AppRequests} from "../../framework/AppRequests";
-export class FriendsDelegate extends AppDelegate{
+export class BlogRollDelegate extends AppDelegate{
     app_data: any;
     name: string = "BLOGROLL";
-    friends_if: FriendsInterface;
+    friends_if: BlogRollInterface;
     constructor() {
         super();
         let app_request = new AppRequests()
         app_request.app_name = this.name;
         NavigationBarInterface.add_btn(this.name, app_request);
     }
+
     background_service(app_data: any): boolean {
         return true;
     }
 
     async create_layout(app_data: any):Promise<boolean> {
-        this.friends_if = await FriendsInterface.create_layout()
+        this.friends_if = await BlogRollInterface.create_layout()
         return true;
     }
 
     data_to_url(app_data: any): string {
-        return ""
+        return "";
     }
 
     url_to_data(url: string): any {
@@ -37,7 +38,7 @@ export class FriendsDelegate extends AppDelegate{
     }
 
     async quit(app_data: any): Promise<boolean> {
-        this.friends_if.destroy()
+        this.friends_if.destroy();
         return true;
     }
 

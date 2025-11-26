@@ -3,10 +3,11 @@ import { AppRequests } from "../../framework/AppRequests";
 import { ArticleBrowserAppData, ArticleBrowserArticleData } from "../article_browser/ArticleBrowserData";
 import * as THREE from 'three';
 import {dispose} from "@react-three/fiber";
+import {BlogRollInterfaceData} from "./BlogRollInterfaceData";
 
-export class FriendsInterface {
-    static html_url = "./apps/friends/layout.html";
-    static css_urls: string[] = ["./apps/friends/assets/css/friends_layout.css"];
+export class BlogRollInterface {
+    static html_url = "./apps/blogroll/layout.html";
+    static css_urls: string[] = ["./apps/blogroll/assets/css/blogroll_layout.css"];
 
     private canvas: HTMLCanvasElement;
     private canvas_container: HTMLElement;
@@ -34,6 +35,9 @@ export class FriendsInterface {
     private camera_movement_x : number;
     private camera_movement_y : number;
 
+    private blogroll_list_container : HTMLElement;
+    private document_info         : BlogRollInterfaceData[];
+
     static async create_layout() {
         for (let url of this.css_urls) {
             ContentLoaderInterface.set_app_customize_css(url);
@@ -44,8 +48,8 @@ export class FriendsInterface {
         let html_doc = parser.parseFromString(await response.text(), 'text/html');
         ContentLoaderInterface.set_app_layout(html_doc.body.children[0].innerHTML);
 
-        const instance = new FriendsInterface();
-        instance.init();
+        const instance = new BlogRollInterface();
+        await instance.init();
 
         return instance;
     }
@@ -74,10 +78,54 @@ export class FriendsInterface {
         return texture;
     }
 
-    init() {
-        this.canvas_container = document.getElementById("friends-canvas-container");
-        this.canvas = document.getElementById("friends-threejs-canvas") as HTMLCanvasElement;
+    async init() {
+        this.canvas_container = document.getElementById("blogroll-canvas-container");
+        this.blogroll_list_container = document.getElementById("blogroll-list-container");
+        this.canvas = document.getElementById("blogroll-threejs-canvas") as HTMLCanvasElement;
 
+        this.blogroll_list_container.innerHTML = "";
+
+        // Load friend list
+        let response = await fetch("./apps/blogroll/blogroll_list.json")
+        while (!response.ok) {
+            response = await fetch("./apps/blogroll/blogroll_list.json")
+        }
+        this.document_info = JSON.parse(await response.text());
+        for (let document_i of this.document_info) {
+            let blogroll_card = document.createElement("div");
+            let blogroll_img = document.createElement("div");
+            let blogroll_text = document.createElement("div");
+            let blogroll_title = document.createElement("h1");
+            let blogroll_description = document.createElement("p");
+
+            blogroll_title.innerText = document_i.title;
+            blogroll_description.innerText = document_i.descrp;
+
+            blogroll_card.classList.add("blogroll-card");
+            blogroll_text.classList.add("loading-components-light");
+            blogroll_img.classList.add("blogroll-card-image");
+            blogroll_text.classList.add("blogroll-card-text");
+
+            blogroll_text.appendChild(blogroll_title);
+            blogroll_text.appendChild(blogroll_description);
+            blogroll_card.appendChild(blogroll_img);
+            blogroll_card.appendChild(blogroll_text);
+
+            blogroll_img.style.backgroundImage = `url("${document_i.img}")`;
+            blogroll_card.onclick = () => {
+                window.open(document_i.url, '_blank').focus();
+            }
+
+            let image_loader = new Image();
+            image_loader.addEventListener("load", () => {
+                blogroll_text.classList.replace("loading-components-light", "loaded-components-light");
+            });
+            image_loader.src = document_i.img;
+
+            this.blogroll_list_container.appendChild(blogroll_card);
+        }
+
+        // Three JS
         if (!this.canvas || !this.canvas_container) return;
 
         // --- 1. LAYOUT ---
