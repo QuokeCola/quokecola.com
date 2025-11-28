@@ -1,5 +1,15 @@
 [
   {
+    "title": "PLC Programming II: Variables",
+    "pic": "Article12/Banner.png",
+    "time": "11-27-2025 22:50",
+    "src": "Article12/PLCVar.md",
+    "abstract": "Declare it or it doesn’t happen.",
+    "tags": [
+      "PLC Programming"
+    ]
+  },
+  {
     "title": "PLC Programming I: Prelude",
     "pic": "Article11/Banner.svg",
     "time": "09-30-2024 19:40",
