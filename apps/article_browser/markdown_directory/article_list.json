@@ -1,5 +1,15 @@
 [
   {
+    "title": "PLC Programming III: Global Variables",
+    "pic": "Article13/BannerImg.png",
+    "time": "12-01-2025 16:47",
+    "src": "Article13/GlobVar.md",
+    "abstract": "Globals never mind their own business.",
+    "tags": [
+      "PLC Programming"
+    ]
+  },
+  {
     "title": "PLC Programming II: Variables",
     "pic": "Article12/Banner.png",
     "time": "11-27-2025 22:50",
