@@ -169,7 +169,7 @@ export class ArticleBrowserInterface {
                 }
                 let request = new AppRequests();
                 request.app_data={
-                    article_source: null,
+                    article_data: null,
                     page_index: 1,
                     request_type: ArticleBrowserAppData.RequestType.load_browser,
                     selected_tags: selected_tags

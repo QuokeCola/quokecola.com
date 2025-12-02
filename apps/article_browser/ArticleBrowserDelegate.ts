@@ -190,7 +190,7 @@ export class ArticleBrowserDelegate extends AppDelegate{
     }
 
     async onload(app_data: any): Promise<boolean> {
-        if (app_data.article_source) {
+        if (app_data.article_data) {
             NavigationBarInterface.set_scroll_down_blur_behavior(NavigationBarInterface.ScrollDownBlurBehavior.scroll_down_blur);
         } else {
             NavigationBarInterface.set_scroll_down_blur_behavior(NavigationBarInterface.ScrollDownBlurBehavior.clear);
