@@ -1,6 +1,5 @@
 :root{
     --grid-gutter: 3rem;
-    --back-btn-width: 4rem;
     --back-btn-icon-size: 1.5rem;
     --back-btn-color: rgb(255,255,255);
     --article-browser-border-color: rgba(200,200,200,1);
@@ -20,7 +19,7 @@
 
 #article-browser-article-page {
     position: absolute;
-    width: calc(100% - var(--back-btn-width) - 2px);
+    width: 100%;
     transition: all cubic-bezier(0.8, 0, 0.2, 1) 0.5s;
     top: 0px;
     left: calc(100%);
@@ -28,7 +27,7 @@
     flex-wrap: wrap;
     height: auto;
     z-index: 1;
-    border-left: solid 1px var(--article-browser-border-color);
+    background-color: white;
 }
 
 #article-browser-list-page:before {
@@ -42,12 +41,13 @@
 }
 
 #article-browser-load-article-status:checked ~ #article-browser-list-page {
-    left: calc(-100% + var(--back-btn-width));
+    translate: calc(-25%);
+    opacity: 0;
 }
 
 #article-browser-load-article-status:checked ~ #article-browser-article-page {
     height: auto;
-    left: var(--back-btn-width);
+    translate: calc(-100%);
 }
 
 .article-browser-fade:before {

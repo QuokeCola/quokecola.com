@@ -1,7 +1,6 @@
 #article-browser-article-container {
     border: none;
     transition: all cubic-bezier(0.8, 0, 0.2, 1) 0.5s;
-
 }
 
 #article-browser-article-side-container {
@@ -13,14 +12,13 @@
 
 @media screen and (min-width: 1000px) {
     #article-browser-article-side-container {
-        width: calc(25% - 1px - var(--grid-gutter));
+        width: calc((100% - var(--back-btn-width) - 1px)*0.25  - var(--grid-gutter));
         top: 0;
         padding: calc(var(--nav-height)) calc(var(--grid-gutter)/2) 2rem;
     }
 
-
     #article-browser-article-container {
-        width: calc(75% - 1px);
+        width: calc((100% - var(--back-btn-width) - 1px)*0.75 - 1px);
         border-right: solid 1px var(--article-browser-border-color);
     }
 }
@@ -38,5 +36,9 @@
     #article-browser-article-container {
         width: 100%;
         border-right: none;
+    }
+
+    #article-copyright {
+        margin-bottom: 80px
     }
 }

@@ -1,18 +1,19 @@
 #article-browser-article-back-button{
-    position: fixed;
-    width: calc(var(--back-btn-width) + 1px);
-    height: 100%;
+    position: sticky;
+    width: calc(var(--back-btn-width));
+
     top: 0;
-    left: calc(100%);
     background-color: white;
     transition: all cubic-bezier(0.8, 0, 0.2, 1) 0.5s;
+    z-index: 10;
 }
 
 #article-browser-load-article-status:checked ~ #article-browser-article-page > #article-browser-article-back-button {
-    left: 0;
+    translate: 0 0;
 }
 
 #article-browser-article-back-button-icon {
+    z-index: 1;
     position: absolute;
     width: var(--back-btn-icon-size);
     left: calc((var(--back-btn-width) - var(--back-btn-icon-size))/2);
@@ -27,4 +28,32 @@
 
 #article-browser-article-back-button:hover #article-browser-article-back-button-icon{
     left: calc((var(--back-btn-width) - var(--back-btn-icon-size))/2 - 10px);
+}
+
+@media screen and (min-width: 1000px) {
+    :root{
+        --back-btn-width: 4rem;
+    }
+    #article-browser-article-back-button{
+        height: 100vh;
+        margin-bottom: -100vh;
+        border-right: solid 1px var(--article-browser-border-color);
+    }
+}
+
+@media screen and (max-width: 999px) {
+    :root{
+        --back-btn-width: 100%;
+    }
+
+    #article-browser-article-back-button{
+        height: 80px;
+        margin-right: -100%;
+        margin-bottom: -100vh;
+        top: calc(100vh - 80px);
+        background-color: rgba(255,255,255,0.6);
+        backdrop-filter: blur(40px);
+        -webkit-backdrop-filter: blur(40px);
+        border-top: solid 1px var(--article-browser-border-color);
+    }
 }

@@ -113,7 +113,8 @@ export class ArticleBrowserInterface {
         this.article_banner = document.getElementById("article-browser-article-article-banner");
         if (this.article_page_obj) {
             this.article_page_obj.ontransitionend = (ev)=>{
-                if (ev.target === this.article_page_obj && ev.propertyName === "left"
+                console.log(ev.propertyName)
+                if (ev.target === this.article_page_obj && ev.propertyName === "translate"
                     && this.load_article_status_obj instanceof HTMLInputElement) {
                     if (this.load_article_status_obj.checked) {
                         this.state = this.ArticleBrowserStates.ARTICLE_READY
