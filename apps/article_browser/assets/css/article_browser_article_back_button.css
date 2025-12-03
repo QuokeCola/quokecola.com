@@ -49,8 +49,8 @@
     #article-browser-article-back-button{
         height: 80px;
         margin-right: -100%;
-        margin-bottom: -100vh;
-        top: calc(100vh - 80px);
+        margin-bottom: -80px;
+        top: calc(100% - 80px);
         background-color: rgba(255,255,255,0.6);
         backdrop-filter: blur(40px);
         -webkit-backdrop-filter: blur(40px);
