@@ -1,9 +1,14 @@
-# Chen's website - Refactored by TypeScript
+# Chen's Website — Refactored with TypeScript
 
-The current version of static website's framework no long fulfill the demand. To mitigate this, the website is refactored by Typescript.
+The previous static website framework could no longer meet the project's growing requirements. To address this, the website has been refactored using TypeScript for improved maintainability, scalability, and development efficiency.
 
-The website uses message event to handle the user interactions for different front end apps.  
+The website utilizes the `message` event system to manage user interactions across different frontend applications.
 
-[the website](https://www.quokecola.com)
+[Visit the website](https://www.quokecola.com)
 
-When uploaded/cloned to your server, on the root directory, run `npm run build` to build the code. Then add the root directory "quokecola.com" to your nginx/other backend directory.
+## Build Instructions
+
+After uploading or cloning the project to your server, navigate to the root directory and run:
+
+```bash
+npm run build
