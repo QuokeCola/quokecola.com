@@ -85,14 +85,14 @@ export class HomepageInterface {
         if (prev_btn) {
             prev_btn.onclick = () => {
                 this.stop_banner_autoplay();
-                this.goto_banner_page(this.current_banner_idx - 1);
+                this.goto_banner_page(this.current_banner_idx - 1, 'backward');
                 setTimeout(() => this.start_banner_autoplay(), 10000);
             };
         }
         if (next_btn) {
             next_btn.onclick = () => {
                 this.stop_banner_autoplay();
-                this.goto_banner_page(this.current_banner_idx + 1);
+                this.goto_banner_page(this.current_banner_idx + 1, 'forward');
                 setTimeout(() => this.start_banner_autoplay(), 10000);
             };
         }
@@ -103,8 +103,9 @@ export class HomepageInterface {
                 let dot = document.createElement("span");
                 dot.className = "home-banner-dot" + (i === 0 ? " home-banner-dot-active" : "");
                 dot.onclick = () => {
+                    const dir = i > this.current_banner_idx ? 'forward' : 'backward';
                     this.stop_banner_autoplay();
-                    this.goto_banner_page(i);
+                    this.goto_banner_page(i, dir);
                     setTimeout(() => this.start_banner_autoplay(), 10000);
                 };
                 dots_container!.appendChild(dot);
@@ -112,7 +113,7 @@ export class HomepageInterface {
         }
     }
 
-    static goto_banner_page(idx: number) {
+    static goto_banner_page(idx: number, direction: 'forward' | 'backward' | 'none' = 'forward') {
         this.current_banner_idx = ((idx % this.banner_pages.length) + this.banner_pages.length) % this.banner_pages.length;
         const page = this.banner_pages[this.current_banner_idx];
 
@@ -122,12 +123,16 @@ export class HomepageInterface {
         let banner_imgs     = document.getElementById("home-banner-imgs");
         let banner_button   = document.getElementById("home-banner-button");
 
-        if (banner_imgs && banner_subtitle && banner_title && banner_abstract) {
-            banner_subtitle.textContent = page.subtitle;
-            banner_title.textContent = page.title;
-            banner_abstract.textContent = page.abstract;
-            this.load_img_with_children(banner_imgs, page.img,
-                [banner_subtitle, banner_title, banner_abstract, banner_imgs]);
+        const text_els = [banner_subtitle, banner_title, banner_abstract].filter(Boolean) as HTMLElement[];
+        text_els.forEach(el => el.classList.replace("loaded-components-light", "loading-components-light"));
+        if (banner_subtitle) banner_subtitle.textContent = page.subtitle;
+        if (banner_title)    banner_title.textContent    = page.title;
+        if (banner_abstract) banner_abstract.textContent = page.abstract;
+
+        if (banner_imgs) {
+            this.slide_to_img(banner_imgs, page.img, direction, () => {
+                text_els.forEach(el => el.classList.replace("loading-components-light", "loaded-components-light"));
+            });
         }
 
         if (banner_button) {
@@ -139,10 +144,51 @@ export class HomepageInterface {
         });
     }
 
+    static slide_to_img(container: HTMLElement, new_url: string, direction: 'forward' | 'backward' | 'none', onComplete: () => void) {
+        const DURATION = 500;
+        const old_slides = Array.from(container.querySelectorAll<HTMLElement>('.home-banner-slide'));
+
+        const new_slide = document.createElement('div');
+        new_slide.className = 'home-banner-slide';
+        new_slide.style.backgroundImage = `url(${new_url})`;
+        if (direction === 'none') {
+            new_slide.style.opacity = '0';
+        } else {
+            new_slide.style.transform = direction === 'forward' ? 'translateX(100%)' : 'translateX(-100%)';
+        }
+        container.appendChild(new_slide);
+
+        const image = new Image();
+        image.onload = () => {
+            container.classList.replace("loading-components-light", "loaded-components-light");
+            new_slide.getBoundingClientRect(); // force reflow before animating
+
+            const easing = `cubic-bezier(0.4, 0, 0.2, 1)`;
+            if (direction === 'none') {
+                new_slide.style.transition = `opacity ${DURATION}ms ${easing}`;
+                new_slide.style.opacity = '1';
+            } else {
+                new_slide.style.transition = `transform ${DURATION}ms ${easing}`;
+                new_slide.style.transform = 'translateX(0)';
+                old_slides.forEach(s => {
+                    s.style.transition = `transform ${DURATION}ms ${easing}`;
+                    s.style.transform = direction === 'forward' ? 'translateX(-100%)' : 'translateX(100%)';
+                });
+            }
+
+            onComplete();
+
+            setTimeout(() => {
+                old_slides.forEach(s => { if (s.parentNode === container) container.removeChild(s); });
+            }, DURATION);
+        };
+        image.src = new_url;
+    }
+
     static start_banner_autoplay() {
         this.stop_banner_autoplay();
         this.banner_timer = setInterval(() => {
-            this.goto_banner_page(this.current_banner_idx + 1);
+            this.goto_banner_page(this.current_banner_idx + 1, 'forward');
         }, 5000);
     }
 
@@ -154,7 +200,7 @@ export class HomepageInterface {
     }
 
     static reload_banner() {
-        this.goto_banner_page(0);
+        this.goto_banner_page(0, 'none');
         this.start_banner_autoplay();
     }
 
