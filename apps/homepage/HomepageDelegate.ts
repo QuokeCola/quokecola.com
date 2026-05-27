@@ -39,6 +39,7 @@ export class HomepageDelegate extends AppDelegate{
     }
 
     async quit(app_data: any): Promise<boolean> {
+        HomepageInterface.stop_banner_autoplay();
         return true;
     }
 
