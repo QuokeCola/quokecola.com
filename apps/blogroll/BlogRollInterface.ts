@@ -2,19 +2,56 @@ import { ContentLoaderInterface } from "../../framework/ContentLoaderInterface";
 import * as THREE from 'three';
 import { BlogRollInterfaceData } from "./BlogRollInterfaceData";
 
-const GLOBE_RADIUS    = 4;
-const ARC_COUNT       = 10;
-const ARC_PTS         = 100;   // curve resolution (vertices per arc)
-const ARC_TRAIL       = 30;    // how many vertices are visible at once
-const ARC_MAX_HEIGHT  = 1.6;   // peak altitude of arc above globe surface
+// ── Constants ─────────────────────────────────────────────────────────────────
+const GLOBE_RADIUS   = 4;
+const ARC_COUNT      = 10;
+const ARC_PTS        = 100;
+const ARC_TRAIL      = 30;
+const ARC_MAX_HEIGHT = 1.6;
 
+// ── Minimal inline TopoJSON decoder ──────────────────────────────────────────
+interface TopoJSON {
+    transform: { scale: [number, number]; translate: [number, number] };
+    arcs: number[][][];
+    objects: {
+        land: { geometries: Array<{ type: string; arcs: number[][][] | number[][] }> };
+    };
+}
+
+function decodeTopoArc(topo: TopoJSON, idx: number): [number, number][] {
+    const rev  = idx < 0;
+    const raw  = topo.arcs[rev ? ~idx : idx];
+    const [sx, sy] = topo.transform.scale;
+    const [tx, ty] = topo.transform.translate;
+    let x = 0, y = 0;
+    const pts: [number, number][] = raw.map(([dx, dy]) => {
+        x += dx; y += dy;
+        return [x * sx + tx, y * sy + ty]; // [lon, lat]
+    });
+    return rev ? pts.reverse() : pts;
+}
+
+function topoRings(
+    topo: TopoJSON,
+    geom: { type: string; arcs: number[][][] | number[][] }
+): [number, number][][] {
+    const polys = geom.type === 'Polygon'
+        ? [geom.arcs as number[][]]
+        : geom.arcs as number[][][];
+    return polys.flatMap(poly =>
+        poly.map(ring => ring.flatMap(i => decodeTopoArc(topo, i)))
+    );
+}
+
+// ── Arc data ──────────────────────────────────────────────────────────────────
 interface ArcData {
-    progress: number;   // 0 → 1 + ARC_TRAIL/ARC_PTS  (then resets)
-    speed: number;      // progress units per second
+    progress: number;
+    speed: number;
     geometry: THREE.BufferGeometry;
     line: THREE.Line;
 }
 
+// ── Main class ────────────────────────────────────────────────────────────────
 export class BlogRollInterface {
     static html_url  = "./apps/blogroll/layout.html";
     static css_urls: string[] = ["./apps/blogroll/assets/css/blogroll_layout.css"];
@@ -27,6 +64,8 @@ export class BlogRollInterface {
 
     private globeGroup: THREE.Group;
     private arcs: ArcData[] = [];
+    private earthOutlineGeo: THREE.BufferGeometry | null = null;
+    private toDispose: Array<THREE.BufferGeometry | THREE.Material> = [];
 
     private mouse: THREE.Vector2;
     private resize_observer: ResizeObserver;
@@ -41,11 +80,11 @@ export class BlogRollInterface {
     // ── Static factory ────────────────────────────────────────────────────────
     static async create_layout() {
         for (const url of this.css_urls) ContentLoaderInterface.set_app_customize_css(url);
-        const response  = await fetch(this.html_url);
-        const parser    = new DOMParser();
-        const html_doc  = parser.parseFromString(await response.text(), 'text/html');
+        const response = await fetch(this.html_url);
+        const parser   = new DOMParser();
+        const html_doc = parser.parseFromString(await response.text(), 'text/html');
         ContentLoaderInterface.set_app_layout(html_doc.body.children[0].innerHTML);
-        const instance  = new BlogRollInterface();
+        const instance = new BlogRollInterface();
         await instance.init();
         return instance;
     }
@@ -58,78 +97,97 @@ export class BlogRollInterface {
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 
-    /** Convert lat/lon (degrees) to a unit vector on the sphere. */
-    private latLonToNorm(lat: number, lon: number): THREE.Vector3 {
-        const phi   = (90 - lat)   * (Math.PI / 180);
-        const theta = (lon + 180)  * (Math.PI / 180);
+    private latLonToVec3(lat: number, lon: number, r: number = GLOBE_RADIUS): THREE.Vector3 {
+        const phi   = (90 - lat)  * (Math.PI / 180);
+        const theta = (lon + 180) * (Math.PI / 180);
         return new THREE.Vector3(
-            -Math.sin(phi) * Math.cos(theta),
-             Math.cos(phi),
-             Math.sin(phi) * Math.sin(theta)
+            -Math.sin(phi) * Math.cos(theta) * r,
+             Math.cos(phi) * r,
+             Math.sin(phi) * Math.sin(theta) * r
         );
     }
 
-    private randomNorm(): THREE.Vector3 {
-        return this.latLonToNorm(
-            (Math.random() - 0.5) * 160,
-            (Math.random() - 0.5) * 360
-        );
+    private randomGlobeVec3(): THREE.Vector3 {
+        const lat = (Math.random() - 0.5) * 160;
+        const lon = (Math.random() - 0.5) * 360;
+        return this.latLonToVec3(lat, lon, 1); // unit vector
     }
 
-    /**
-     * Fill a pre-allocated BufferAttribute with the great-circle arc between
-     * src and dst, lifted above the surface by a sin-shaped altitude.
-     * Vertex colors fade from white (index 0, source) to dark gray (index N-1, dest)
-     * so the head of a travelling arc is always the most visible.
-     */
-    private fillArcBuffer(
+    // ── Continent outlines ────────────────────────────────────────────────────
+
+    private async buildEarthOutlines() {
+        const resp = await fetch('./apps/blogroll/assets/data/countries-110m.json');
+        if (!resp.ok) return;
+        const topo: TopoJSON = await resp.json();
+
+        const verts: THREE.Vector3[] = [];
+        for (const geom of topo.objects.land.geometries) {
+            for (const ring of topoRings(topo, geom)) {
+                for (let i = 0; i < ring.length - 1; i++) {
+                    const [lonA, latA] = ring[i];
+                    const [lonB, latB] = ring[i + 1];
+                    verts.push(
+                        this.latLonToVec3(latA, lonA),
+                        this.latLonToVec3(latB, lonB)
+                    );
+                }
+            }
+        }
+
+        this.earthOutlineGeo = new THREE.BufferGeometry().setFromPoints(verts);
+        const mat = new THREE.LineBasicMaterial({
+            color:       0x555555,
+            transparent: true,
+            opacity:     0.75,
+            depthWrite:  false,
+        });
+        this.toDispose.push(this.earthOutlineGeo, mat);
+        this.globeGroup.add(new THREE.LineSegments(this.earthOutlineGeo, mat));
+    }
+
+    // ── Arc management ────────────────────────────────────────────────────────
+
+    private fillArcBuffers(
         posAttr: THREE.BufferAttribute,
         colAttr: THREE.BufferAttribute,
         src: THREE.Vector3,
         dst: THREE.Vector3
     ) {
         for (let i = 0; i < ARC_PTS; i++) {
-            const t   = i / (ARC_PTS - 1);
-            const pt  = src.clone().lerp(dst, t).normalize();
+            const t  = i / (ARC_PTS - 1);
+            const pt = src.clone().lerp(dst, t).normalize();
             pt.multiplyScalar(GLOBE_RADIUS + Math.sin(t * Math.PI) * ARC_MAX_HEIGHT);
             posAttr.setXYZ(i, pt.x, pt.y, pt.z);
-
-            // Head (high i) is dark-gray; tail (low i) fades to white background
-            const c = 1.0 - t * 0.72;   // 1.0 (white) → 0.28 (dark gray)
+            // Head (high i, near dst) is dark; tail fades to white
+            const c = 1.0 - t * 0.72;
             colAttr.setXYZ(i, c, c, c);
         }
         posAttr.needsUpdate = true;
         colAttr.needsUpdate = true;
     }
 
-    /** Create a brand-new arc, add its Line to the globe group. */
     private createArc(initialProgress: number): ArcData {
         const posAttr = new THREE.BufferAttribute(new Float32Array(ARC_PTS * 3), 3);
         const colAttr = new THREE.BufferAttribute(new Float32Array(ARC_PTS * 3), 3);
-        this.fillArcBuffer(posAttr, colAttr, this.randomNorm(), this.randomNorm());
+        this.fillArcBuffers(posAttr, colAttr, this.randomGlobeVec3(), this.randomGlobeVec3());
 
-        const geo = new THREE.BufferGeometry();
+        const geo  = new THREE.BufferGeometry();
         geo.setAttribute('position', posAttr);
         geo.setAttribute('color',    colAttr);
         geo.setDrawRange(0, 0);
 
-        const mat  = new THREE.LineBasicMaterial({ vertexColors: true });
+        const mat  = new THREE.LineBasicMaterial({ vertexColors: true, depthWrite: false });
         const line = new THREE.Line(geo, mat);
+        this.toDispose.push(geo, mat);
         this.globeGroup.add(line);
 
-        return {
-            progress: initialProgress,
-            speed:    0.18 + Math.random() * 0.18,
-            geometry: geo,
-            line
-        };
+        return { progress: initialProgress, speed: 0.18 + Math.random() * 0.18, geometry: geo, line };
     }
 
-    /** Recycle an arc by writing new curve data into its existing buffers. */
     private resetArc(arc: ArcData) {
         const posAttr = arc.geometry.getAttribute('position') as THREE.BufferAttribute;
         const colAttr = arc.geometry.getAttribute('color')    as THREE.BufferAttribute;
-        this.fillArcBuffer(posAttr, colAttr, this.randomNorm(), this.randomNorm());
+        this.fillArcBuffers(posAttr, colAttr, this.randomGlobeVec3(), this.randomGlobeVec3());
         arc.geometry.setDrawRange(0, 0);
         arc.progress = 0;
         arc.speed    = 0.18 + Math.random() * 0.18;
@@ -147,7 +205,6 @@ export class BlogRollInterface {
         let resp = await fetch("./apps/blogroll/blogroll_list.json");
         while (!resp.ok) resp = await fetch("./apps/blogroll/blogroll_list.json");
         this.document_info = JSON.parse(await resp.text());
-
         for (const doc of this.document_info) {
             const card  = document.createElement("div");
             const img   = document.createElement("div");
@@ -172,7 +229,6 @@ export class BlogRollInterface {
         }
 
         if (!this.canvas || !this.canvas_container) return;
-
         this.canvas_container.style.position        = "relative";
         this.canvas_container.style.overflow        = "hidden";
         this.canvas_container.style.backgroundColor = "#ffffff";
@@ -181,50 +237,49 @@ export class BlogRollInterface {
         this.renderer = new THREE.WebGLRenderer({ antialias: true, canvas: this.canvas, alpha: true });
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.setClearColor(0xffffff, 1);
-
         const width  = this.canvas_container.clientWidth;
         const height = this.canvas_container.clientHeight;
         this.renderer.setSize(width, height);
 
-        // Camera — slightly above centre, looking at origin
+        // Camera
         this.camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000);
         this.camera.position.set(0, 2, 12);
         this.camera.lookAt(0, 0, 0);
 
         // Scene + fog
         this.scene = new THREE.Scene();
-        this.scene.fog = new THREE.FogExp2(0xffffff, 0.018);
+        this.scene.fog = new THREE.FogExp2(0xffffff, 0.022);
 
-        // Lighting (gives the sphere a 3-D shaded look)
-        this.scene.add(new THREE.AmbientLight(0xffffff, 0.45));
-        const sun = new THREE.DirectionalLight(0xffffff, 0.75);
-        sun.position.set(8, 6, 8);
-        this.scene.add(sun);
-
-        // Globe group — rotates as a unit
+        // Globe group
         this.globeGroup = new THREE.Group();
         this.scene.add(this.globeGroup);
 
-        // Base sphere — lit, very light gray
-        const baseMat = new THREE.MeshPhongMaterial({
-            color:     0xebebeb,
-            specular:  0xffffff,
-            shininess: 18,
-        });
-        this.globeGroup.add(new THREE.Mesh(new THREE.SphereGeometry(GLOBE_RADIUS, 64, 32), baseMat));
+        // ── Occlusion sphere ───────────────────────────────────────────────
+        // Opaque, invisible sphere that writes only to the depth buffer.
+        // Lines behind the globe are correctly hidden by depth testing.
+        const occGeo = new THREE.SphereGeometry(GLOBE_RADIUS * 0.995, 64, 32);
+        const occMat = new THREE.MeshBasicMaterial({ colorWrite: false });
+        const occMesh = new THREE.Mesh(occGeo, occMat);
+        occMesh.renderOrder = -1;   // render first so depth is ready for lines
+        this.toDispose.push(occGeo, occMat);
+        this.globeGroup.add(occMesh);
 
-        // Lat/lon wireframe grid sitting just above the base
+        // ── Lat / lon wireframe grid ───────────────────────────────────────
+        const gridGeo = new THREE.SphereGeometry(GLOBE_RADIUS + 0.01, 36, 18);
         const gridMat = new THREE.MeshBasicMaterial({
             color:       0xbbbbbb,
             wireframe:   true,
             transparent: true,
-            opacity:     0.30,
+            opacity:     0.18,
+            depthWrite:  false,
         });
-        this.globeGroup.add(
-            new THREE.Mesh(new THREE.SphereGeometry(GLOBE_RADIUS + 0.02, 36, 18), gridMat)
-        );
+        this.toDispose.push(gridGeo, gridMat);
+        this.globeGroup.add(new THREE.Mesh(gridGeo, gridMat));
 
-        // Arcs — stagger starting progress so they aren't all in sync
+        // ── Continent outlines (async — arcs can start immediately) ────────
+        this.buildEarthOutlines(); // fire and forget; outlines appear once loaded
+
+        // ── Flying arcs ────────────────────────────────────────────────────
         const doneThreshold = 1 + ARC_TRAIL / ARC_PTS;
         for (let i = 0; i < ARC_COUNT; i++) {
             this.arcs.push(this.createArc(Math.random() * doneThreshold));
@@ -240,9 +295,9 @@ export class BlogRollInterface {
     }
 
     onMouseMove(event: MouseEvent) {
-        const rect    = this.canvas.getBoundingClientRect();
-        this.mouse.x  =  ((event.clientX - rect.left) / rect.width)  * 2 - 1;
-        this.mouse.y  = -((event.clientY - rect.top)  / rect.height) * 2 + 1;
+        const rect   = this.canvas.getBoundingClientRect();
+        this.mouse.x =  ((event.clientX - rect.left) / rect.width)  * 2 - 1;
+        this.mouse.y = -((event.clientY - rect.top)  / rect.height) * 2 + 1;
     }
 
     onResize() {
@@ -258,27 +313,24 @@ export class BlogRollInterface {
     // ── Render loop ───────────────────────────────────────────────────────────
 
     render(time: number) {
-        time *= 0.001;  // ms → s
+        time *= 0.001;
         const dt = this.lastTime > 0 ? Math.min(time - this.lastTime, 0.05) : 0;
         this.lastTime = time;
 
-        // Slow globe auto-rotation
+        // Slow auto-rotation
         this.globeGroup.rotation.y = time * 0.09;
 
-        // Advance each arc along its curve
+        // Advance arcs
         const doneThreshold = 1 + ARC_TRAIL / ARC_PTS;
         for (const arc of this.arcs) {
             arc.progress += arc.speed * dt;
-            if (arc.progress >= doneThreshold) {
-                this.resetArc(arc);
-                continue;
-            }
-            const headIdx = Math.min(Math.floor(arc.progress * ARC_PTS), ARC_PTS);
-            const tailIdx = Math.max(0, headIdx - ARC_TRAIL);
-            arc.geometry.setDrawRange(tailIdx, headIdx - tailIdx);
+            if (arc.progress >= doneThreshold) { this.resetArc(arc); continue; }
+            const head = Math.min(Math.floor(arc.progress * ARC_PTS), ARC_PTS);
+            const tail = Math.max(0, head - ARC_TRAIL);
+            arc.geometry.setDrawRange(tail, head - tail);
         }
 
-        // Smooth camera follow mouse
+        // Smooth camera follow
         const inBounds = Math.abs(this.mouse.x) <= 0.9 && Math.abs(this.mouse.y) <= 0.9;
         if (inBounds) {
             this.camera_movement_x = 0.96 * this.camera_movement_x + 0.04 * this.mouse.x;
@@ -305,9 +357,6 @@ export class BlogRollInterface {
         if (this.resize_observer) this.resize_observer.disconnect();
         if (this.canvas_container) this.canvas_container.removeEventListener('mousemove', this.onMouseMove);
         if (this.renderer) this.renderer.dispose();
-        for (const arc of this.arcs) {
-            arc.geometry.dispose();
-            if (arc.line.material instanceof THREE.Material) arc.line.material.dispose();
-        }
+        for (const obj of this.toDispose) obj.dispose();
     }
 }
