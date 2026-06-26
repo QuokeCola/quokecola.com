@@ -145,38 +145,35 @@ export class BlogRollInterface {
         this.globeGroup.add(new THREE.LineSegments(this.earthOutlineGeo, mat));
     }
 
-    // ── Background grid ───────────────────────────────────────────────────────
+    // ── Globe lat/lon grid ────────────────────────────────────────────────────
 
-    private buildBackgroundGrid() {
-        const size = 50;
-        const step = 3;
-        const z    = -12;
+    private buildGlobeGrid() {
+        const r    = GLOBE_RADIUS + 0.02;
+        const segs = 72;
+        const verts: THREE.Vector3[] = [];
 
-        const lineVerts: THREE.Vector3[]  = [];
-        const crossVerts: THREE.Vector3[] = [];
-
-        for (let i = -size; i <= size; i += step) {
-            lineVerts.push(new THREE.Vector3(-size, i, z), new THREE.Vector3(size, i, z));
-            lineVerts.push(new THREE.Vector3(i, -size, z), new THREE.Vector3(i, size, z));
-        }
-
-        const cs = 0.28;
-        for (let y = -size; y <= size; y += step) {
-            for (let x = -size; x <= size; x += step) {
-                crossVerts.push(new THREE.Vector3(x - cs, y, z), new THREE.Vector3(x + cs, y, z));
-                crossVerts.push(new THREE.Vector3(x, y - cs, z), new THREE.Vector3(x, y + cs, z));
+        // Latitude circles every 20°
+        for (let lat = -80; lat <= 80; lat += 20) {
+            for (let j = 0; j < segs; j++) {
+                const lon1 = (j / segs) * 360 - 180;
+                const lon2 = ((j + 1) / segs) * 360 - 180;
+                verts.push(this.latLonToVec3(lat, lon1, r), this.latLonToVec3(lat, lon2, r));
             }
         }
 
-        const lineMat  = new THREE.LineBasicMaterial({ color: 0xe2e2e2, transparent: true, opacity: 0.55, depthWrite: false });
-        const lineGeo  = new THREE.BufferGeometry().setFromPoints(lineVerts);
-        this.toDispose.push(lineGeo, lineMat);
-        this.scene.add(new THREE.LineSegments(lineGeo, lineMat));
+        // Longitude meridians every 20°
+        for (let lon = -180; lon < 180; lon += 20) {
+            for (let j = 0; j < segs; j++) {
+                const lat1 = -90 + (j / segs) * 180;
+                const lat2 = -90 + ((j + 1) / segs) * 180;
+                verts.push(this.latLonToVec3(lat1, lon, r), this.latLonToVec3(lat2, lon, r));
+            }
+        }
 
-        const crossMat = new THREE.LineBasicMaterial({ color: 0xb0b0b0, transparent: true, opacity: 0.75, depthWrite: false });
-        const crossGeo = new THREE.BufferGeometry().setFromPoints(crossVerts);
-        this.toDispose.push(crossGeo, crossMat);
-        this.scene.add(new THREE.LineSegments(crossGeo, crossMat));
+        const geo = new THREE.BufferGeometry().setFromPoints(verts);
+        const mat = new THREE.LineBasicMaterial({ color: 0xc8c8c8, transparent: true, opacity: 0.25, depthWrite: false });
+        this.toDispose.push(geo, mat);
+        this.globeGroup.add(new THREE.LineSegments(geo, mat));
     }
 
     // ── Arc management ────────────────────────────────────────────────────────
@@ -271,7 +268,7 @@ export class BlogRollInterface {
         // Renderer
         this.renderer = new THREE.WebGLRenderer({ antialias: true, canvas: this.canvas, alpha: true });
         this.renderer.setPixelRatio(window.devicePixelRatio);
-        this.renderer.setClearColor(0xffffff, 1);
+        this.renderer.setClearColor(0xffffff, 0); // transparent — CSS grid shows through
         const width  = this.canvas_container.clientWidth;
         const height = this.canvas_container.clientHeight;
         this.renderer.setSize(width, height);
@@ -294,26 +291,14 @@ export class BlogRollInterface {
         // Opaque, invisible sphere that writes only to the depth buffer.
         // Lines behind the globe are correctly hidden by depth testing.
         const occGeo = new THREE.SphereGeometry(GLOBE_RADIUS * 0.995, 64, 32);
-        const occMat = new THREE.MeshBasicMaterial({ colorWrite: false });
+        const occMat = new THREE.MeshBasicMaterial({ color: 0xffffff }); // white — blocks CSS grid from bleeding through globe interior
         const occMesh = new THREE.Mesh(occGeo, occMat);
         occMesh.renderOrder = -1;   // render first so depth is ready for lines
         this.toDispose.push(occGeo, occMat);
         this.globeGroup.add(occMesh);
 
-        // ── Lat / lon wireframe grid ───────────────────────────────────────
-        const gridGeo = new THREE.SphereGeometry(GLOBE_RADIUS + 0.01, 36, 18);
-        const gridMat = new THREE.MeshBasicMaterial({
-            color:       0xbbbbbb,
-            wireframe:   true,
-            transparent: true,
-            opacity:     0.18,
-            depthWrite:  false,
-        });
-        this.toDispose.push(gridGeo, gridMat);
-        this.globeGroup.add(new THREE.Mesh(gridGeo, gridMat));
-
-        // ── Background grid (fixed in scene, does not rotate with globe) ─────
-        this.buildBackgroundGrid();
+        // ── Lat / lon line grid (matches background grid style) ───────────
+        this.buildGlobeGrid();
 
         // ── Continent outlines (async — arcs can start immediately) ────────
         this.buildEarthOutlines(); // fire and forget; outlines appear once loaded
