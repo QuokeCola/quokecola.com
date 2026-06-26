@@ -275,7 +275,7 @@ export class BlogRollInterface {
 
         // Camera
         this.camera = new THREE.PerspectiveCamera(55, width / height, 0.1, 1000);
-        this.camera.position.set(0, 2, 11);
+        this.camera.position.set(1, 1, 1);
         this.camera.lookAt(0, 0, 0);
 
         // Scene + fog
@@ -284,7 +284,8 @@ export class BlogRollInterface {
 
         // Globe group — offset right and down so only the upper arc is visible
         this.globeGroup = new THREE.Group();
-        this.globeGroup.position.set(5, -7, 0);
+        this.globeGroup.position.set(5, -5, 5);
+        this.globeGroup.rotation.z = -Math.PI / 2;
         this.scene.add(this.globeGroup);
 
         // ── Occlusion sphere ───────────────────────────────────────────────
@@ -342,7 +343,7 @@ export class BlogRollInterface {
         this.lastTime = time;
 
         // Slow auto-rotation
-        this.globeGroup.rotation.y = time * 0.09;
+        this.globeGroup.rotation.x = time * 0.09;
 
         // Advance arcs
         const doneThreshold = 1 + ARC_TRAIL / ARC_PTS;

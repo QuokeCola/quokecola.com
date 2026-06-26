@@ -12,10 +12,10 @@
     background-color: #ffffff;
     /* Flat 2-D grid: thin lines + cross marks at every intersection */
     background-image:
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Cg stroke='%23c0c0c0' stroke-width='1.5' stroke-linecap='round'%3E%3Cline x1='0' y1='0' x2='5' y2='0'/%3E%3Cline x1='0' y1='0' x2='0' y2='5'/%3E%3Cline x1='40' y1='0' x2='35' y2='0'/%3E%3Cline x1='40' y1='0' x2='40' y2='5'/%3E%3Cline x1='0' y1='40' x2='5' y2='40'/%3E%3Cline x1='0' y1='40' x2='0' y2='35'/%3E%3Cline x1='40' y1='40' x2='35' y2='40'/%3E%3Cline x1='40' y1='40' x2='40' y2='35'/%3E%3C/g%3E%3C/svg%3E"),
-        repeating-linear-gradient(to right,  #e4e4e4 0, #e4e4e4 0.5px, transparent 0.5px, transparent 40px),
-        repeating-linear-gradient(to bottom, #e4e4e4 0, #e4e4e4 0.5px, transparent 0.5px, transparent 40px);
-    background-size: 40px 40px;
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cg stroke='%23c0c0c0' stroke-width='1.5' stroke-linecap='round'%3E%3Cline x1='0' y1='0' x2='5' y2='0'/%3E%3Cline x1='0' y1='0' x2='0' y2='5'/%3E%3Cline x1='160' y1='0' x2='155' y2='0'/%3E%3Cline x1='160' y1='0' x2='160' y2='5'/%3E%3Cline x1='0' y1='160' x2='5' y2='160'/%3E%3Cline x1='0' y1='160' x2='0' y2='155'/%3E%3Cline x1='160' y1='160' x2='155' y2='160'/%3E%3Cline x1='160' y1='160' x2='160' y2='155'/%3E%3C/g%3E%3C/svg%3E"),
+        repeating-linear-gradient(to right,  #e4e4e4 0, #e4e4e4 1px, transparent 1px, transparent 160px),
+        repeating-linear-gradient(to bottom, #e4e4e4 0, #e4e4e4 1px, transparent 1px, transparent 160px);
+    background-size: 160px 160px;
 }
 
 #blogroll-canvas-container h1 {
