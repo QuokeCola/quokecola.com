@@ -8,30 +8,29 @@
     "clean": "webpack serve --open"
   },
   "devDependencies": {
+    "@types/react": "^18.3.5",
+    "@types/react-dom": "^18.3.0",
+    "@types/three": "^0.168.0",
     "html-webpack-plugin": "^5.6.0",
     "ts-loader": "^9.0.0",
     "typescript": "^5.3.3",
     "webpack": "^5.95.0",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^5.1.0",
-
-    "@types/react": "^18.3.5",
-    "@types/react-dom": "^18.3.0",
-    "@types/three": "^0.168.0"
+    "world-atlas": "^2.0.2"
   },
   "dependencies": {
     "@react-three/drei": "^9.112.0",
     "@react-three/fiber": "^8.17.6",
-    "leva": "^0.9.35",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "three": "^0.168.0",
-
     "highlight.js": "^11.10.0",
+    "leva": "^0.9.35",
     "marked": "^14.1.2",
     "marked-highlight": "^2.1.4",
     "postprocessing": "^6.36.3",
-    "stats.js": "^0.17.0"
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "stats.js": "^0.17.0",
+    "three": "^0.168.0"
   },
   "private": true
 }
