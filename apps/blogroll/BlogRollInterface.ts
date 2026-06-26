@@ -3,11 +3,11 @@ import * as THREE from 'three';
 import { BlogRollInterfaceData } from "./BlogRollInterfaceData";
 
 // ── Constants ─────────────────────────────────────────────────────────────────
-const GLOBE_RADIUS   = 4;
+const GLOBE_RADIUS   = 6;
 const ARC_COUNT      = 10;
 const ARC_PTS        = 100;
 const ARC_TRAIL      = 30;
-const ARC_MAX_HEIGHT = 1.6;
+const ARC_MAX_HEIGHT = 2.0;
 
 // ── Minimal inline TopoJSON decoder ──────────────────────────────────────────
 interface TopoJSON {
@@ -176,7 +176,7 @@ export class BlogRollInterface {
         geo.setAttribute('color',    colAttr);
         geo.setDrawRange(0, 0);
 
-        const mat  = new THREE.LineBasicMaterial({ vertexColors: true, depthWrite: false });
+        const mat  = new THREE.LineBasicMaterial({ vertexColors: true, depthWrite: false, transparent: true, opacity: 1.0 });
         const line = new THREE.Line(geo, mat);
         this.toDispose.push(geo, mat);
         this.globeGroup.add(line);
@@ -191,6 +191,7 @@ export class BlogRollInterface {
         arc.geometry.setDrawRange(0, 0);
         arc.progress = 0;
         arc.speed    = 0.18 + Math.random() * 0.18;
+        (arc.line.material as THREE.LineBasicMaterial).opacity = 1.0;
     }
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
@@ -242,16 +243,17 @@ export class BlogRollInterface {
         this.renderer.setSize(width, height);
 
         // Camera
-        this.camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000);
-        this.camera.position.set(0, 2, 12);
+        this.camera = new THREE.PerspectiveCamera(55, width / height, 0.1, 1000);
+        this.camera.position.set(0, 2, 11);
         this.camera.lookAt(0, 0, 0);
 
         // Scene + fog
         this.scene = new THREE.Scene();
-        this.scene.fog = new THREE.FogExp2(0xffffff, 0.022);
+        this.scene.fog = new THREE.FogExp2(0xffffff, 0.013);
 
-        // Globe group
+        // Globe group — offset right and down so only the upper arc is visible
         this.globeGroup = new THREE.Group();
+        this.globeGroup.position.set(5, -7, 0);
         this.scene.add(this.globeGroup);
 
         // ── Occlusion sphere ───────────────────────────────────────────────
@@ -328,6 +330,11 @@ export class BlogRollInterface {
             const head = Math.min(Math.floor(arc.progress * ARC_PTS), ARC_PTS);
             const tail = Math.max(0, head - ARC_TRAIL);
             arc.geometry.setDrawRange(tail, head - tail);
+            // Fade out after arc reaches its destination (progress > 1.0)
+            if (arc.progress > 1.0) {
+                const fadeProgress = (arc.progress - 1.0) / (ARC_TRAIL / ARC_PTS);
+                (arc.line.material as THREE.LineBasicMaterial).opacity = Math.max(0, 1 - fadeProgress);
+            }
         }
 
         // Smooth camera follow
@@ -340,9 +347,9 @@ export class BlogRollInterface {
             this.camera_movement_y /= 1.02;
         }
         this.camera.position.set(
-            this.camera_movement_x * 3,
-            this.camera_movement_y * 2 + 2,
-            12
+            this.camera_movement_x * 1.5,
+            this.camera_movement_y * 0.8 + 2,
+            11
         );
         this.camera.lookAt(0, 0, 0);
 
