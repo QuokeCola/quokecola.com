@@ -145,6 +145,40 @@ export class BlogRollInterface {
         this.globeGroup.add(new THREE.LineSegments(this.earthOutlineGeo, mat));
     }
 
+    // ── Background grid ───────────────────────────────────────────────────────
+
+    private buildBackgroundGrid() {
+        const size = 50;
+        const step = 3;
+        const z    = -12;
+
+        const lineVerts: THREE.Vector3[]  = [];
+        const crossVerts: THREE.Vector3[] = [];
+
+        for (let i = -size; i <= size; i += step) {
+            lineVerts.push(new THREE.Vector3(-size, i, z), new THREE.Vector3(size, i, z));
+            lineVerts.push(new THREE.Vector3(i, -size, z), new THREE.Vector3(i, size, z));
+        }
+
+        const cs = 0.28;
+        for (let y = -size; y <= size; y += step) {
+            for (let x = -size; x <= size; x += step) {
+                crossVerts.push(new THREE.Vector3(x - cs, y, z), new THREE.Vector3(x + cs, y, z));
+                crossVerts.push(new THREE.Vector3(x, y - cs, z), new THREE.Vector3(x, y + cs, z));
+            }
+        }
+
+        const lineMat  = new THREE.LineBasicMaterial({ color: 0xe2e2e2, transparent: true, opacity: 0.55, depthWrite: false });
+        const lineGeo  = new THREE.BufferGeometry().setFromPoints(lineVerts);
+        this.toDispose.push(lineGeo, lineMat);
+        this.scene.add(new THREE.LineSegments(lineGeo, lineMat));
+
+        const crossMat = new THREE.LineBasicMaterial({ color: 0xb0b0b0, transparent: true, opacity: 0.75, depthWrite: false });
+        const crossGeo = new THREE.BufferGeometry().setFromPoints(crossVerts);
+        this.toDispose.push(crossGeo, crossMat);
+        this.scene.add(new THREE.LineSegments(crossGeo, crossMat));
+    }
+
     // ── Arc management ────────────────────────────────────────────────────────
 
     private fillArcBuffers(
@@ -278,6 +312,9 @@ export class BlogRollInterface {
         this.toDispose.push(gridGeo, gridMat);
         this.globeGroup.add(new THREE.Mesh(gridGeo, gridMat));
 
+        // ── Background grid (fixed in scene, does not rotate with globe) ─────
+        this.buildBackgroundGrid();
+
         // ── Continent outlines (async — arcs can start immediately) ────────
         this.buildEarthOutlines(); // fire and forget; outlines appear once loaded
 
@@ -327,10 +364,12 @@ export class BlogRollInterface {
         for (const arc of this.arcs) {
             arc.progress += arc.speed * dt;
             if (arc.progress >= doneThreshold) { this.resetArc(arc); continue; }
-            const head = Math.min(Math.floor(arc.progress * ARC_PTS), ARC_PTS);
-            const tail = Math.max(0, head - ARC_TRAIL);
-            arc.geometry.setDrawRange(tail, head - tail);
-            // Fade out after arc reaches its destination (progress > 1.0)
+            // rawHead may exceed ARC_PTS; tail advances past the endpoint so the
+            // trail keeps sliding after the head touches the destination.
+            const rawHead = Math.floor(arc.progress * ARC_PTS);
+            const head    = Math.min(rawHead, ARC_PTS);
+            const tail    = Math.min(Math.max(0, rawHead - ARC_TRAIL), ARC_PTS);
+            arc.geometry.setDrawRange(tail, Math.max(0, head - tail));
             if (arc.progress > 1.0) {
                 const fadeProgress = (arc.progress - 1.0) / (ARC_TRAIL / ARC_PTS);
                 (arc.line.material as THREE.LineBasicMaterial).opacity = Math.max(0, 1 - fadeProgress);
