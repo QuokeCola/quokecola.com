@@ -38,21 +38,21 @@ export class HomepageInterface {
                 request.app_data = app_data;
                 window.postMessage(request);
             }
-        },
-        {
-            img: "./apps/homepage/assets/images/project_therm_calc_tile_pic.png",
-            subtitle: "iOS App",
-            title: "Thermal Calculator",
-            abstract: "A iOS application for calculating substance properties.",
-            onLearnMore: () => { window.open('https://github.com/QuokeCola/ThermoCalculator', '_blank', 'noopener,noreferrer'); }
-        },
-        {
-            img: "./apps/homepage/assets/images/project_terminal_tile_pic.png",
-            subtitle: "Software",
-            title: "Meta Terminal 2",
-            abstract: "Adjust vehicle PID parameters through a visualized terminal.",
-            onLearnMore: () => { window.open('https://github.com/QuokeCola/MetaTerminal', '_blank', 'noopener,noreferrer'); }
         }
+        // {
+        //     img: "./apps/homepage/assets/images/project_therm_calc_tile_pic.png",
+        //     subtitle: "iOS App",
+        //     title: "Thermal Calculator",
+        //     abstract: "A iOS application for calculating substance properties.",
+        //     onLearnMore: () => { window.open('https://github.com/QuokeCola/ThermoCalculator', '_blank', 'noopener,noreferrer'); }
+        // },
+        // {
+        //     img: "./apps/homepage/assets/images/project_terminal_tile_pic.png",
+        //     subtitle: "Software",
+        //     title: "Meta Terminal 2",
+        //     abstract: "Adjust vehicle PID parameters through a visualized terminal.",
+        //     onLearnMore: () => { window.open('https://github.com/QuokeCola/MetaTerminal', '_blank', 'noopener,noreferrer'); }
+        // }
     ];
 
     static current_banner_idx: number = 0;
@@ -163,7 +163,7 @@ export class HomepageInterface {
             container.classList.replace("loading-components-light", "loaded-components-light");
             new_slide.getBoundingClientRect(); // force reflow before animating
 
-            const easing = `cubic-bezier(0.4, 0, 0.2, 1)`;
+            const easing = `cubic-bezier(0.8, 0, 0.2, 1)`;
             if (direction === 'none') {
                 new_slide.style.transition = `opacity ${DURATION}ms ${easing}`;
                 new_slide.style.opacity = '1';
