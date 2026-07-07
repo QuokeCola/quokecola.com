@@ -77,6 +77,11 @@ export class BlogRollInterface {
     private blogroll_list_container: HTMLElement;
     private document_info: BlogRollInterfaceData[];
 
+    // Background
+    private bgScene    : THREE.Scene;
+    private bgCamera   : THREE.OrthographicCamera;
+    private bgMaterial : THREE.ShaderMaterial;
+
     // Post-processing
     private renderTarget  : THREE.WebGLRenderTarget;
     private postScene     : THREE.Scene;
@@ -186,6 +191,66 @@ export class BlogRollInterface {
         this.globeGroup.add(new THREE.LineSegments(geo, mat));
     }
 
+    // ── Background grid ───────────────────────────────────────────────────────
+
+    private setupBackground(width: number, height: number) {
+        this.bgMaterial = new THREE.ShaderMaterial({
+            uniforms: {
+                resolution: { value: new THREE.Vector2(width, height) },
+                gridOffset: { value: new THREE.Vector2(0, 0) },
+            },
+            vertexShader: `
+                varying vec2 vUv;
+                void main() {
+                    vUv = uv;
+                    gl_Position = vec4(position.xy, 0.0, 1.0);
+                }
+            `,
+            fragmentShader: `
+                precision highp float;
+                uniform vec2 resolution;
+                uniform vec2 gridOffset;
+                varying vec2 vUv;
+
+                void main() {
+                    float cellSize = 159.0;
+                    float halfCell = 79.5;
+
+                    // CSS-pixel position with parallax offset
+                    vec2 pixPos = vUv * resolution + gridOffset;
+
+                    // Thin grid lines at every halfCell px
+                    vec2 lineMod = mod(pixPos, halfCell);
+                    float distX  = min(lineMod.x, halfCell - lineMod.x);
+                    float distY  = min(lineMod.y, halfCell - lineMod.y);
+                    float lineA  = max(
+                        1.0 - smoothstep(0.0, 0.75, distX),
+                        1.0 - smoothstep(0.0, 0.75, distY)
+                    );
+
+                    // Cross marks at full-cell centers
+                    vec2  crossMod = mod(pixPos + halfCell, cellSize) - halfCell;
+                    float crossH   = step(abs(crossMod.y), 1.0) * step(abs(crossMod.x), 5.0);
+                    float crossV   = step(abs(crossMod.x), 1.0) * step(abs(crossMod.y), 5.0);
+                    float crossA   = max(crossH, crossV);
+
+                    vec3 col = vec3(1.0);
+                    col = mix(col, vec3(0.863), lineA);   // #dcddde
+                    col = mix(col, vec3(0.710), crossA);  // #b5b5b5
+                    gl_FragColor = vec4(col, 1.0);
+                }
+            `,
+            depthTest:  false,
+            depthWrite: false,
+        });
+
+        const quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), this.bgMaterial);
+        quad.frustumCulled = false;
+        this.bgScene  = new THREE.Scene();
+        this.bgScene.add(quad);
+        this.bgCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+    }
+
     // ── Post-processing ───────────────────────────────────────────────────────
 
     private setupPostProcessing(width: number, height: number) {
@@ -251,6 +316,7 @@ export class BlogRollInterface {
                 void main() {
                     vec2 uv = vUv;
 
+                    // Glitch: horizontal strip shifts (gray-safe — no channel separation)
                     if (glitch > 0.001) {
                         float row = floor(uv.y * resolution.y / 4.0);
                         float t   = floor(time * 18.0);
@@ -264,25 +330,33 @@ export class BlogRollInterface {
                         }
                     }
 
-                    float ca   = 0.0010 + glitch * 0.0055;
-                    float r    = texture2D(tDiffuse, uv + vec2(ca,  0.0)).r;
-                    float g    = texture2D(tDiffuse, uv).g;
-                    float b    = texture2D(tDiffuse, uv - vec2(ca,  0.0)).b;
-                    float a    = texture2D(tDiffuse, uv).a;
-                    vec4 color = vec4(r, g, b, a);
+                    // Sample + desaturate — pure grayscale, no chromatic aberration
+                    vec4  color = texture2D(tDiffuse, uv);
+                    float luma  = dot(color.rgb, vec3(0.299, 0.587, 0.114));
 
-                    vec2  pix     = floor(vUv * resolution);
-                    float bayer   = texture2D(tBayer, pix / 8.0).r;
-                    float luma    = dot(color.rgb, vec3(0.299, 0.587, 0.114));
+                    // Shallow gray bloom: 5-tap cross blur mixed in softly
+                    vec2  ts    = 1.0 / resolution;
+                    float bw    = 7.0;
+                    float blurL = (
+                        luma * 4.0
+                        + dot(texture2D(tDiffuse, uv + vec2( bw, 0.0) * ts).rgb, vec3(0.299, 0.587, 0.114))
+                        + dot(texture2D(tDiffuse, uv + vec2(-bw, 0.0) * ts).rgb, vec3(0.299, 0.587, 0.114))
+                        + dot(texture2D(tDiffuse, uv + vec2(0.0,  bw) * ts).rgb, vec3(0.299, 0.587, 0.114))
+                        + dot(texture2D(tDiffuse, uv + vec2(0.0, -bw) * ts).rgb, vec3(0.299, 0.587, 0.114))
+                    ) / 8.0;
+                    luma = luma * 0.82 + blurL * 0.18;
+                    color.rgb = vec3(luma);
 
-                    float dist   = length(vUv - mouseUv);
-                    float radial = 1.0 - smoothstep(0.0, 0.28, dist);
-                    float mid    = smoothstep(0.05, 0.35, luma) * smoothstep(0.97, 0.65, luma);
-                    float amt    = radial * mid * 0.55;
-
-                    float levels   = 4.0;
-                    float dithered = floor(luma * levels + bayer) / levels;
-                    color.rgb = mix(color.rgb, vec3(dithered), amt);
+                    // Ordered dithering: init burst + mouse radial + small baseline
+                    vec2  pix      = floor(vUv * resolution);
+                    float bayer    = texture2D(tBayer, pix / 8.0).r;
+                    float initFade = exp(-time * 0.6);
+                    float dist     = length(vUv - mouseUv);
+                    float radial   = 1.0 - smoothstep(0.0, 0.3, dist);
+                    float mid      = smoothstep(0.03, 0.5, luma) * smoothstep(0.99, 0.55, luma);
+                    float amt      = clamp(0.05 + radial * 0.45 + initFade * 0.65, 0.0, 0.85) * mid;
+                    float dithered = floor(luma * 4.0 + bayer) / 4.0;
+                    color.rgb = vec3(mix(luma, dithered, amt));
 
                     gl_FragColor = color;
                 }
@@ -388,12 +462,14 @@ export class BlogRollInterface {
         this.canvas_container.style.backgroundColor = "#ffffff";
 
         // Renderer
-        this.renderer = new THREE.WebGLRenderer({ antialias: true, canvas: this.canvas, alpha: true });
+        this.renderer = new THREE.WebGLRenderer({ antialias: true, canvas: this.canvas });
         this.renderer.setPixelRatio(window.devicePixelRatio);
-        this.renderer.setClearColor(0xffffff, 0); // transparent — CSS grid shows through
+        this.renderer.setClearColor(0xffffff, 1);
+        this.renderer.autoClear = false;
         const width  = this.canvas_container.clientWidth;
         const height = this.canvas_container.clientHeight;
         this.renderer.setSize(width, height);
+        this.setupBackground(width, height);
         this.setupPostProcessing(width, height);
 
         // Camera
@@ -455,13 +531,15 @@ export class BlogRollInterface {
         this.renderer.setSize(w, h);
         this.camera.aspect = w / h;
         this.camera.updateProjectionMatrix();
+        if (this.bgMaterial) {
+            this.bgMaterial.uniforms.resolution.value.set(w, h);
+        }
         if (this.renderTarget && this.postMaterial) {
             const dpr = window.devicePixelRatio;
             const pw = Math.floor(w * dpr), ph = Math.floor(h * dpr);
             this.renderTarget.setSize(pw, ph);
             this.postMaterial.uniforms.resolution.value.set(pw, ph);
         }
-        this.renderer.render(this.scene, this.camera);
     }
 
     // ── Render loop ───────────────────────────────────────────────────────────
@@ -514,6 +592,13 @@ export class BlogRollInterface {
         );
         this.camera.lookAt(0, 0, 0);
 
+        if (this.bgMaterial) {
+            const parallax = 40;
+            this.bgMaterial.uniforms.gridOffset.value.set(
+                -this.camera_movement_x * parallax,
+                 this.camera_movement_y * parallax
+            );
+        }
         if (this.postMaterial) {
             this.postMaterial.uniforms.time.value   = time;
             this.postMaterial.uniforms.glitch.value = this.glitchIntensity;
@@ -522,9 +607,15 @@ export class BlogRollInterface {
                 (this.mouse.y + 1) * 0.5
             );
         }
+        // Render bg grid + globe into renderTarget, then post-process to screen
         this.renderer.setRenderTarget(this.renderTarget ?? null);
+        this.renderer.clear();
+        if (this.bgScene && this.bgCamera) {
+            this.renderer.render(this.bgScene, this.bgCamera);
+        }
         this.renderer.render(this.scene, this.camera);
         this.renderer.setRenderTarget(null);
+        this.renderer.clear();
         if (this.postScene && this.postCamera) {
             this.renderer.render(this.postScene, this.postCamera);
         }
@@ -538,6 +629,7 @@ export class BlogRollInterface {
         if (this.resize_observer) this.resize_observer.disconnect();
         if (this.canvas_container) this.canvas_container.removeEventListener('mousemove', this.onMouseMove);
         if (this.renderer) this.renderer.dispose();
+        if (this.bgMaterial)    this.bgMaterial.dispose();
         if (this.renderTarget)  this.renderTarget.dispose();
         if (this.bayerTexture)  this.bayerTexture.dispose();
         if (this.postMaterial)  this.postMaterial.dispose();

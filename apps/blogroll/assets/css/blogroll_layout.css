@@ -10,11 +10,6 @@
     transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
     border-bottom: #CCCCCC solid 1px;
     background-color: #ffffff;
-    /* Flat 2-D grid: thin lines + cross marks at every intersection */
-    background-image:
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 159 159'%3E%3Cline x1='79.5' y1='-.5' x2='79.5' y2='159.5' stroke='%23dcddde' stroke-width='.75' fill='none' stroke-linecap='square'/%3E%3Cline x1='-.5' y1='79.5' x2='159.5' y2='79.5' stroke='%23dcddde' stroke-width='.75' fill='none' stroke-linecap='square'/%3E%3Cline x1='74.5' y1='79.5' x2='84.5' y2='79.5' stroke='%23b5b5b5' stroke-width='2' fill='none' stroke-linecap='square'/%3E%3Cline x1='79.5' y1='74.5' x2='79.5' y2='84.5' stroke='%23b5b5b5' stroke-width='2' fill='none' stroke-linecap='square'/%3E%3C/svg%3E");
-    background-size: 159px 159px;
-    background-position: center center;
 }
 
 #blogroll-canvas-container h1 {
