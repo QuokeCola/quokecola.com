@@ -77,6 +77,16 @@ export class BlogRollInterface {
     private blogroll_list_container: HTMLElement;
     private document_info: BlogRollInterfaceData[];
 
+    // Post-processing
+    private renderTarget  : THREE.WebGLRenderTarget;
+    private postScene     : THREE.Scene;
+    private postCamera    : THREE.OrthographicCamera;
+    private postMaterial  : THREE.ShaderMaterial;
+    private bayerTexture  : THREE.DataTexture;
+    private glitchIntensity: number = 0;
+    private prevMouseX   : number = 0;
+    private prevMouseY   : number = 0;
+
     // ── Static factory ────────────────────────────────────────────────────────
     static async create_layout() {
         for (const url of this.css_urls) ContentLoaderInterface.set_app_customize_css(url);
@@ -176,6 +186,118 @@ export class BlogRollInterface {
         this.globeGroup.add(new THREE.LineSegments(geo, mat));
     }
 
+    // ── Post-processing ───────────────────────────────────────────────────────
+
+    private setupPostProcessing(width: number, height: number) {
+        const bayerRaw = [
+             0, 32,  8, 40,  2, 34, 10, 42,
+            48, 16, 56, 24, 50, 18, 58, 26,
+            12, 44,  4, 36, 14, 46,  6, 38,
+            60, 28, 52, 20, 62, 30, 54, 22,
+             3, 35, 11, 43,  1, 33,  9, 41,
+            51, 19, 59, 27, 49, 17, 57, 25,
+            15, 47,  7, 39, 13, 45,  5, 37,
+            63, 31, 55, 23, 61, 29, 53, 21,
+        ];
+        const bayerData = new Uint8Array(64 * 4);
+        for (let i = 0; i < 64; i++) {
+            const v = Math.round(bayerRaw[i] / 63 * 255);
+            bayerData[i*4] = bayerData[i*4+1] = bayerData[i*4+2] = v;
+            bayerData[i*4+3] = 255;
+        }
+        this.bayerTexture = new THREE.DataTexture(bayerData, 8, 8, THREE.RGBAFormat);
+        this.bayerTexture.magFilter = THREE.NearestFilter;
+        this.bayerTexture.minFilter = THREE.NearestFilter;
+        this.bayerTexture.wrapS    = THREE.RepeatWrapping;
+        this.bayerTexture.wrapT    = THREE.RepeatWrapping;
+        this.bayerTexture.needsUpdate = true;
+
+        const dpr = window.devicePixelRatio;
+        this.renderTarget = new THREE.WebGLRenderTarget(
+            Math.floor(width * dpr), Math.floor(height * dpr),
+            { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBAFormat }
+        );
+
+        this.postMaterial = new THREE.ShaderMaterial({
+            uniforms: {
+                tDiffuse:   { value: this.renderTarget.texture },
+                tBayer:     { value: this.bayerTexture },
+                time:       { value: 0.0 },
+                glitch:     { value: 0.0 },
+                mouseUv:    { value: new THREE.Vector2(0.5, 0.5) },
+                resolution: { value: new THREE.Vector2(Math.floor(width * dpr), Math.floor(height * dpr)) },
+            },
+            vertexShader: `
+                varying vec2 vUv;
+                void main() {
+                    vUv = uv;
+                    gl_Position = vec4(position.xy, 0.0, 1.0);
+                }
+            `,
+            fragmentShader: `
+                precision highp float;
+                uniform sampler2D tDiffuse;
+                uniform sampler2D tBayer;
+                uniform float     time;
+                uniform float     glitch;
+                uniform vec2      mouseUv;
+                uniform vec2      resolution;
+                varying vec2      vUv;
+
+                float rand(vec2 co) {
+                    return fract(sin(dot(co, vec2(12.9898, 78.233))) * 43758.5453);
+                }
+
+                void main() {
+                    vec2 uv = vUv;
+
+                    if (glitch > 0.001) {
+                        float row = floor(uv.y * resolution.y / 4.0);
+                        float t   = floor(time * 18.0);
+                        if (rand(vec2(row, t)) > 0.80 - glitch * 0.28) {
+                            float sh = (rand(vec2(row * 1.31, t * 0.71)) - 0.5) * 0.07 * glitch;
+                            uv.x = fract(uv.x + sh);
+                        }
+                        float br = floor(uv.y * 7.0);
+                        if (rand(vec2(br, floor(time * 5.0))) > 0.95) {
+                            uv.x = fract(uv.x + (rand(vec2(br * 2.1, time)) - 0.5) * 0.13 * glitch);
+                        }
+                    }
+
+                    float ca   = 0.0010 + glitch * 0.0055;
+                    float r    = texture2D(tDiffuse, uv + vec2(ca,  0.0)).r;
+                    float g    = texture2D(tDiffuse, uv).g;
+                    float b    = texture2D(tDiffuse, uv - vec2(ca,  0.0)).b;
+                    float a    = texture2D(tDiffuse, uv).a;
+                    vec4 color = vec4(r, g, b, a);
+
+                    vec2  pix     = floor(vUv * resolution);
+                    float bayer   = texture2D(tBayer, pix / 8.0).r;
+                    float luma    = dot(color.rgb, vec3(0.299, 0.587, 0.114));
+
+                    float dist   = length(vUv - mouseUv);
+                    float radial = 1.0 - smoothstep(0.0, 0.28, dist);
+                    float mid    = smoothstep(0.05, 0.35, luma) * smoothstep(0.97, 0.65, luma);
+                    float amt    = radial * mid * 0.55;
+
+                    float levels   = 4.0;
+                    float dithered = floor(luma * levels + bayer) / levels;
+                    color.rgb = mix(color.rgb, vec3(dithered), amt);
+
+                    gl_FragColor = color;
+                }
+            `,
+            depthTest:  false,
+            depthWrite: false,
+        });
+
+        const quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), this.postMaterial);
+        quad.frustumCulled = false;
+        this.postScene  = new THREE.Scene();
+        this.postScene.add(quad);
+        this.postCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+    }
+
     // ── Arc management ────────────────────────────────────────────────────────
 
     private fillArcBuffers(
@@ -272,6 +394,7 @@ export class BlogRollInterface {
         const width  = this.canvas_container.clientWidth;
         const height = this.canvas_container.clientHeight;
         this.renderer.setSize(width, height);
+        this.setupPostProcessing(width, height);
 
         // Camera
         this.camera = new THREE.PerspectiveCamera(55, width / height, 0.1, 1000);
@@ -332,6 +455,12 @@ export class BlogRollInterface {
         this.renderer.setSize(w, h);
         this.camera.aspect = w / h;
         this.camera.updateProjectionMatrix();
+        if (this.renderTarget && this.postMaterial) {
+            const dpr = window.devicePixelRatio;
+            const pw = Math.floor(w * dpr), ph = Math.floor(h * dpr);
+            this.renderTarget.setSize(pw, ph);
+            this.postMaterial.uniforms.resolution.value.set(pw, ph);
+        }
         this.renderer.render(this.scene, this.camera);
     }
 
@@ -341,6 +470,13 @@ export class BlogRollInterface {
         time *= 0.001;
         const dt = this.lastTime > 0 ? Math.min(time - this.lastTime, 0.05) : 0;
         this.lastTime = time;
+
+        // Mouse velocity → glitch intensity
+        const dvx = this.mouse.x - this.prevMouseX;
+        const dvy = this.mouse.y - this.prevMouseY;
+        this.glitchIntensity = Math.min(1.0, this.glitchIntensity * 0.88 + Math.sqrt(dvx*dvx + dvy*dvy) * 6.0);
+        this.prevMouseX = this.mouse.x;
+        this.prevMouseY = this.mouse.y;
 
         // Slow auto-rotation
         this.globeGroup.rotation.x = time * 0.09;
@@ -378,7 +514,20 @@ export class BlogRollInterface {
         );
         this.camera.lookAt(0, 0, 0);
 
+        if (this.postMaterial) {
+            this.postMaterial.uniforms.time.value   = time;
+            this.postMaterial.uniforms.glitch.value = this.glitchIntensity;
+            this.postMaterial.uniforms.mouseUv.value.set(
+                (this.mouse.x + 1) * 0.5,
+                (this.mouse.y + 1) * 0.5
+            );
+        }
+        this.renderer.setRenderTarget(this.renderTarget ?? null);
         this.renderer.render(this.scene, this.camera);
+        this.renderer.setRenderTarget(null);
+        if (this.postScene && this.postCamera) {
+            this.renderer.render(this.postScene, this.postCamera);
+        }
         this.animationFrameId = requestAnimationFrame(this.render);
     }
 
@@ -389,6 +538,9 @@ export class BlogRollInterface {
         if (this.resize_observer) this.resize_observer.disconnect();
         if (this.canvas_container) this.canvas_container.removeEventListener('mousemove', this.onMouseMove);
         if (this.renderer) this.renderer.dispose();
+        if (this.renderTarget)  this.renderTarget.dispose();
+        if (this.bayerTexture)  this.bayerTexture.dispose();
+        if (this.postMaterial)  this.postMaterial.dispose();
         for (const obj of this.toDispose) obj.dispose();
     }
 }
