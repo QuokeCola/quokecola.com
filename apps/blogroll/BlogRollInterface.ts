@@ -334,17 +334,35 @@ export class BlogRollInterface {
                     vec4  color = texture2D(tDiffuse, uv);
                     float luma  = dot(color.rgb, vec3(0.299, 0.587, 0.114));
 
-                    // Shallow gray bloom: 5-tap cross blur mixed in softly
-                    vec2  ts    = 1.0 / resolution;
-                    float bw    = 7.0;
-                    float blurL = (
+                    vec2  ts  = 1.0 / resolution;
+                    vec3  LUM = vec3(0.299, 0.587, 0.114);
+
+                    // Tight bloom: 5-tap 7px — softens edges
+                    float bw     = 7.0;
+                    float bloomL = (
                         luma * 4.0
-                        + dot(texture2D(tDiffuse, uv + vec2( bw, 0.0) * ts).rgb, vec3(0.299, 0.587, 0.114))
-                        + dot(texture2D(tDiffuse, uv + vec2(-bw, 0.0) * ts).rgb, vec3(0.299, 0.587, 0.114))
-                        + dot(texture2D(tDiffuse, uv + vec2(0.0,  bw) * ts).rgb, vec3(0.299, 0.587, 0.114))
-                        + dot(texture2D(tDiffuse, uv + vec2(0.0, -bw) * ts).rgb, vec3(0.299, 0.587, 0.114))
+                        + dot(texture2D(tDiffuse, uv + vec2( bw, 0.0) * ts).rgb, LUM)
+                        + dot(texture2D(tDiffuse, uv + vec2(-bw, 0.0) * ts).rgb, LUM)
+                        + dot(texture2D(tDiffuse, uv + vec2(0.0,  bw) * ts).rgb, LUM)
+                        + dot(texture2D(tDiffuse, uv + vec2(0.0, -bw) * ts).rgb, LUM)
                     ) / 8.0;
-                    luma = luma * 0.82 + blurL * 0.18;
+                    luma = luma * 0.82 + bloomL * 0.18;
+
+                    // Wide glow: 8-tap 20px — dark elements radiate soft gray halos
+                    float gw    = 20.0;
+                    float glowL = (
+                        dot(texture2D(tDiffuse, uv + vec2( gw,  0.0) * ts).rgb, LUM) +
+                        dot(texture2D(tDiffuse, uv + vec2(-gw,  0.0) * ts).rgb, LUM) +
+                        dot(texture2D(tDiffuse, uv + vec2(0.0,   gw) * ts).rgb, LUM) +
+                        dot(texture2D(tDiffuse, uv + vec2(0.0,  -gw) * ts).rgb, LUM) +
+                        dot(texture2D(tDiffuse, uv + vec2( gw,   gw) * ts).rgb, LUM) +
+                        dot(texture2D(tDiffuse, uv + vec2(-gw,   gw) * ts).rgb, LUM) +
+                        dot(texture2D(tDiffuse, uv + vec2( gw,  -gw) * ts).rgb, LUM) +
+                        dot(texture2D(tDiffuse, uv + vec2(-gw,  -gw) * ts).rgb, LUM)
+                    ) / 8.0;
+                    // Bright pixels near dark elements pick up a soft gray cast
+                    luma = luma - (1.0 - glowL) * smoothstep(0.0, 0.85, luma) * 0.18;
+
                     color.rgb = vec3(luma);
 
                     // Ordered dithering: init burst + mouse radial + small baseline
