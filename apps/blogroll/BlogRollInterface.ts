@@ -171,7 +171,7 @@ export class BlogRollInterface {
         }
 
         const geo = new THREE.BufferGeometry().setFromPoints(verts);
-        const mat = new THREE.LineBasicMaterial({ color: 0xc8c8c8, transparent: true, opacity: 0.25, depthWrite: false });
+        const mat = new THREE.LineBasicMaterial({ color: 0xc8c8c8, transparent: true, opacity: 0.50, depthWrite: false });
         this.toDispose.push(geo, mat);
         this.globeGroup.add(new THREE.LineSegments(geo, mat));
     }
