@@ -45,12 +45,64 @@ html {
 }
 
 /********************************************//**
+ *  Global wireframe — full-height column rules
+ *  on the scroll container; the layout grids
+ *  below snap onto these lines.
+ ***********************************************/
+@media screen and (min-width: 900px){
+    #content-screen{
+        background-image:
+            linear-gradient(var(--line), var(--line)),
+            linear-gradient(var(--line), var(--line)),
+            linear-gradient(var(--line), var(--line)),
+            linear-gradient(var(--line), var(--line)),
+            linear-gradient(var(--line), var(--line));
+        background-size: 1px 100%;
+        background-repeat: no-repeat;
+        background-position:
+            var(--gutter) 0,
+            calc(25% + var(--gutter)/2) 0,
+            50% 0,
+            calc(75% - var(--gutter)/2) 0,
+            calc(100% - var(--gutter)) 0;
+    }
+}
+@media screen and (min-width: 550px) and (max-width: 899px){
+    #content-screen{
+        background-image:
+            linear-gradient(var(--line), var(--line)),
+            linear-gradient(var(--line), var(--line)),
+            linear-gradient(var(--line), var(--line));
+        background-size: 1px 100%;
+        background-repeat: no-repeat;
+        background-position:
+            var(--gutter) 0,
+            50% 0,
+            calc(100% - var(--gutter)) 0;
+    }
+}
+@media screen and (max-width: 549px){
+    #content-screen{
+        background-image:
+            linear-gradient(var(--line), var(--line)),
+            linear-gradient(var(--line), var(--line));
+        background-size: 1px 100%;
+        background-repeat: no-repeat;
+        background-position:
+            var(--gutter) 0,
+            calc(100% - var(--gutter)) 0;
+    }
+}
+
+/********************************************//**
  *  Schematic grid background
  *  (mirrors the Three.js bg shader: hairlines
  *  every 79.5px + "+" marks every 159px)
+ *  Transparent so the global wireframe rules
+ *  show through underneath.
  ***********************************************/
 .qk-grid-bg{
-    background-color: var(--paper);
+    background-color: transparent;
     background-image:
         url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='159' height='159'%3E%3Cpath d='M74.5 79.5h10M79.5 74.5v10' stroke='%23b5b5b5' stroke-width='1'/%3E%3C/svg%3E"),
         linear-gradient(to right, var(--line) 1px, transparent 1px),

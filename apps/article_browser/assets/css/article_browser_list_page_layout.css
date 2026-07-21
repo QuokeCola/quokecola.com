@@ -5,8 +5,9 @@
     top: 0;
     display: block;
     flex-wrap: wrap;
-    width: calc(100% - var(--grid-gutter));
-    padding: calc(var(--nav-height)) calc(var(--grid-gutter) / 2) 16px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: calc(var(--nav-height)) var(--gutter) 16px;
     border-bottom: solid 1px var(--article-browser-border-color);
     background-color: rgba(255,255,255,0.6);
     backdrop-filter: blur(40px);
@@ -33,22 +34,22 @@
     background-color: rgba(255,255,255,1.0);
 }
 
-/* Static section head above the grid */
+/* Static section head above the grid — sits on the wireframe margins */
 .article-browser-list-head{
     display: flex;
     align-items: baseline;
     gap: 14px;
-    width: 100%;
+    width: calc(100% - 2 * var(--gutter));
     box-sizing: border-box;
-    max-width: 1200px;
-    margin: 40px auto 16px;
-    padding: 0 calc(var(--grid-gutter) / 2) 12px;
+    margin: 40px var(--gutter) 16px;
+    padding: 0 0 12px;
     border-bottom: 1px solid var(--ink);
 }
 
+/* Grid spans margin→margin; its 1px gutters land on the wireframe columns */
 #article-browser-list-grid-container{
     display: inline-grid;
-    width: 100%;
+    width: calc(100% - 2 * var(--gutter));
     padding: 0;
     transition: all cubic-bezier(0.8, 0, 0.2, 1) 0.5s;
     grid-gap: 1px;
@@ -56,9 +57,7 @@
     border-top: 1px solid var(--article-browser-border-color);
     border-bottom: 1px solid var(--article-browser-border-color);
     overflow-x: visible;
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 0 var(--gutter);
 
     counter-reset: entry;
 }
@@ -77,18 +76,19 @@
     display: flex;
     height: 50px;
     overflow-x: hidden;
-    width: 100%;
+    width: calc(100% - 2 * var(--gutter));
+    margin: 0 var(--gutter);
     justify-content: flex-end;
     border-bottom: solid 1px var(--article-browser-border-color);
 }
 
-@media screen and (min-width: 1000px) {
+@media screen and (min-width: 900px) {
     #article-browser-list-grid-container{
         grid-template-columns: repeat(4, 1fr);
     }
 }
 
-@media screen and (max-width: 999px) and (min-width: 550px) {
+@media screen and (max-width: 899px) and (min-width: 550px) {
     #article-browser-list-grid-container{
         grid-template-columns: repeat(2, 1fr);
     }
