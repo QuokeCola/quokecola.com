@@ -14,12 +14,11 @@
 #content-screen{
     position: absolute;
     top: 0;left: 0;
-    width: calc(100% - 2px);
-    height: calc(100% - 2px);
+    width: 100%;
+    height: 100%;
 
     background-color: var(--paper);
     color: var(--ink);
-    border: 1px solid var(--line);
     font-family: var(--font-body);
     line-height: 1.5;
     overflow-x: hidden;

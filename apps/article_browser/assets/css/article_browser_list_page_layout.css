@@ -54,8 +54,8 @@
     transition: all cubic-bezier(0.8, 0, 0.2, 1) 0.5s;
     grid-gap: 1px;
     background-color: var(--article-browser-border-color);
-    border-top: 1px solid var(--article-browser-border-color);
-    border-bottom: 1px solid var(--article-browser-border-color);
+    border: 1px solid var(--article-browser-border-color);
+    box-sizing: border-box;
     overflow-x: visible;
     margin: 0 var(--gutter);
 
