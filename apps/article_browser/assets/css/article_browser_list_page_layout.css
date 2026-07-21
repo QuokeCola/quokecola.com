@@ -52,9 +52,10 @@
     width: calc(100% - 2 * var(--gutter));
     padding: 0;
     transition: all cubic-bezier(0.8, 0, 0.2, 1) 0.5s;
-    grid-gap: 1px;
+    row-gap: 1px;
     background-color: var(--article-browser-border-color);
-    border: 1px solid var(--article-browser-border-color);
+    border-top: 1px solid var(--article-browser-border-color);
+    border-bottom: 1px solid var(--article-browser-border-color);
     box-sizing: border-box;
     overflow-x: visible;
     margin: 0 var(--gutter);
@@ -72,6 +73,16 @@
     background-color: white;
 }
 
+/* Vertical seams drawn on the tiles at the track boundaries — they land
+   exactly on the wireframe rules. */
+#article-browser-list-grid-container > .article-browser-list-quarter-tile{
+    border-left: 1px solid var(--article-browser-border-color);
+    box-sizing: border-box;
+}
+#article-browser-list-grid-container > .article-browser-list-quarter-tile:last-child{
+    border-right: 1px solid var(--article-browser-border-color);
+}
+
 #article-browser-list-index {
     display: flex;
     height: 50px;
@@ -86,16 +97,25 @@
     #article-browser-list-grid-container{
         grid-template-columns: repeat(4, 1fr);
     }
+    #article-browser-list-grid-container > .article-browser-list-quarter-tile:nth-child(4n){
+        border-right: 1px solid var(--article-browser-border-color);
+    }
 }
 
 @media screen and (max-width: 899px) and (min-width: 550px) {
     #article-browser-list-grid-container{
         grid-template-columns: repeat(2, 1fr);
     }
+    #article-browser-list-grid-container > .article-browser-list-quarter-tile:nth-child(2n){
+        border-right: 1px solid var(--article-browser-border-color);
+    }
 }
 
 @media screen and (max-width: 549px) {
     #article-browser-list-grid-container{
         grid-template-columns: 1fr;
+    }
+    #article-browser-list-grid-container > .article-browser-list-quarter-tile{
+        border-right: 1px solid var(--article-browser-border-color);
     }
 }
