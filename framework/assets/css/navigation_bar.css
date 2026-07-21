@@ -12,7 +12,7 @@ nav{
     top: 0;
 
     color: var(--ink);
-    z-index: 4;
+    z-index: 99;
     backdrop-filter: blur(0px) brightness(100%);
     -webkit-backdrop-filter: blur(0px) brightness(100%);
     border-bottom: 1px solid transparent;
