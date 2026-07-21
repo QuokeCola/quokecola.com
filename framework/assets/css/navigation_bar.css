@@ -12,7 +12,7 @@ nav{
     top: 0;
 
     color: var(--ink);
-    z-index: 2;
+    z-index: 4;
     backdrop-filter: blur(0px) brightness(100%);
     -webkit-backdrop-filter: blur(0px) brightness(100%);
     border-bottom: 1px solid transparent;
@@ -36,7 +36,7 @@ nav{
     margin: 12px 0 12px var(--gutter);
     z-index: 3;
     display: flex;
-    align-items: baseline;
+    align-items: center;
     gap: 8px;
 
     font-family: var(--font-display);

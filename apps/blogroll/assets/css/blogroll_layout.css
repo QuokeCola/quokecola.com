@@ -40,7 +40,8 @@
     position: absolute;
     z-index: 10;
     pointer-events: none;
-    display: block;
+    display: flex;
+
 }
 
 .blogroll-canvas-overlay .qk-label{
