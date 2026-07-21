@@ -3,6 +3,10 @@ import {AppRequests} from "./AppRequests";
 import {AppDelegate} from "./AppDelegate";
 import {ArticleBrowserDelegate} from "../apps/article_browser/ArticleBrowserDelegate";
 import {BlogRollDelegate} from "../apps/blogroll/BlogRollDelegate";
+import {MotionInterface} from "./MotionInterface";
+
+// Global crosshair cursor HUD (desktop only, respects reduced motion)
+MotionInterface.init_hud();
 
 // Analyzing hyper ref.
 let homepage_delegate = new HomepageDelegate();

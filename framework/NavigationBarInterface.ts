@@ -1,5 +1,6 @@
 import {AppRequests} from "./AppRequests";
 import {ContentLoaderInterface} from "./ContentLoaderInterface";
+import {MotionInterface} from "./MotionInterface";
 
 export class NavigationBarInterface {
     private static nav_obj = document.getElementById("navigation-bar");
@@ -28,6 +29,7 @@ export class NavigationBarInterface {
         let btn = document.createElement("div");
         btn.classList.add("nav-menu-items");
         btn.innerText = title;
+        btn.setAttribute("data-scramble-hover", "");
         btn.onclick = function () {
             window.postMessage(button_request);
             if (NavigationBarInterface.link_panel_status instanceof HTMLInputElement) {
@@ -37,6 +39,7 @@ export class NavigationBarInterface {
         }
         if (this.menu_panel_obj) {
             this.menu_panel_obj.appendChild(btn);
+            MotionInterface.bind_hover_scrambles(this.menu_panel_obj);
         }
     }
 

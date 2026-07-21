@@ -1,19 +1,68 @@
+/********************************************//**
+ *      Featured-work banner (01) — frame panel
+ ***********************************************/
 .home-banner-wrapper {
-    height: 80%; width: 100%;
-    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
-    display: block;
+    width: 100%;
+    min-height: 480px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: minmax(280px, 2fr) 3fr;
     position: relative;
-    flex-wrap: wrap;
-    border-bottom: solid 1px rgb(225,225,225);
+    background: var(--paper);
+    margin-bottom: 8px;
+}
+
+.home-banner-text {
+    grid-column: 1;
+    grid-row: 1;
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+    padding: 28px;
+    border-right: 1px solid var(--line);
+    background: var(--paper);
+    transition: all var(--ease-hard) .5s;
+}
+
+.home-banner-text h2 {
+    margin: 0 0 10px;
+}
+.home-banner-text h1{
+    position: relative;
+    margin: 0 0 12px;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(30px, 3.6vw, 52px);
+    line-height: 1;
+    letter-spacing: .02em;
+    text-transform: uppercase;
+    color: var(--ink);
+    transition: all var(--ease-hard) .5s;
+}
+.home-banner-text p{
+    position: relative;
+    margin: 0 0 8px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.8;
+    color: var(--gray-1);
+    max-width: 340px;
+    transition: all var(--ease-hard) .5s;
+}
+.home-banner-text h2{
+    position: relative;
 }
 
 .home-banner-imgs {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    left: 0;
-    top: 0;
+    grid-column: 2;
+    grid-row: 1;
+    position: relative;
     overflow: hidden;
+    min-height: 300px;
+    background: var(--paper-2);
 }
 
 .home-banner-slide {
@@ -23,111 +72,36 @@
     top: 0;
     left: 0;
     background-size: cover;
-    background-position-x: center;
+    background-position: center;
 }
 
-.home-banner-text {
-    position: absolute;
-    display: flex;
-    flex-wrap: wrap;
-    top: 30%;
-    left: 5%;
-    z-index: 2;
-    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
-}
-
-.home-banner-text hr {
-    width: 100%;
-    border: transparent;
-    margin: 0;
-}
-.home-banner-text h2 {
-    color: var(--accent-color);
-    font-weight: normal;
-    font-size: medium;
-}
-.home-banner-text h1,h2,p{
-    position: relative;
-    display:flex;
-    flex-basis: 100%;
-    margin: 5px 0 5px 0;
-    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
-}
-
-.home-banner-text h1{
-    font-family: "IBM Plex Sans", serif;
-    font-weight: normal;
-    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
-}
-
-@media screen and (min-width: 700px){
-
-    .home-banner-text{
-        position: absolute;
-        left: 80px;
-        top: 30%;
-        font-size: 20px;
-        width: 400px;
-    }
-
-    .home-banner-text > h1{
-        font-size: 40px;
-        font-weight: 400;
-    }
-    .home-banner-nav-btn{
-        bottom: 50%;
-    }
-}
-
-@media screen and (max-width: 699px) {
-    .home-banner-text{
-        position: absolute;
-        left: 40px;
-        top: 150px;
-        font-size: 15px;
-        width: 200px;
-    }
-
-    .home-banner-text > h1{
-        font-size: 20px;
-        font-weight: 400;
-    }
-
-    .home-banner-nav-btn{
-        bottom: 5%;
-    }
-}
-
+/* prev / next — mono square buttons over the image */
 .home-banner-nav-btn {
     position: absolute;
-    transform: translateY(-50%);
+    bottom: 16px;
     z-index: 3;
-    background: rgba(255,255,255,0.5);
-    border: none;
-    cursor: pointer;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
+    width: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
     padding: 0;
-    transition: all cubic-bezier(0.8,0.0,0.2,1.0) 0.5s;
-}
 
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all .25s var(--ease-hard);
+}
 .home-banner-nav-btn:hover {
-    background: rgba(255,255,255,0.35);
-}
-
-.home-banner-nav-btn img {
-    width: 20px;
-    height: 20px;
+    background: var(--ink);
+    color: var(--paper);
 }
 
 #home-banner-prev {
-    left: 16px;
+    right: 60px;
 }
 
 #home-banner-next {
@@ -136,25 +110,57 @@
 
 .home-banner-dots {
     position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
+    bottom: 28px;
+    left: calc(40% + 16px);
     z-index: 3;
     display: flex;
-    gap: 8px;
+    gap: 6px;
     align-items: center;
 }
 
 .home-banner-dot {
     width: 8px;
     height: 8px;
-    border-radius: 4px;
-    background: rgba(255,255,255,0.5);
+    background: var(--paper);
+    border: 1px solid var(--ink);
     cursor: pointer;
     transition: background 0.3s ease, width 0.3s ease;
 }
 
 .home-banner-dot-active {
-    background: rgba(255,255,255,1);
+    background: var(--ink);
     width: 20px;
+}
+
+.home-banner-caption{
+    position: absolute;
+    top: -22px;
+    right: 0;
+    z-index: 2;
+    color: var(--gray-2);
+}
+
+@media screen and (max-width: 899px){
+    .home-banner-wrapper{
+        grid-template-columns: 1fr;
+        min-height: 0;
+    }
+    .home-banner-text{
+        grid-column: 1;
+        grid-row: 2;
+        border-right: none;
+        border-top: 1px solid var(--line);
+        padding: 20px 16px;
+    }
+    .home-banner-imgs{
+        grid-column: 1;
+        grid-row: 1;
+        height: 44vw;
+        min-height: 220px;
+    }
+    .home-banner-dots{
+        bottom: auto;
+        top: 16px;
+        left: 16px;
+    }
 }

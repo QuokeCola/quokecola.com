@@ -152,6 +152,8 @@ export class ArticleBrowserInterface {
         for (let tag of tags) {
             let tag_btn = document.createElement("button")
             tag_btn.innerText = tag;
+            // Keep the raw tag: innerText reflects CSS text-transform in some browsers.
+            tag_btn.dataset.tag = tag;
             tag_btn.classList.add("article-tag")
             if (this.selected_tags.includes(tag)) tag_btn.classList.add("article-tag-selected");
             tag_btn.onclick = function () {
@@ -164,7 +166,7 @@ export class ArticleBrowserInterface {
                 let selected_tags = [];
                 for (let tag_b of ArticleBrowserInterface.tag_collection) {
                     if (tag_b.classList.contains("article-tag-selected")) {
-                        selected_tags.push(tag_b.innerText);
+                        selected_tags.push(tag_b.dataset.tag ?? tag_b.innerText);
                     }
                 }
                 let request = new AppRequests();

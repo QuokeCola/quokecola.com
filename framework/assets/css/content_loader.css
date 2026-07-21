@@ -6,9 +6,9 @@
     --loading-grid-idle-size:200px;
     --loading-grid-index-offset-vert: 8;
     --loading-grid-index-offset-horz: 8;
-    --loading-grid-color: var(--loading-grid-dark);
-    --loading-text: "LOADING";
-    --loading-color: var(--rm-yellow);
+    --loading-grid-color: var(--line);
+    --loading-text: "LOADING /// SYS.BOOT";
+    --loading-color: var(--ink);
 }
 
 #content-screen{
@@ -17,10 +17,10 @@
     width: calc(100% - 2px);
     height: calc(100% - 2px);
 
-    background-color: white;
-    color: black;
-    border: rgba(100,100,100,0.2) 1px solid;
-    font-family: 'IBM Plex Sans', sans-serif;
+    background-color: var(--paper);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    font-family: var(--font-body);
     line-height: 1.5;
     overflow-x: hidden;
     overflow-y: scroll;
@@ -114,31 +114,28 @@ horz-line:nth-child(odd){
 
 /*Decorations*/
 .loading-text{
-    padding: 120px 140px;
+    padding: 60px 90px;
     margin: 0 0;
     align-self: center;
 
-    color: black;
-    background: -webkit-linear-gradient(
-            45deg,
-            var(--loading-color) 0, var(--loading-color) 10%, white 10%, white 50%,
-            var(--loading-color) 50%, var(--loading-color) 60%, white 60%, white
-    );
-    background-size: 10px 10px;
+    color: var(--ink);
+    background: var(--paper);
     opacity: 0;
 
     transition: all 0.5s 0.2s;
     z-index: 0;
 }
 .loading-text:after{
-    font-family: "Blender Pro", serif;
+    font-family: var(--font-mono);
     content: var(--loading-text);
     padding: 5px;
-    font-weight: 100;
-    font-size: 20px;
+    font-weight: 400;
+    font-size: 12px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
     opacity: 0;
 
-    background: white;
+    background: var(--paper);
 
     transition: all 0.5s cubic-bezier(.8,0,.2,1);
     animation: loading-text-fade 1s forwards;
@@ -150,43 +147,53 @@ horz-line:nth-child(odd){
     bottom: 5%;
     z-index: 0;
 
-    color: black;
+    color: var(--gray-1);
 
-    font-family: Blender Pro, serif;
-    font-size: 10px;
-    font-weight: 100;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    line-height: 1.8;
     opacity: 0;
 
     animation: loading-text-fade .5s linear forwards;
     -webkit-animation: loading-text-fade .5s linear forwards;
 }
+#loading-orgName::after{
+    content: "SYS.BOOT — OK";
+    display: block;
+    color: var(--gray-3);
+}
 #loading-textBox{
+    position: relative;
     z-index: 1;
     align-self: center;
 
-    border: 6px solid rgba(0,0,0,1);
-    border-image: 16 url('../images/frame.png');
+    border: 1px solid var(--ink);
 
-    background: rgba(255,255,255,.5);
+    background: rgba(255,255,255,.7);
     opacity: 0;
 
     transition: all 0.2s 0.5s;
 }
 
+/* Corner ticks on the loading panel */
 #loading-textBox::before{
     content: "";
 
     position: absolute;
-    height: 1px;
-    width: 400px;
-    top: 50%;
-    left: calc(50% - 200px);
-    z-index: -1;
+    width: 9px;
+    height: 9px;
+    top: -5px;
+    left: -5px;
+    z-index: 1;
 
-    background: rgb(0, 0, 0);
+    background:
+        linear-gradient(var(--ink), var(--ink)) center/9px 1px no-repeat,
+        linear-gradient(var(--ink), var(--ink)) center/1px 9px no-repeat;
 
     transform-origin: center;
-    transform: scaleX(0);
+    transform: scale(0);
 
     transition: all 0.5s cubic-bezier(.8,0,.2,1);
 }
@@ -194,16 +201,18 @@ horz-line:nth-child(odd){
     content: "";
 
     position: absolute;
-    height: 350px;
-    width: 1px;
-    top: calc(50% - 175px);
-    left: 50%;
-    z-index: -1;
+    width: 9px;
+    height: 9px;
+    bottom: -5px;
+    right: -5px;
+    z-index: 1;
 
-    background: rgb(100, 100, 100);
+    background:
+        linear-gradient(var(--ink), var(--ink)) center/9px 1px no-repeat,
+        linear-gradient(var(--ink), var(--ink)) center/1px 9px no-repeat;
 
     transform-origin: center;
-    transform: scaleY(0);
+    transform: scale(0);
 
     transition: all 0.5s cubic-bezier(.8,0,.2,1);
 }
@@ -221,40 +230,25 @@ horz-line:nth-child(odd){
     transition: all 0.5s calc((var(--loading-grid-index-offset-horz) + var(--index))*0.05s) cubic-bezier(.5,.0,.0,1);
 }
 
-/*Navigation Bar (Black-background)*/
+/*Navigation Bar during load*/
 #loading-status:checked ~ nav{
-    border-bottom: rgba(255,255,255,0.2) 1px solid;
-}
-#loading-status:checked ~ nav::after{
-    z-index: -2;
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    background-color: rgba(0,0,0,1.0);
-    backdrop-filter: initial;
-    -webkit-backdrop-filter: initial;
+    border-bottom: 1px solid var(--line);
 }
 
 /*Decorations*/
 #loading-status:checked ~ #loading-screen .loading-text{
-    padding: 70px 50px;
-    margin: 10px 10px;
+    padding: 40px 30px;
+    margin: 6px 6px;
 
     opacity: 1;
-    animation: loading-strip-move 2s linear;
-    -webkit-animation: loading-strip-move 2s linear;
-    animation-iteration-count: infinite;
 }
 
 #loading-status:checked ~ #loading-screen .loading-text::after{
-    padding: 25px;
+    padding: 12px 18px;
 
-   transition: all 1s 0.5s cubic-bezier(.8,0,.2,1);;
+    transition: all 1s 0.5s cubic-bezier(.8,0,.2,1);
     animation: loading-text-show 1s 0.5s forwards;
     -webkit-animation: loading-text-show 1s 0.5s forwards;
-    background-size: 10px 10px;
 }
 
 #loading-status:checked ~ #loading-screen #loading-orgName{
@@ -266,10 +260,10 @@ horz-line:nth-child(odd){
     opacity: 1;
 }
 #loading-status:checked ~ #loading-screen #loading-textBox::before{
-    transform: scaleX(1);
+    transform: scale(1);
 }
 #loading-status:checked ~ #loading-screen #loading-textBox::after{
-    transform: scaleY(1);
+    transform: scale(1);
 }
 
 /********************************************//**

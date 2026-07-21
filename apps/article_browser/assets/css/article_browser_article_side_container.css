@@ -3,26 +3,34 @@
 }
 
 #article-browser-article-side-container > h1{
-    font-weight: normal;
     display: block;
-    margin-bottom: 0;
+    margin-bottom: 14px;
 
-}
-
-#article-browser-article-side-container > img {
-    width: 30px;
-    margin-left: 0;
-    transition: all cubic-bezier(0.8,0,0.2,1) 0.25s;
-    align-content: center;
-}
-
-#article-browser-article-side-container:hover > img {
-    margin-left: 10px;
+    font-family: var(--font-mono);
+    font-weight: 400;
+    font-size: 12px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--gray-1);
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 10px;
 }
 
 #article-browser-article-recommendation-card > .article-browser-list-quarter-tile {
     padding: 0 !important;
+    border: 1px solid var(--line);
+}
+#article-browser-article-recommendation-card > .article-browser-list-quarter-tile::before {
+    top: 8px;
+    left: 8px;
+    content: "NEXT";
 }
 #article-browser-article-recommendation-card > .article-browser-list-quarter-tile:hover {
-    background-color: white;
+    background-color: var(--paper-2);
+}
+#article-browser-article-recommendation-card .article-browser-list-detail,
+#article-browser-article-recommendation-card h1{
+    padding-left: 10px;
+    padding-right: 10px;
+    box-sizing: border-box;
 }

@@ -2,7 +2,7 @@
  *                  Nav Bar
  ***********************************************/
 :root{
-    --nav-height: 80px;
+    --nav-height: 64px;
 }
 
 nav{
@@ -11,19 +11,20 @@ nav{
     left: 0;
     top: 0;
 
-    color: black;
+    color: var(--ink);
     z-index: 2;
     backdrop-filter: blur(0px) brightness(100%);
     -webkit-backdrop-filter: blur(0px) brightness(100%);
+    border-bottom: 1px solid transparent;
 
     transition: all 0.25s;
     user-select: none;
 }
 
 .nav-scrollDown{
-    background-color: rgba(255,255,255,0.5);
-    border-bottom: rgba(150,150,150,0.2) 1px solid;
-    backdrop-filter: blur(20px) brightness(100%) contrast(80%);
+    background-color: rgba(255,255,255,0.72);
+    border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(20px) brightness(100%) contrast(90%);
     -webkit-backdrop-filter: blur(20px) brightness(100%);
 }
 
@@ -31,31 +32,59 @@ nav{
  *                Logo Panel
  ***********************************************/
 .nav-logo-panel{
-    width: 40px;
     height: 40px;
-    margin: 15px;
-    background-size: 100% 100%;
+    margin: 12px 0 12px var(--gutter);
     z-index: 3;
     display: flex;
-    align-items: center;
-    /*justify-content: center;*/
+    align-items: baseline;
+    gap: 8px;
+
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 500;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    align-self: center;
 }
+.nav-logo-panel::after{
+    content: "[SYS.V2]";
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 400;
+    letter-spacing: .12em;
+    color: var(--gray-2);
+}
+
 /********************************************//**
  *                Menu Panel
  ***********************************************/
 .nav-menu-panel{
-    transition: all 0.5s cubic-bezier(0.8,0,.2,1.0);
+    transition: all 0.5s var(--ease-hard);
     z-index: 3;
+    counter-reset: navitem;
 }
 /*Define the animation curve of links*/
 nav .nav-menu-items{
     position: relative;
-    transition: all 0.5s cubic-bezier(0.8,0,.2,1.0);
+    transition: all 0.5s var(--ease-hard);
+
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
 
     user-select: none;
     pointer-events: all;
-    cursor: default;
+    cursor: pointer;
     z-index: 5;
+
+    counter-increment: navitem;
+}
+nav .nav-menu-items::before{
+    content: "0" counter(navitem) "/";
+    color: var(--gray-3);
+    margin-right: 6px;
+    transition: color 0.5s var(--ease-hard);
 }
 /*The background of menu items*/
 nav .nav-menu-items:after{
@@ -66,16 +95,19 @@ nav .nav-menu-items:after{
     width: 0;
     height: 100%;
 
-    background: black;
+    background: var(--ink);
 
     z-index: -1;
 
     pointer-events: none;
-    transition: all 0.5s cubic-bezier(0.8,0,.2,1.0);
+    transition: all 0.5s var(--ease-hard);
 }
 /*Hover behavior, font color to white*/
 nav .nav-menu-items:hover{
-    color: white;
+    color: var(--paper);
+}
+nav .nav-menu-items:hover::before{
+    color: var(--gray-2);
 }
 /*Hover behavior, extend*/
 nav .nav-menu-items:hover::after{
@@ -84,16 +116,16 @@ nav .nav-menu-items:hover::after{
 
 .nav-langSwitchBtn{
     z-index: 3;
-    border-radius: 2px;
     padding: 3px 7px;
 
-    font-size: 12px;
+    font-family: var(--font-mono);
+    font-size: 11px;
 
-    color: white;
-    background-color: var(--rm-blue);
+    color: var(--paper);
+    background-color: var(--ink);
     position: absolute;
     right: 10px;
-    transition: all 0.5s cubic-bezier(0.8,0.0,0.2,1.0);
+    transition: all 0.5s var(--ease-hard);
 }
 
 /*Layout for PC*/
@@ -106,9 +138,10 @@ nav .nav-menu-items:hover::after{
 
     .nav-menu-panel {
         position: absolute;
-        right: 50px;
+        right: var(--gutter);
         width: auto;
         display: flex;
+        gap: 4px;
     }
 
     .nav-expand-btn{
@@ -116,7 +149,7 @@ nav .nav-menu-items:hover::after{
     }
 
     nav .nav-menu-items{
-        padding: 0 5px 0 5px;
+        padding: 6px 10px;
         width: auto;
     }
 
@@ -137,8 +170,10 @@ nav .nav-menu-items:hover::after{
         justify-content: center;
 
         flex-wrap: wrap;
-        /*backdrop-filter: blur(20px);*/
-        /*-webkit-backdrop-filter: blur(20px);*/
+    }
+
+    .nav-logo-panel{
+        margin: 12px 0;
     }
 
     /********************************************//**
@@ -147,7 +182,7 @@ nav .nav-menu-items:hover::after{
     .nav-expand-btn{
         width: 40px;
         height: 40px;
-        margin: 15px;
+        margin: 12px;
         left: 0;
         top: 0;
         position: absolute;
@@ -176,9 +211,8 @@ nav .nav-menu-items:hover::after{
         display: block;
         left: 5%;
         width: 90%;
-        height: 2px;
-        background: rgba(0,0,0,1.0);
-        border-radius: 1px;
+        height: 1px;
+        background: var(--ink);
         position: absolute;
 
         -webkit-transition: transform 0.4s 0.25s cubic-bezier(0.2,0.5,0.2,1.0);
@@ -186,10 +220,10 @@ nav .nav-menu-items:hover::after{
     }
 
     .nav-expand-btn-line-top{
-        top: 8px;
+        top: 9px;
     }
     .nav-expand-btn-line-bottom{
-        bottom: 8px;
+        bottom: 9px;
     }
 
     #nav-panel-status:checked ~ * .nav-expand-btn-bread-top{
@@ -228,6 +262,7 @@ nav .nav-menu-items:hover::after{
         padding: 0 5% 0 5%;
         height: 0;
         width: 100%;
+        box-sizing: border-box;
 
         opacity: 0;
         background-color: rgba(255,255,255,0.1);
@@ -237,12 +272,14 @@ nav .nav-menu-items:hover::after{
     #nav-panel-status:checked ~ .nav-menu-panel div{
         height: var(--nav-height);
         opacity: 1;
-        border-bottom: rgba(200,200,200,0.2) 1px solid;
+        border-bottom: 1px solid var(--line);
     }
 
     #navigation-bar:has(#nav-panel-status:checked) {
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
+        background-color: rgba(255,255,255,0.85);
+        border-bottom: 1px solid var(--line);
     }
 
     .nav-langSwitchBtn{

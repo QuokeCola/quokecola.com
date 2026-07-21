@@ -1,17 +1,49 @@
+/********************************************//**
+ *          Profile (02) — bio + tables
+ ***********************************************/
 #home-welcome{
     font-weight: 300;
+    line-height: 1.35;
+    color: var(--ink);
+    margin-bottom: 48px;
+    max-width: 900px;
 
-    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
+    transition: all var(--ease-hard) .5s;
+}
+
+.home-welcome-name{
+    font-weight: 500;
+    border-bottom: 2px solid var(--ink);
+}
+
+#home-about-biography .qk-label{
+    display: block;
+    margin: 26px 0 10px;
+}
+#home-about-biography .qk-label:first-child{
+    margin-top: 0;
+}
+
+.home-exp-org{
+    display: block;
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 500;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin: 14px 0 6px;
 }
 
 .home-timeline-tile{
     padding: 0;
     margin: 0;
+    width: 100%;
     border-collapse: collapse;
     border-spacing: 0;
     border: 0!important;
 
-    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
+    transition: all var(--ease-hard) .5s;
 }
 
 .home-timeline-tile tr,th{
@@ -19,43 +51,59 @@
     vertical-align: top;
     text-align: start;
 
-    padding: 0;
+    padding: 6px 0;
     margin: 0;
     border: 0!important;
+    border-bottom: 1px solid var(--line)!important;
 
-    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
+    transition: all var(--ease-hard) .5s;
 }
 
 .home-timeline-tile th{
-    padding-right: 1em;
+    padding-right: 1.5em;
+    font-size: .95em;
+}
+
+.home-timeline-tile th:last-child{
+    width: 100%;
 }
 
 .home-timeline-tile span{
-    color: var(--accent-color);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: .08em;
+    color: var(--gray-2);
     word-break: keep-all;
     white-space: nowrap;
 }
 
 #home-about-biography{
     margin-bottom: 50px;
-    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
+    transition: all var(--ease-hard) .5s;
+}
+
+.home-portrait-tile{
+    line-height: 0;
+}
+.home-portrait-caption{
+    margin-top: 12px;
+    color: var(--gray-2);
+    line-height: 1.6;
 }
 
 @media screen and (min-width: 1100px){
     #home-welcome{
-        width: 700px;
-        font-size: 40px;
+        font-size: 36px;
     }
 
     #home-about-biography{
-        font-size: 18px;
+        font-size: 16px;
     }
 }
 
 @media screen and (max-width: 1099px) and (min-width: 900px){
     #home-welcome{
-        width: 600px;
-        font-size: 35px;
+        font-size: 30px;
     }
 
     #home-about-biography{
@@ -65,60 +113,10 @@
 
 @media screen and (max-width: 899px) {
     #home-welcome{
-        width: 450px;
-        font-size: 30px;
+        font-size: 26px;
     }
 
     #home-about-biography{
-        font-size: 18px;
+        font-size: 16px;
     }
-}
-
-.home-about-link-icons {
-
-    height: 20px;
-    margin-bottom: 30px;
-    padding: 10px;
-    border-top: #CCCCCC solid 1px;
-    border-bottom: #CCCCCC solid 1px;
-    border-left: #CCCCCC solid 1px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) 0.75s;
-    background-size: contain;
-    text-decoration: none;
-    color: black;
-}
-
-.home-about-link-icons:first-child{
-    height: 20px;
-    margin-bottom: 30px;
-    padding: 10px;
-    border-top: #CCCCCC solid 1px;
-    border-bottom: #CCCCCC solid 1px;
-    border-left: none;
-}
-
-.home-about-link-icons:hover {
-    background-color: #CCCCCC;
-}
-
-.home-about-link-icons > img {
-    width: 20px;
-    height: 20px;
-}
-
-.home-about-link-icons > div {
-    width: 0px;
-    overflow: hidden;
-    text-decoration: none;
-    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) 0.75s;
-    text-align: center;
-}
-
-.home-about-link-icons:hover > div {
-    margin-left: 10px;
-    width: 66px;
-    overflow: hidden;
 }

@@ -2,6 +2,7 @@ import {AppDelegate} from "../../framework/AppDelegate";
 import {BlogRollInterface} from "./BlogRollInterface";
 import {NavigationBarInterface} from "../../framework/NavigationBarInterface";
 import {AppRequests} from "../../framework/AppRequests";
+import {MotionInterface} from "../../framework/MotionInterface";
 export class BlogRollDelegate extends AppDelegate{
     app_data: any;
     name: string = "BLOGROLL";
@@ -44,6 +45,8 @@ export class BlogRollDelegate extends AppDelegate{
 
     async onload(app_data: any): Promise<boolean> {
         NavigationBarInterface.set_scroll_down_blur_behavior(NavigationBarInterface.ScrollDownBlurBehavior.scroll_down_blur);
+        MotionInterface.observe();
+        MotionInterface.bind_clocks();
         return false;
     }
 }

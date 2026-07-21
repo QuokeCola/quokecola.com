@@ -3,6 +3,7 @@ import {ArticleBrowserArticleData, ArticleBrowserAppData} from "./ArticleBrowser
 import {AppRequests} from "../../framework/AppRequests";
 import {NavigationBarInterface} from "../../framework/NavigationBarInterface";
 import {ContentLoaderInterface} from "../../framework/ContentLoaderInterface";
+import {MotionInterface} from "../../framework/MotionInterface";
 import {ArticleBrowserInterface} from "./ArticleBrowserInterface";
 
 
@@ -195,6 +196,8 @@ export class ArticleBrowserDelegate extends AppDelegate{
         } else {
             NavigationBarInterface.set_scroll_down_blur_behavior(NavigationBarInterface.ScrollDownBlurBehavior.clear);
         }
+        MotionInterface.observe();
+        MotionInterface.bind_clocks();
         return false;
     }
 

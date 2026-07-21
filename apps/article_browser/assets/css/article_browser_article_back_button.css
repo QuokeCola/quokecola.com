@@ -3,13 +3,31 @@
     width: calc(var(--back-btn-width));
 
     top: 0;
-    background-color: white;
+    background-color: var(--paper);
     transition: all cubic-bezier(0.8, 0, 0.2, 1) 0.5s;
     z-index: 10;
+    cursor: pointer;
 }
 
 #article-browser-load-article-status:checked ~ #article-browser-article-page > #article-browser-article-back-button {
     translate: 0 0;
+}
+
+/* mono vertical label on the back rail */
+#article-browser-article-back-button::after{
+    content: "BACK TO INDEX";
+    position: absolute;
+    left: 50%;
+    top: 40%;
+    transform: translateX(-50%) rotate(180deg);
+    writing-mode: vertical-rl;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: .3em;
+    text-transform: uppercase;
+    color: var(--gray-2);
+    transition: color .3s var(--ease-hard);
+    pointer-events: none;
 }
 
 #article-browser-article-back-button-icon {
@@ -23,11 +41,15 @@
 }
 
 #article-browser-article-back-button:hover {
-    background-color: #CCCCCC;
+    background-color: var(--ink);
+}
+#article-browser-article-back-button:hover::after{
+    color: var(--paper);
 }
 
 #article-browser-article-back-button:hover #article-browser-article-back-button-icon{
     left: calc((var(--back-btn-width) - var(--back-btn-icon-size))/2 - 10px);
+    filter: invert(1);
 }
 
 @media screen and (min-width: 1000px) {
@@ -51,9 +73,19 @@
         margin-right: -100%;
         margin-bottom: -80px;
         top: calc(100% - 80px);
-        background-color: rgba(255,255,255,0.6);
+        background-color: rgba(255,255,255,0.7);
         backdrop-filter: blur(40px);
         -webkit-backdrop-filter: blur(40px);
         border-top: solid 1px var(--article-browser-border-color);
+    }
+
+    /* horizontal label on mobile rail */
+    #article-browser-article-back-button::after{
+        writing-mode: horizontal-tb;
+        transform: none;
+        left: auto;
+        right: 24px;
+        top: 50%;
+        margin-top: -6px;
     }
 }

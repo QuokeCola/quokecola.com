@@ -1,28 +1,70 @@
 :root {
     --left-right-margin: 15px;
-    --link-btn-gray: rgb(200,200,200);
 }
 /* --- Canvas Container --- */
 #blogroll-canvas-container {
+    position: relative;
     width: 100%;
-    font-family: "IBM Plex Sans", serif;
+    font-family: var(--font-body);
     font-weight: normal;
-    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
-    border-bottom: #CCCCCC solid 1px;
+    transition: all var(--ease-hard) .5s;
+    border-bottom: 1px solid var(--ink);
     background-color: #ffffff;
-}
-
-#blogroll-canvas-container h1 {
-    position: absolute;
-    font-family: "IBM Plex Sans", serif;
-    font-weight: normal;
-    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
 }
 
 #blogroll-threejs-canvas {
     display: block; /* Removes bottom margin/gap from canvas */
     width: 100%;
     height: 100%;
+}
+
+/* --- HUD corner readouts over the canvas --- */
+.blogroll-hud-tag{
+    position: absolute;
+    z-index: 10;
+    pointer-events: none;
+
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--gray-2);
+    background: var(--paper);
+    border: 1px solid var(--line);
+    padding: 2px 6px;
+}
+.blogroll-hud-tag--tl{ top: calc(var(--nav-height) + 10px); left: 12px; }
+.blogroll-hud-tag--tr{ top: calc(var(--nav-height) + 10px); right: 12px; }
+.blogroll-hud-tag--br{ bottom: 12px; right: 12px; }
+
+/* --- Canvas text overlay --- */
+.blogroll-canvas-overlay{
+    bottom: 0;
+    position: absolute;
+    z-index: 10;
+    pointer-events: none;
+    display: block;
+}
+
+.blogroll-canvas-overlay .qk-label{
+    display: block;
+    margin-left: var(--left-right-margin);
+}
+
+#blogroll-canvas-container h1 {
+    /* Critical: allows mouse to pass through text so the shader still reacts */
+    pointer-events: none;
+    position: relative;
+
+    margin: 6px var(--left-right-margin) 24px;
+    font-family: var(--font-display);
+    font-weight: 900;
+    line-height: .95;
+    letter-spacing: .01em;
+    text-transform: uppercase;
+    color: var(--ink);
+    z-index: 10;
+    transition: all var(--ease-hard) .5s;
 }
 
 /*  --- Section Wrapper --- */
@@ -32,100 +74,102 @@
 
     width: calc(100% - 80px);
 
-    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
-}
-
-.blogroll-section-wrapper > h1{
-    position: relative;
-    font-size: 24px;
-    font-weight: 500;
-    margin-left: var(--left-right-margin);
-    margin-right: var(--left-right-margin);
+    transition: all var(--ease-hard) .5s;
 }
 
 .blogroll-section-wrapper > p{
-    font-size: 15px;
-    font-weight: 300;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.9;
+    font-weight: 400;
+    color: var(--gray-1);
     margin-left: var(--left-right-margin);
     margin-right: var(--left-right-margin);
+    margin-bottom: 24px;
+}
+
+.blogroll-section-wrapper > .qk-btn{
+    margin-left: var(--left-right-margin);
     margin-bottom: 50px;
-}
-
-.blogroll-section-wrapper > p > a{
-    position: relative;
-    text-decoration: none;
-    color: var(--accent-color);
-}
-
-.blogroll-section-wrapper > p > a::after{
-    content: " ";
-    left: 0;
-    top: 0;
-    position: absolute;
-    width: 0;
-    height: 100%;
-    border-bottom: var(--accent-color) solid 1px;
-    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
-}
-
-.blogroll-section-wrapper > p > a:hover::after{
-    width: 100%;
 }
 
 .blogroll-div-line{
     width: 50px;
     height: 1px;
-    background-color: rgb(150,150,150);
+    background-color: var(--gray-2);
 
-    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
+    transition: all var(--ease-hard) .5s;
 }
 
 .blogroll-section-wrapper > .blogroll-div-line{
     margin-left: var(--left-right-margin);
 }
 
+/*  --- Card grid --- */
 #blogroll-list-container {
     width: 100%;
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    margin-bottom: 40px;
+}
+
+#blogroll-list-container > p{
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--gray-2);
+    background: var(--paper);
+    margin: 0;
+    padding: 16px;
 }
 
 #blogroll-list-container > .blogroll-card{
     position: relative;
-    height: 80px;
-    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
-    margin-bottom: var(--blogroll-grid-border-width);
+    min-height: 84px;
+    box-sizing: border-box;
+    padding: 8px;
+    transition: background-color .3s var(--ease-hard);
     display: flex;
     flex-wrap: nowrap;
+    align-items: center;
+    background: var(--paper);
+    cursor: pointer;
 }
 
 #blogroll-list-container > .blogroll-card > .blogroll-card-image {
     position: relative;
     z-index: 0;
-    margin: 5px;
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
+    flex-shrink: 0;
+    width: 64px;
+    height: 64px;
+    border: 1px solid var(--line);
     background-size: cover;
+    background-position: center;
+    filter: grayscale(1) contrast(1.05);
+    transition: filter .35s var(--ease-hard);
 }
 
 #blogroll-list-container > .blogroll-card > .blogroll-card-text {
-    margin-left: 10px;
+    margin-left: 12px;
     width: calc(100% - 90px);
 }
 
 #blogroll-list-container > .blogroll-card > .blogroll-card-text > h1{
     white-space: nowrap;      /* Forces text onto a single line */
     position: relative;
-    font-family: "IBM Plex Sans", serif;
-    font-weight: normal;
-    font-size: 24px;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 19px;
+    letter-spacing: .03em;
+    text-transform: uppercase;
+    color: var(--ink);
     max-width: 100%;
     display: block;
-    margin: 0;
+    margin: 0 0 4px;
     overflow: hidden;
     text-overflow: ellipsis;
-    overflow-wrap: break-word;   /* preferred */
+    overflow-wrap: break-word;
 }
 
 #blogroll-list-container > .blogroll-card > .blogroll-card-text > p{
@@ -135,89 +179,58 @@
     -webkit-box-orient: vertical;
     width: 100%;
     height: fit-content;
-    font-family: "IBM Plex Sans", serif;
+    font-family: var(--font-mono);
     font-weight: normal;
-    font-size: 14px;
+    font-size: 11px;
+    line-height: 1.6;
+    color: var(--gray-1);
     margin: 0;
     overflow: hidden;
     text-overflow: ellipsis;
-    overflow-wrap: break-word;   /* preferred */
+    overflow-wrap: break-word;
 }
 
+/* hover: invert cue + arrow + avatar color reveal */
 #blogroll-list-container > .blogroll-card::after {
-    content: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='black'/%3E%3Cpath d='M8 16.956h12.604l-3.844 4.106 1.252 1.338L24 16l-5.988-6.4-1.252 1.338 3.844 4.106H8v1.912z' fill='white'/%3E%3C/svg%3E");
+    content: "→";
     z-index: 1;
-    /* CSS Styling */
-    display: block; /* Flex is unnecessary if content is an image */
     position: absolute;
-    width: 30px;    /* Set size here instead of inside SVG */
-    height: 30px;   /* Set size here instead of inside SVG */
-    top: calc(50% - 15px);
-    left: calc(50% - 15px);
-    transform: rotate(-45deg); /* Move rotation here */
+    right: 12px;
+    bottom: 8px;
 
-    /* Positioning (assuming parent is relative) */
-    pointer-events: none; /* Usually better for decorative icons */
-    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
+    font-family: var(--font-mono);
+    font-size: 15px;
+    color: var(--ink);
+
     opacity: 0;
+    transform: translateX(-8px);
+    transition: all .3s var(--ease-hard);
+    pointer-events: none;
 }
 
-#blogroll-list-container > .blogroll-card::before {
-    content: " ";
-    z-index: 1;
-    /* CSS Styling */
-    display: block; /* Flex is unnecessary if content is an image */
-    position: absolute;
-    width: 100%;    /* Set size here instead of inside SVG */
-    height: 100%;   /* Set size here instead of inside SVG */
-    top: 0;
-    left: 0;
-
-    cursor: initial;
-    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
-    opacity: 0;
-    background: -webkit-linear-gradient(
-            45deg,
-            var(--link-btn-gray) 0, var(--link-btn-gray) 10%, white 10%, white 50%,
-            var(--link-btn-gray) 50%, var(--link-btn-gray) 60%, white 60%, white
-    );
-    background-size: 10px 10px;
-
-    border: 6px solid rgba(0,0,0,1);
-    border-image: 16 url('../../../../framework/assets/images/frame.png');
-    box-sizing: border-box;
-
-    animation: loading-strip-move 2s linear;
-    -webkit-animation: loading-strip-move 2s linear;
-    animation-iteration-count: infinite;
-}
-
-#blogroll-list-container > .blogroll-card:hover::before{
-    opacity: 1;
+#blogroll-list-container > .blogroll-card:hover{
+    background-color: var(--paper-2);
 }
 
 #blogroll-list-container > .blogroll-card:hover::after{
     opacity: 1;
+    transform: translateX(0);
 }
 
+#blogroll-list-container > .blogroll-card:hover > .blogroll-card-image{
+    filter: grayscale(0) contrast(1);
+}
 
-/* When screen is smaller than 600px */
+/*  --- Breakpoints --- */
 @media screen and (min-width: 550px) {
-    .blogroll-card {
-        width: calc((100% - var(--blogroll-grid-border-width) - var(--left-right-margin)*2)/2);
-    }
-
-    .blogroll-card:nth-child(2n+1){
-        margin-right: var(--blogroll-grid-border-width);
-        margin-left: var(--left-right-margin);
+    #blogroll-list-container{
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
 @media screen and (max-width: 549px) {
-    .blogroll-card {
-        width: 100%;
-        margin-left: var(--left-right-margin);
-        margin-right: var(--left-right-margin);
+    #blogroll-list-container{
+        grid-template-columns: 1fr;
     }
 }
 
@@ -230,18 +243,8 @@
         height: 60vh;
     }
 
-    /* --- Text Overlay --- */
     #blogroll-canvas-container h1 {
-        /* Critical: allows mouse to pass through text so the particles still flee */
-        pointer-events: none;
-
-        margin-left: var(--left-right-margin);
-        margin-right: var(--left-right-margin);
-        color: #111;
-        z-index: 10; /* Ensure text is above canvas */
-
-        /* Responsive Font Sizing */
-        font-size: clamp(2rem, 3rem, 5rem); /* Fluid sizing */
+        font-size: clamp(2.4rem, 6vw, 5rem);
     }
 }
 
@@ -253,49 +256,22 @@
         height: 60vh;
     }
     #blogroll-canvas-container h1 {
-        font-size: clamp(1.5rem, 2rem, 2rem); /* Fluid sizing */
+        font-size: clamp(1.8rem, 9vw, 2.6rem);
     }
 }
 
 @media screen and (min-width: 900px){
-    :root{
-        --blogroll-grid-border-width: 20px
+    #blogroll-list-container{
+        grid-template-columns: repeat(4, 1fr);
     }
 
     .blogroll-div-line{
         margin: 100px 0 100px 0;
     }
-
-    .blogroll-card {
-        width: calc((100% - 3*var(--blogroll-grid-border-width) - 2*var(--left-right-margin))/4);
-    }
-
-    .blogroll-card:nth-child(4n+1), .blogroll-card:nth-child(4n+2), .blogroll-card:nth-child(4n+3){
-        margin-right: var(--blogroll-grid-border-width);
-    }
-
-    .blogroll-card:nth-child(4n+3){
-        margin-left: 0;
-    }
-
-    .blogroll-card:nth-child(4n+1) {
-        margin-left: var(--left-right-margin);
-    }
-
-    .blogroll-card:nth-child(4n) {
-        margin-right: var(--left-right-margin);
-    }
 }
 
 @media screen and (max-width: 899px) {
-
-    :root{
-        --blogroll-grid-border-width: 10px
-    }
-
     .blogroll-div-line{
         margin: 30px 0 30px 0;
     }
-
 }
-

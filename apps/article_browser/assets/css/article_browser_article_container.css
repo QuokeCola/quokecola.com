@@ -4,7 +4,25 @@
     height: 18rem;
     background-size: cover;
     background-position: center;
-    border-bottom: solid 1px var(--article-browser-border-color);
+    border-bottom: solid 1px var(--ink);
+    filter: grayscale(1) contrast(1.05);
+}
+
+/* mono caption chip on the banner */
+#article-browser-article-article-banner::after{
+    content: "FIG.00 — TRANSMISSION HEADER";
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--gray-1);
+    background: var(--paper);
+    border: 1px solid var(--line);
+    padding: 3px 8px;
+    pointer-events: none;
 }
 
 #article-browser-article-md-container{
@@ -19,6 +37,7 @@
     width: fit-content;
     margin-right: auto; margin-left: auto;
     max-width: 100%;
+    border: 1px solid var(--line);
 }
 
 #article-browser-article-md-container:before{

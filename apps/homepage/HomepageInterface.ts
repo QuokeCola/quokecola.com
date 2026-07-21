@@ -1,5 +1,6 @@
 import {ContentLoaderInterface} from "../../framework/ContentLoaderInterface";
 import {AppRequests} from "../../framework/AppRequests";
+import {MotionInterface} from "../../framework/MotionInterface";
 import {ArticleBrowserAppData, ArticleBrowserArticleData} from "../article_browser/ArticleBrowserData";
 import RequestType = ArticleBrowserAppData.RequestType;
 
@@ -111,6 +112,19 @@ export class HomepageInterface {
                 dots_container!.appendChild(dot);
             });
         }
+
+        // Works tiles + GitHub feed button
+        const work_links: [string, string][] = [
+            ["home-work-tile-1", "https://github.com/QuokeCola/ThermoCalculator"],
+            ["home-work-tile-2", "https://github.com/QuokeCola/MetaTerminal"],
+            ["home-work-tile-3", "https://github.com/QuokeCola/RobomasterPCBs"],
+        ];
+        for (const [id, url] of work_links) {
+            const tile = document.getElementById(id);
+            if (tile) tile.onclick = () => window.open(url, "_blank", "noopener,noreferrer");
+        }
+        const more_btn = document.getElementById("home-github-more-btn");
+        if (more_btn) more_btn.onclick = () => window.open("https://github.com/QuokeCola/", "_blank", "noopener,noreferrer");
     }
 
     static goto_banner_page(idx: number, direction: 'forward' | 'backward' | 'none' = 'forward') {
@@ -150,7 +164,6 @@ export class HomepageInterface {
 
         const new_slide = document.createElement('div');
         new_slide.className = 'home-banner-slide';
-        new_slide.style.backgroundImage = `url(${new_url})`;
         if (direction === 'none') {
             new_slide.style.opacity = '0';
         } else {
@@ -159,7 +172,26 @@ export class HomepageInterface {
         container.appendChild(new_slide);
 
         const image = new Image();
-        image.onload = () => {
+        image.onload = async () => {
+            // Ordered-dither the slide; original image returns on hover.
+            const dithered = await MotionInterface.ditherToDataUrl(new_url);
+            new_slide.style.backgroundImage = `url("${dithered}")`;
+            const wrapper = container.closest<HTMLElement>(".home-banner-wrapper");
+            if (wrapper && !wrapper.dataset.qkHoverReveal) {
+                wrapper.dataset.qkHoverReveal = "1";
+                wrapper.addEventListener("mouseenter", () => {
+                    container.querySelectorAll<HTMLElement>(".home-banner-slide").forEach(s => {
+                        if (s.dataset.qkSrc) s.style.backgroundImage = `url("${s.dataset.qkSrc}")`;
+                    });
+                });
+                wrapper.addEventListener("mouseleave", () => {
+                    container.querySelectorAll<HTMLElement>(".home-banner-slide").forEach(s => {
+                        if (s.dataset.qkDithered) s.style.backgroundImage = `url("${s.dataset.qkDithered}")`;
+                    });
+                });
+            }
+            new_slide.dataset.qkSrc = new_url;
+            new_slide.dataset.qkDithered = dithered;
             container.classList.replace("loading-components-light", "loaded-components-light");
             new_slide.getBoundingClientRect(); // force reflow before animating
 
@@ -231,11 +263,22 @@ export class HomepageInterface {
         }
 
         setTimeout(() => {
-            image.addEventListener('load', function () {
-                if (img_obj instanceof HTMLImageElement) {
-                    img_obj.src = img_url;
-                } else {
-                    img_obj.style.backgroundImage = 'url(' + img_url + ')';
+            image.addEventListener('load', async function () {
+                // Ordered-dither still imagery; hovering the tile restores the original.
+                const dithered = await MotionInterface.ditherToDataUrl(img_url);
+                const apply = (url: string) => {
+                    if (img_obj instanceof HTMLImageElement) {
+                        img_obj.src = url;
+                    } else {
+                        img_obj.style.backgroundImage = 'url("' + url + '")';
+                    }
+                };
+                apply(dithered);
+                const host = img_obj.closest<HTMLElement>(".home-quarter-size-tile") ?? img_obj;
+                if (!host.dataset.qkHoverReveal) {
+                    host.dataset.qkHoverReveal = "1";
+                    host.addEventListener("mouseenter", () => apply(img_url));
+                    host.addEventListener("mouseleave", () => apply(dithered));
                 }
                 for (let element of children) {
                     element.classList.replace("loading-components-light", "loaded-components-light")

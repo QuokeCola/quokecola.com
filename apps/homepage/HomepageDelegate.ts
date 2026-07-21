@@ -2,6 +2,7 @@ import {AppDelegate} from "../../framework/AppDelegate";
 import {HomepageInterface} from "./HomepageInterface";
 import {NavigationBarInterface} from "../../framework/NavigationBarInterface";
 import {AppRequests} from "../../framework/AppRequests";
+import {MotionInterface} from "../../framework/MotionInterface";
 export class HomepageDelegate extends AppDelegate{
     app_data: any;
     name: string = "HOME";
@@ -48,6 +49,8 @@ export class HomepageDelegate extends AppDelegate{
         HomepageInterface.reload_tiles_imgs();
         HomepageInterface.reload_selfie_imgs();
         NavigationBarInterface.set_scroll_down_blur_behavior(NavigationBarInterface.ScrollDownBlurBehavior.scroll_down_blur);
+        MotionInterface.observe();
+        MotionInterface.bind_clocks();
         return false;
     }
 }
