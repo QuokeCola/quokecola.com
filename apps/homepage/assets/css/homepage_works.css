@@ -8,7 +8,6 @@
 }
 
 #home-works-title{
-    transition: all var(--ease-hard) .75s;
 }
 
 #home-works-title > h1{

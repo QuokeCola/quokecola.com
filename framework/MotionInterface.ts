@@ -14,6 +14,14 @@ export class MotionInterface {
     private static dither_cache: Map<string, string> = new Map();
     private static hud_initialized = false;
 
+    // Smooth scroll state
+    private static scroller: HTMLElement | null = null;
+    private static scroll_target = 0;
+    private static scroll_current = 0;
+    private static scroll_raf = 0;
+    private static scroll_last_ts = 0;
+    private static scroll_initialized = false;
+
     static reduced_motion(): boolean {
         return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     }
@@ -103,6 +111,7 @@ export class MotionInterface {
         });
 
         this.bind_hover_scrambles(root);
+        this.update_parallax();
     }
 
     /** Re-decode text on mouseenter for elements marked data-scramble-hover. */
@@ -221,6 +230,102 @@ export class MotionInterface {
         }, { passive: true });
         document.documentElement.addEventListener("mouseleave", () => {
             hud.classList.remove("qk-hud-active");
+        });
+    }
+
+    /************************************************
+     *  Inertial smooth scrolling (Lenis-style)
+     *
+     *  Wheel input feeds a target value; a rAF loop
+     *  eases the real scrollTop toward it with
+     *  frame-rate-independent exponential damping.
+     *  scrollTop-based (not transform-based) so
+     *  position:sticky and IntersectionObserver keep
+     *  working. Touch and keyboard stay native.
+     ***********************************************/
+    static init_smooth_scroll() {
+        if (this.scroll_initialized || this.reduced_motion()) return;
+        const el = document.getElementById("content-screen");
+        if (!el) return;
+        this.scroll_initialized = true;
+        this.scroller = el;
+        this.scroll_target = this.scroll_current = el.scrollTop;
+
+        el.addEventListener("wheel", (e: WheelEvent) => {
+            if (e.ctrlKey) return; // browser zoom
+            e.preventDefault();
+            const step = e.deltaMode === 1 ? e.deltaY * 16 : e.deltaY;
+            const max = el.scrollHeight - el.clientHeight;
+            this.scroll_target = Math.max(0, Math.min(max, this.scroll_target + step));
+            this.start_scroll_loop();
+        }, { passive: false });
+
+        // Resync when scrolling happens outside the loop (scrollbar drag,
+        // keyboard, focus jumps, app swaps resetting content height).
+        el.addEventListener("scroll", () => {
+            if (Math.abs(el.scrollTop - this.scroll_current) > 2 && !this.scroll_raf) {
+                this.scroll_target = this.scroll_current = el.scrollTop;
+                this.update_parallax();
+            }
+        }, { passive: true });
+    }
+
+    private static start_scroll_loop() {
+        if (this.scroll_raf) return;
+        this.scroll_last_ts = performance.now();
+        const tick = (ts: number) => {
+            const el = this.scroller!;
+            const dt = Math.min((ts - this.scroll_last_ts) / 1000, 0.05);
+            this.scroll_last_ts = ts;
+            const max = el.scrollHeight - el.clientHeight;
+            this.scroll_target = Math.max(0, Math.min(max, this.scroll_target));
+            // Frame-rate independent exponential damping.
+            const k = 1 - Math.exp(-9 * dt);
+            this.scroll_current += (this.scroll_target - this.scroll_current) * k;
+            if (Math.abs(this.scroll_target - this.scroll_current) < 0.4) {
+                this.scroll_current = this.scroll_target;
+                el.scrollTop = this.scroll_current;
+                this.update_parallax();
+                this.scroll_raf = 0;
+                return;
+            }
+            el.scrollTop = this.scroll_current;
+            this.update_parallax();
+            this.scroll_raf = window.requestAnimationFrame(tick);
+        };
+        this.scroll_raf = window.requestAnimationFrame(tick);
+    }
+
+    /** Glide (or jump) the content screen to a scroll offset. */
+    static scroll_to(y: number, immediate = false) {
+        const el = this.scroller ?? document.getElementById("content-screen");
+        if (!el) return;
+        if (immediate || this.reduced_motion() || !this.scroll_initialized) {
+            this.scroll_target = this.scroll_current = y;
+            el.scrollTop = y;
+            return;
+        }
+        this.scroll_target = y;
+        this.start_scroll_loop();
+    }
+
+    /************************************************
+     *  Scroll parallax
+     *  [data-qk-parallax="0.06"] drifts against the
+     *  scroll; offset computed from the parent's
+     *  position so the element's own transform never
+     *  feeds back into the measurement.
+     ***********************************************/
+    private static update_parallax() {
+        if (this.reduced_motion()) return;
+        const vh = window.innerHeight;
+        document.querySelectorAll<HTMLElement>("[data-qk-parallax]").forEach(el => {
+            const anchor = el.parentElement ?? el;
+            const r = anchor.getBoundingClientRect();
+            if (r.bottom < -vh || r.top > vh * 2) return;
+            const factor = parseFloat(el.dataset.qkParallax || "0");
+            const mid = r.top + r.height / 2 - vh / 2;
+            el.style.transform = `translate3d(0, ${(mid * factor).toFixed(2)}px, 0)`;
         });
     }
 

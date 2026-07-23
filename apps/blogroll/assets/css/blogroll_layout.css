@@ -4,7 +4,6 @@
     width: 100%;
     font-family: var(--font-body);
     font-weight: normal;
-    transition: all var(--ease-hard) .5s;
     border-bottom: 1px solid var(--ink);
     background-color: #ffffff;
 }
@@ -62,7 +61,6 @@
     text-transform: uppercase;
     color: var(--ink);
     z-index: 10;
-    transition: all var(--ease-hard) .5s;
 }
 
 /*  --- Section Wrapper --- */
@@ -73,8 +71,6 @@
     width: 100%;
     box-sizing: border-box;
     padding: 0 var(--gutter);
-
-    transition: all var(--ease-hard) .5s;
 }
 
 .blogroll-section-wrapper > p{
@@ -97,8 +93,6 @@
     width: 50px;
     height: 1px;
     background-color: var(--gray-2);
-
-    transition: all var(--ease-hard) .5s;
 }
 
 
@@ -138,7 +132,7 @@
     min-height: 84px;
     box-sizing: border-box;
     padding: 8px;
-    transition: background-color .3s var(--ease-hard);
+    transition: background-color var(--dur-hover) var(--ease-expo);
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
@@ -156,7 +150,7 @@
     background-size: cover;
     background-position: center;
     filter: grayscale(1) contrast(1.05);
-    transition: filter .35s var(--ease-hard);
+    transition: filter .6s var(--ease-expo);
 }
 
 #blogroll-list-container > .blogroll-card > .blogroll-card-text {
@@ -213,7 +207,7 @@
 
     opacity: 0;
     transform: translateX(-8px);
-    transition: all .3s var(--ease-hard);
+    transition: transform .45s var(--ease-expo), opacity .45s var(--ease-expo);
     pointer-events: none;
 }
 

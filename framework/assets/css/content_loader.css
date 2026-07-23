@@ -25,22 +25,24 @@
     overflow-y: scroll;
 
     -webkit-overflow-scrolling : touch;
-    transition: all 0.5s 0.5s cubic-bezier(.8,0,.2,1);
+    transition:
+        transform .8s .35s var(--ease-expo),
+        opacity .8s .35s var(--ease-expo);
     transform-origin: center;
 
     display: flex;
     flex-wrap: wrap;
     align-content: flex-start;
-
-    scroll-behavior: smooth;
 }
 
 #content-screen::-webkit-scrollbar { width: 0 !important }
 
 #loading-status:checked ~ .content-screen{
     opacity: 0;
-    transition: all 0.6s 0.0s cubic-bezier(.8,0,.2,1);
-    transform: scale(0.6);
+    transition:
+        transform .55s var(--ease-expo-io),
+        opacity .45s var(--ease-expo-io);
+    transform: translateY(48px) scale(.992);
 }
 
 /********************************************//**
@@ -73,7 +75,7 @@ vert-line{
     background-color: var(--loading-grid-color);
 
     transform: scaleY(0);
-    transition: all 0.5s calc((var(--loading-grid-index-offset-vert) - var(--index))*0.05s) cubic-bezier(1,.0,.5,1);
+    transition: transform .5s calc((var(--loading-grid-index-offset-vert) - var(--index))*0.05s) cubic-bezier(1,.0,.5,1), left .5s calc((var(--loading-grid-index-offset-vert) - var(--index))*0.05s) cubic-bezier(1,.0,.5,1);
 }
 vert-line:nth-child(even){
     transform-origin: left top;
@@ -91,7 +93,7 @@ horz-line{
 
     transform-origin: left top;
     transform: scaleX(0);
-    transition: all 0.5s calc((var(--loading-grid-index-offset-horz) - var(--index))*0.05s) cubic-bezier(1,.0,.5,1);
+    transition: transform .5s calc((var(--loading-grid-index-offset-horz) - var(--index))*0.05s) cubic-bezier(1,.0,.5,1), top .5s calc((var(--loading-grid-index-offset-horz) - var(--index))*0.05s) cubic-bezier(1,.0,.5,1);
 }
 horz-line:nth-child(even){
     transform-origin: left top;
@@ -121,7 +123,7 @@ horz-line:nth-child(odd){
     background: var(--paper);
     opacity: 0;
 
-    transition: all 0.5s 0.2s;
+    transition: padding .6s .2s var(--ease-expo), opacity .4s .2s var(--ease-expo);
     z-index: 0;
 }
 .loading-text:after{
@@ -136,7 +138,7 @@ horz-line:nth-child(odd){
 
     background: var(--paper);
 
-    transition: all 0.5s cubic-bezier(.8,0,.2,1);
+    transition: padding .6s var(--ease-expo), opacity .4s var(--ease-expo);
     animation: loading-text-fade 1s forwards;
     -webkit-animation: loading-text-fade 1s forwards;
 }
@@ -173,7 +175,7 @@ horz-line:nth-child(odd){
     background: rgba(255,255,255,.7);
     opacity: 0;
 
-    transition: all 0.2s 0.5s;
+    transition: opacity .25s .5s var(--ease-expo);
 }
 
 /* Corner ticks on the loading panel */
@@ -194,7 +196,7 @@ horz-line:nth-child(odd){
     transform-origin: center;
     transform: scale(0);
 
-    transition: all 0.5s cubic-bezier(.8,0,.2,1);
+    transition: transform .5s var(--ease-expo);
 }
 #loading-textBox::after{
     content: "";
@@ -213,7 +215,7 @@ horz-line:nth-child(odd){
     transform-origin: center;
     transform: scale(0);
 
-    transition: all 0.5s cubic-bezier(.8,0,.2,1);
+    transition: transform .5s var(--ease-expo);
 }
 
 /***************Loading Behavior***************/
@@ -221,12 +223,12 @@ horz-line:nth-child(odd){
 #loading-status:checked ~ #loading-screen vert-line {
     left: calc(var(--index) * var(--loading-grid-active-size) + 50%);
     transform: scaleY(1)!important;
-    transition: all 0.5s calc((var(--loading-grid-index-offset-vert) + var(--index))*0.05s) cubic-bezier(.5,.0,.0,1);
+    transition: transform .5s calc((var(--loading-grid-index-offset-vert) + var(--index))*0.05s) cubic-bezier(.5,.0,.0,1), left .5s calc((var(--loading-grid-index-offset-vert) + var(--index))*0.05s) cubic-bezier(.5,.0,.0,1);
 }
 #loading-status:checked ~ #loading-screen horz-line {
     top: calc(var(--index) * var(--loading-grid-active-size) + 50%) ;
     transform: scaleX(1)!important;
-    transition: all 0.5s calc((var(--loading-grid-index-offset-horz) + var(--index))*0.05s) cubic-bezier(.5,.0,.0,1);
+    transition: transform .5s calc((var(--loading-grid-index-offset-horz) + var(--index))*0.05s) cubic-bezier(.5,.0,.0,1), top .5s calc((var(--loading-grid-index-offset-horz) + var(--index))*0.05s) cubic-bezier(.5,.0,.0,1);
 }
 
 /*Navigation Bar during load*/
@@ -245,7 +247,7 @@ horz-line:nth-child(odd){
 #loading-status:checked ~ #loading-screen .loading-text::after{
     padding: 12px 18px;
 
-    transition: all 1s 0.5s cubic-bezier(.8,0,.2,1);
+    transition: padding .8s .5s var(--ease-expo);
     animation: loading-text-show 1s 0.5s forwards;
     -webkit-animation: loading-text-show 1s 0.5s forwards;
 }
@@ -255,7 +257,7 @@ horz-line:nth-child(odd){
     -webkit-animation: loading-text-show .25s .25s forwards;
 }
 #loading-status:checked ~ #loading-screen #loading-textBox{
-    transition: all 0.2s;
+    transition: opacity .2s var(--ease-expo);
     opacity: 1;
 }
 #loading-status:checked ~ #loading-screen #loading-textBox::before{
@@ -365,11 +367,4 @@ horz-line:nth-child(odd){
         opacity: 0;
     }
 }
-@keyframes loading-strip-move {
-    0%{
-        background-position-y: 0;
-    }
-    100%{
-        background-position-y: 50px;
-    }
 }

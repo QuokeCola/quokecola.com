@@ -1,12 +1,9 @@
 #article-browser-article-container {
     border: none;
-    transition: all cubic-bezier(0.8, 0, 0.2, 1) 0.5s;
 }
 
 #article-browser-article-side-container {
     border: none;
-    transition: all cubic-bezier(0.8, 0, 0.2, 1) 0.5s;
-    transition-delay: 0.25s;
     align-self: flex-start;
 }
 

@@ -8,7 +8,7 @@
 #article-browser-list-page {
     position: absolute;
     width: calc(100%);
-    transition: all cubic-bezier(0.8, 0, 0.2, 1) 0.5s;
+    transition: translate .85s var(--ease-expo-io), opacity .85s var(--ease-expo-io);
     cursor: default;
     height: auto;
     left: 0px;
@@ -20,7 +20,7 @@
 #article-browser-article-page {
     position: absolute;
     width: 100%;
-    transition: all cubic-bezier(0.8, 0, 0.2, 1) 0.5s;
+    transition: translate .85s var(--ease-expo-io);
     top: 0px;
     left: calc(100%);
     display: flex;
@@ -37,7 +37,7 @@
     height: 100%;
     background-color: transparent;
     pointer-events: none;
-    transition: all cubic-bezier(0.8, 0, 0.2, 1) 0.25s;
+    transition: background-color .25s var(--ease-expo);
 }
 
 #article-browser-load-article-status:checked ~ #article-browser-list-page {

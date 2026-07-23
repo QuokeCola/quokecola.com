@@ -30,7 +30,6 @@
     align-items: flex-start;
     padding: clamp(16px, 2vw, 28px);
     background: var(--paper);
-    transition: all var(--ease-hard) .5s;
 }
 
 .home-banner-text h2 {
@@ -46,7 +45,6 @@
     letter-spacing: .02em;
     text-transform: uppercase;
     color: var(--ink);
-    transition: all var(--ease-hard) .5s;
 }
 .home-banner-text p{
     position: relative;
@@ -56,7 +54,6 @@
     line-height: 1.8;
     color: var(--gray-1);
     max-width: 340px;
-    transition: all var(--ease-hard) .5s;
 }
 .home-banner-text h2{
     position: relative;
@@ -82,6 +79,7 @@
     left: 0;
     background-size: cover;
     background-position: center;
+    will-change: clip-path, transform;
 }
 
 /* prev / next — mono square buttons over the image */
@@ -102,7 +100,7 @@
     font-family: var(--font-mono);
     font-size: 14px;
     cursor: pointer;
-    transition: all .25s var(--ease-hard);
+    transition: background-color var(--dur-hover) var(--ease-expo), color var(--dur-hover) var(--ease-expo);
 }
 .home-banner-nav-btn:hover {
     background: var(--ink);
@@ -133,7 +131,7 @@
     background: var(--paper);
     border: 1px solid var(--ink);
     cursor: pointer;
-    transition: background 0.3s ease, width 0.3s ease;
+    transition: background .3s var(--ease-expo), width .3s var(--ease-expo);
 }
 
 .home-banner-dot-active {

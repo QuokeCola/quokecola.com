@@ -17,7 +17,10 @@ nav{
     -webkit-backdrop-filter: blur(0px) brightness(100%);
     border-bottom: 1px solid transparent;
 
-    transition: all 0.25s;
+    transition:
+        background-color .45s var(--ease-expo),
+        border-color .45s var(--ease-expo),
+        backdrop-filter .45s var(--ease-expo);
     user-select: none;
 }
 
@@ -59,14 +62,13 @@ nav{
  *                Menu Panel
  ***********************************************/
 .nav-menu-panel{
-    transition: all 0.5s var(--ease-hard);
     z-index: 3;
     counter-reset: navitem;
 }
 /*Define the animation curve of links*/
 nav .nav-menu-items{
     position: relative;
-    transition: all 0.5s var(--ease-hard);
+    transition: color var(--dur-hover) var(--ease-expo);
 
     font-family: var(--font-mono);
     font-size: 11px;
@@ -84,7 +86,7 @@ nav .nav-menu-items::before{
     content: "0" counter(navitem) "/";
     color: var(--gray-3);
     margin-right: 6px;
-    transition: color 0.5s var(--ease-hard);
+    transition: color var(--dur-hover) var(--ease-expo);
 }
 /*The background of menu items*/
 nav .nav-menu-items:after{
@@ -100,7 +102,7 @@ nav .nav-menu-items:after{
     z-index: -1;
 
     pointer-events: none;
-    transition: all 0.5s var(--ease-hard);
+    transition: width .5s var(--ease-expo);
 }
 /*Hover behavior, font color to white*/
 nav .nav-menu-items:hover{
@@ -125,7 +127,7 @@ nav .nav-menu-items:hover::after{
     background-color: var(--ink);
     position: absolute;
     right: 10px;
-    transition: all 0.5s var(--ease-hard);
+    transition: background-color var(--dur-hover) var(--ease-expo);
 }
 
 /*Layout for PC*/
@@ -194,7 +196,6 @@ nav .nav-menu-items:hover::after{
         align-content: center;
 
         cursor: pointer;
-        transition: all 0.25s;
         pointer-events: all;
         z-index: 3;
     }

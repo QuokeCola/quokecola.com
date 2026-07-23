@@ -159,15 +159,21 @@ export class HomepageInterface {
     }
 
     static slide_to_img(container: HTMLElement, new_url: string, direction: 'forward' | 'backward' | 'none', onComplete: () => void) {
-        const DURATION = 500;
+        const DURATION = 900;
+        const EASE = 'cubic-bezier(.87, 0, .13, 1)'; // expo in-out
         const old_slides = Array.from(container.querySelectorAll<HTMLElement>('.home-banner-slide'));
 
+        // New slide wipes in over the old one via clip-path while its scale
+        // settles from 1.06 to 1 — transform/clip-path only, no layout work.
         const new_slide = document.createElement('div');
         new_slide.className = 'home-banner-slide';
         if (direction === 'none') {
             new_slide.style.opacity = '0';
         } else {
-            new_slide.style.transform = direction === 'forward' ? 'translateX(100%)' : 'translateX(-100%)';
+            new_slide.style.clipPath = direction === 'forward'
+                ? 'inset(0 0 0 100%)'
+                : 'inset(0 100% 0 0)';
+            new_slide.style.transform = 'scale(1.06)';
         }
         container.appendChild(new_slide);
 
@@ -195,16 +201,17 @@ export class HomepageInterface {
             container.classList.replace("loading-components-light", "loaded-components-light");
             new_slide.getBoundingClientRect(); // force reflow before animating
 
-            const easing = `cubic-bezier(0.8, 0, 0.2, 1)`;
             if (direction === 'none') {
-                new_slide.style.transition = `opacity ${DURATION}ms ${easing}`;
+                new_slide.style.transition = `opacity ${DURATION}ms ${EASE}`;
                 new_slide.style.opacity = '1';
             } else {
-                new_slide.style.transition = `transform ${DURATION}ms ${easing}`;
-                new_slide.style.transform = 'translateX(0)';
+                new_slide.style.transition = `clip-path ${DURATION}ms ${EASE}, transform ${DURATION}ms ${EASE}`;
+                new_slide.style.clipPath = 'inset(0 0 0 0)';
+                new_slide.style.transform = 'scale(1)';
+                // Outgoing slide drifts slightly under the wipe.
                 old_slides.forEach(s => {
-                    s.style.transition = `transform ${DURATION}ms ${easing}`;
-                    s.style.transform = direction === 'forward' ? 'translateX(-100%)' : 'translateX(100%)';
+                    s.style.transition = `transform ${DURATION}ms ${EASE}`;
+                    s.style.transform = direction === 'forward' ? 'translateX(-6%) scale(1.02)' : 'translateX(6%) scale(1.02)';
                 });
             }
 

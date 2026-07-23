@@ -13,7 +13,7 @@
     cursor: pointer;
     user-select: none;
     position: relative;
-    transition: all cubic-bezier(0.8,0,0.2,1) 0.25s;
+    transition: background-color .25s var(--ease-expo), color .25s var(--ease-expo), border-color .25s var(--ease-expo);
 
     font-family: var(--font-mono);
     font-size: 11px;

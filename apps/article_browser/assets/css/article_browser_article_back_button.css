@@ -4,7 +4,7 @@
 
     top: 0;
     background-color: var(--paper);
-    transition: all cubic-bezier(0.8, 0, 0.2, 1) 0.5s;
+    transition: background-color var(--dur-hover) var(--ease-expo);
     z-index: 10;
     cursor: pointer;
 }
@@ -26,7 +26,7 @@
     letter-spacing: .3em;
     text-transform: uppercase;
     color: var(--gray-2);
-    transition: color .3s var(--ease-hard);
+    transition: color var(--dur-hover) var(--ease-expo);
     pointer-events: none;
 }
 
@@ -36,7 +36,7 @@
     width: var(--back-btn-icon-size);
     left: calc((var(--back-btn-width) - var(--back-btn-icon-size))/2);
     bottom: calc((var(--back-btn-width) - var(--back-btn-icon-size))/2);
-    transition: all cubic-bezier(0.8, 0, 0.2, 1) 0.5s;
+    transition: left .5s var(--ease-expo), filter var(--dur-hover) var(--ease-expo);
     user-select: none;
 }
 

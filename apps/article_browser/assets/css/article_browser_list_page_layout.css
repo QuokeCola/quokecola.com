@@ -1,7 +1,7 @@
 /* Sticky tag filter bar */
 #article-browser-list-tag-container{
     position: sticky;
-    transition: all cubic-bezier(0.8, 0, 0.2, 1) 0.5s;
+    transition: background-color .5s var(--ease-expo), backdrop-filter .5s var(--ease-expo);
     top: 0;
     display: block;
     flex-wrap: wrap;
@@ -51,7 +51,6 @@
     display: inline-grid;
     width: calc(100% - 2 * var(--gutter));
     padding: 0;
-    transition: all cubic-bezier(0.8, 0, 0.2, 1) 0.5s;
     row-gap: 1px;
     background-color: var(--article-browser-border-color);
     border-top: 1px solid var(--article-browser-border-color);
@@ -69,7 +68,7 @@
     display: flex;
     flex-wrap: wrap;
     min-width: 0;
-    transition: all cubic-bezier(0.8, 0, 0.2, 1) 0.5s;
+    transition: background-color var(--dur-hover) var(--ease-expo);
     background-color: white;
 }
 

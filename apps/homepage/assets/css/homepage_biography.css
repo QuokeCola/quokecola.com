@@ -7,8 +7,6 @@
     color: var(--ink);
     margin-bottom: 48px;
     max-width: 900px;
-
-    transition: all var(--ease-hard) .5s;
 }
 
 .home-welcome-name{
@@ -42,8 +40,6 @@
     border-collapse: collapse;
     border-spacing: 0;
     border: 0!important;
-
-    transition: all var(--ease-hard) .5s;
 }
 
 .home-timeline-tile tr,th{
@@ -55,8 +51,6 @@
     margin: 0;
     border: 0!important;
     border-bottom: 1px solid var(--line)!important;
-
-    transition: all var(--ease-hard) .5s;
 }
 
 .home-timeline-tile th{
@@ -79,7 +73,6 @@
 
 #home-about-biography{
     margin-bottom: 50px;
-    transition: all var(--ease-hard) .5s;
 }
 
 .home-portrait-tile{

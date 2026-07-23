@@ -7,6 +7,9 @@ import {MotionInterface} from "./MotionInterface";
 
 // Global crosshair cursor HUD (desktop only, respects reduced motion)
 MotionInterface.init_hud();
+// Inertial smooth scrolling on the content screen (wheel input only;
+// touch/keyboard stay native, disabled under prefers-reduced-motion)
+MotionInterface.init_smooth_scroll();
 
 // Analyzing hyper ref.
 let homepage_delegate = new HomepageDelegate();

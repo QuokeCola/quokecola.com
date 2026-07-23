@@ -112,16 +112,12 @@
     box-sizing: border-box;
     width: 100%;
     padding: 0 var(--gutter);
-
-    transition: all var(--ease-hard) .5s;
 }
 
 .home-div-line{
     width: 50px;
     height: 1px;
     background-color: var(--gray-2);
-
-    transition: all var(--ease-hard) .5s;
 }
 
 /* Legacy hook kept — restyled as qk-btn in markup */
@@ -156,7 +152,7 @@
 .home-quarter-size-tile{
     background-color: var(--paper);
     position: relative;
-    transition: background-color .3s var(--ease-hard);
+    transition: background-color var(--dur-hover) var(--ease-expo);
     display: flex;
     flex-direction: column;
     min-width: 0;
@@ -192,7 +188,7 @@
     color: var(--ink);
     opacity: 0;
     transform: translateX(-8px);
-    transition: all .3s var(--ease-hard);
+    transition: transform .45s var(--ease-expo), opacity .45s var(--ease-expo);
 }
 
 .home-quarter-size-tile:hover{
@@ -243,7 +239,6 @@
 }
 
 .home-half-size-tile{
-    transition: all var(--ease-hard) .5s;
     margin-bottom: var(--home-grid-border-width, 20px);
     min-width: 0;
 }
@@ -262,12 +257,15 @@
 #home-selfie-wrapper{
     position: relative;
     line-height: 0;
+    overflow: hidden;
 }
 
 #home-selfie{
     width: 100%;
     height: auto;
     display: block;
+    /* vertical bleed so the parallax drift never exposes the frame edges */
+    margin: -6% 0;
 }
 
 /********************************************//**

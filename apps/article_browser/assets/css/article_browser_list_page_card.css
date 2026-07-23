@@ -6,7 +6,7 @@
     position: relative;
     z-index: 0;
     filter: grayscale(1) contrast(1.05);
-    transition: filter .35s var(--ease-hard);
+    transition: filter .6s var(--ease-expo);
 }
 
 .article-browser-list-quarter-tile > .article-browser-list-detail {
@@ -48,7 +48,7 @@
     color: var(--ink);
     opacity: 0;
     transform: translateX(-8px);
-    transition: all .3s var(--ease-hard);
+    transition: transform .45s var(--ease-expo), opacity .45s var(--ease-expo);
     pointer-events: none;
 }
 
