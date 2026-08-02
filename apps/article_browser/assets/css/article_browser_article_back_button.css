@@ -44,7 +44,7 @@
     background-color: var(--ink);
 }
 #article-browser-article-back-button:hover::after{
-    color: var(--paper);
+    color: var(--accent-green);
 }
 
 #article-browser-article-back-button:hover #article-browser-article-back-button-icon{

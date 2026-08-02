@@ -25,6 +25,9 @@
     left: 8px;
     content: "NEXT";
 }
+#article-browser-article-side-container > h1{
+    border-bottom-color: var(--accent-green);
+}
 #article-browser-article-recommendation-card > .article-browser-list-quarter-tile:hover {
     background-color: var(--paper-2);
 }

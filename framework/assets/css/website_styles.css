@@ -11,8 +11,10 @@
     --paper:    #ffffff;
     --paper-2:  #f4f4f4;
 
-    /* Legacy accent kept for compatibility — monochrome now */
-    --accent-color: #111111;
+    /* Marathon-style acid green accent */
+    --accent-green: #b9f232;
+    --accent-green-pale: #d9f59a;
+    --accent-color: var(--accent-green);
 
     --font-display: "Blender Pro", "IBM Plex Sans", sans-serif;
     --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
@@ -32,7 +34,7 @@
 html, body{margin: 0; width: 100% ; height: 100%; font-family: var(--font-body); background-color: var(--paper); overflow: hidden; display: flex;}
 #content-screen{font-family: var(--font-body)}
 
-::selection{ background: var(--ink); color: var(--paper); }
+::selection{ background: var(--accent-green); color: var(--ink); }
 
 body{
     min-height: 100vh;
@@ -45,56 +47,6 @@ html {
 }
 
 /********************************************//**
- *  Global wireframe — full-height column rules
- *  on the scroll container; the layout grids
- *  below snap onto these lines.
- ***********************************************/
-@media screen and (min-width: 900px){
-    #content-screen{
-        background-image:
-            linear-gradient(var(--line), var(--line)),
-            linear-gradient(var(--line), var(--line)),
-            linear-gradient(var(--line), var(--line)),
-            linear-gradient(var(--line), var(--line)),
-            linear-gradient(var(--line), var(--line));
-        background-size: 1px 100%;
-        background-repeat: no-repeat;
-        background-position:
-            var(--gutter) 0,
-            calc(25% + var(--gutter)/2) 0,
-            50% 0,
-            calc(75% - var(--gutter)/2) 0,
-            calc(100% - var(--gutter)) 0;
-    }
-}
-@media screen and (min-width: 550px) and (max-width: 899px){
-    #content-screen{
-        background-image:
-            linear-gradient(var(--line), var(--line)),
-            linear-gradient(var(--line), var(--line)),
-            linear-gradient(var(--line), var(--line));
-        background-size: 1px 100%;
-        background-repeat: no-repeat;
-        background-position:
-            var(--gutter) 0,
-            50% 0,
-            calc(100% - var(--gutter)) 0;
-    }
-}
-@media screen and (max-width: 549px){
-    #content-screen{
-        background-image:
-            linear-gradient(var(--line), var(--line)),
-            linear-gradient(var(--line), var(--line));
-        background-size: 1px 100%;
-        background-repeat: no-repeat;
-        background-position:
-            var(--gutter) 0,
-            calc(100% - var(--gutter)) 0;
-    }
-}
-
-/********************************************//**
  *  Schematic grid background
  *  (mirrors the Three.js bg shader: hairlines
  *  every 79.5px + "+" marks every 159px)
@@ -104,7 +56,7 @@ html {
 .qk-grid-bg{
     background-color: transparent;
     background-image:
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='159' height='159'%3E%3Cpath d='M74.5 79.5h10M79.5 74.5v10' stroke='%23b5b5b5' stroke-width='1'/%3E%3C/svg%3E"),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='159' height='159'%3E%3Cpath d='M74.5 79.5h10M79.5 74.5v10' stroke='%23c5e88d' stroke-width='1'/%3E%3C/svg%3E"),
         linear-gradient(to right, var(--line) 1px, transparent 1px),
         linear-gradient(to bottom, var(--line) 1px, transparent 1px);
     background-size:
@@ -126,7 +78,7 @@ html {
 }
 .qk-label--tick::before{
     content: "// ";
-    color: var(--gray-3);
+    color: var(--accent-green);
 }
 
 .qk-section-head{
@@ -180,7 +132,9 @@ html {
     font-family: var(--font-mono);
     font-size: 12px;
     letter-spacing: .1em;
-    color: var(--gray-2);
+    color: var(--ink);
+    background: var(--accent-green);
+    padding: 1px 6px;
 }
 .qk-sec-title{
     font-family: var(--font-display);
@@ -232,8 +186,8 @@ html {
     transition: max-width .45s var(--ease-expo);
 }
 .qk-btn:hover{
-    background: var(--ink);
-    color: var(--paper);
+    background: var(--accent-green);
+    color: var(--ink);
 }
 .qk-btn:hover::after{
     max-width: 16px;
@@ -253,10 +207,10 @@ html {
 .qk-bracket-link::before{ content: "["; color: var(--gray-3); margin-right: 4px;}
 .qk-bracket-link::after { content: "]"; color: var(--gray-3); margin-left: 4px;}
 .qk-bracket-link:hover{
-    background: var(--ink);
-    color: var(--paper);
+    background: var(--accent-green);
+    color: var(--ink);
 }
-.qk-bracket-link:hover::before, .qk-bracket-link:hover::after{ color: var(--paper); }
+.qk-bracket-link:hover::before, .qk-bracket-link:hover::after{ color: var(--ink); }
 
 /********************************************//**
  *  Frame with corner ticks
@@ -276,14 +230,14 @@ html {
 .qk-frame::before{
     top: -5px; left: -5px;
     background:
-        linear-gradient(var(--ink), var(--ink)) center/9px 1px no-repeat,
-        linear-gradient(var(--ink), var(--ink)) center/1px 9px no-repeat;
+        linear-gradient(var(--accent-green), var(--accent-green)) center/9px 1px no-repeat,
+        linear-gradient(var(--accent-green), var(--accent-green)) center/1px 9px no-repeat;
 }
 .qk-frame::after{
     bottom: -5px; right: -5px;
     background:
-        linear-gradient(var(--ink), var(--ink)) center/9px 1px no-repeat,
-        linear-gradient(var(--ink), var(--ink)) center/1px 9px no-repeat;
+        linear-gradient(var(--accent-green), var(--accent-green)) center/9px 1px no-repeat,
+        linear-gradient(var(--accent-green), var(--accent-green)) center/1px 9px no-repeat;
 }
 
 /********************************************//**
@@ -319,7 +273,7 @@ html {
 }
 .qk-marquee-track > span > i{
     font-style: normal;
-    color: var(--gray-3);
+    color: var(--accent-green);
     padding: 0 18px;
     font-family: var(--font-mono);
     font-size: .7em;
@@ -379,10 +333,10 @@ html {
     font-family: var(--font-mono);
     font-size: 9px;
     letter-spacing: .08em;
-    color: var(--gray-2);
+    color: var(--gray-1);
     background: var(--paper);
     padding: 1px 4px;
-    border: 1px solid var(--line);
+    border: 1px solid var(--accent-green);
 }
 @media (max-width: 699px){
     #qk-hud{ display: none; }
@@ -419,8 +373,27 @@ html {
     transition: background var(--dur-hover) var(--ease-expo), color var(--dur-hover) var(--ease-expo);
 }
 .copyright a:hover{
-    background: var(--ink);
-    color: var(--paper);
+    background: var(--accent-green);
+    color: var(--ink);
+}
+
+/********************************************//**
+ *  Digital glitch jolt — used when a dithered
+ *  image swaps to its original on hover, and as
+ *  a hover kick on CSS-filtered thumbnails.
+ ***********************************************/
+.qk-glitch-jolt{
+    animation: qk-glitch-bands .38s steps(2, end) 1;
+}
+@keyframes qk-glitch-bands{
+    0%  { clip-path: inset(0 0 0 0);      transform: translateX(0); }
+    12% { clip-path: inset(8% 0 78% 0);   transform: translateX(-6px); }
+    25% { clip-path: inset(46% 0 38% 0);  transform: translateX(5px); }
+    37% { clip-path: inset(72% 0 5% 0);   transform: translateX(-4px); }
+    50% { clip-path: inset(20% 0 55% 0);  transform: translateX(6px); }
+    62% { clip-path: inset(85% 0 2% 0);   transform: translateX(-5px); }
+    75% { clip-path: inset(0 0 0 0);      transform: translateX(3px); }
+    100%{ clip-path: inset(0 0 0 0);      transform: translateX(0); }
 }
 
 /********************************************//**
@@ -444,5 +417,6 @@ html {
         transition: none;
     }
     [data-qk-parallax]{ transform: none !important; }
+    .qk-glitch-jolt{ animation: none; }
     #qk-hud{ display: none; }
 }

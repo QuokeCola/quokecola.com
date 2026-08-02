@@ -11,7 +11,7 @@
 
 .home-welcome-name{
     font-weight: 500;
-    border-bottom: 2px solid var(--ink);
+    border-bottom: 2px solid var(--accent-green);
 }
 
 #home-about-biography .qk-label{

@@ -135,7 +135,8 @@
 }
 
 .home-banner-dot-active {
-    background: var(--ink);
+    background: var(--accent-green);
+    border-color: var(--ink);
     width: 20px;
 }
 

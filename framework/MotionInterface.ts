@@ -189,6 +189,37 @@ export class MotionInterface {
         });
     }
 
+    /**
+     * Swap an element's image (img src or background) through a short
+     * digital glitch: band-sliced clip-path jolt with the swap happening
+     * mid-animation. Under reduced motion the swap is instant.
+     */
+    static glitch_swap(el: HTMLElement, url: string) {
+        const apply = () => {
+            if (el instanceof HTMLImageElement) {
+                el.src = url;
+            } else {
+                el.style.backgroundImage = `url("${url}")`;
+            }
+        };
+        if (this.reduced_motion()) {
+            apply();
+            return;
+        }
+        if (!el.dataset.qkGlitchBound) {
+            el.dataset.qkGlitchBound = "1";
+            el.addEventListener("animationend", (e) => {
+                if ((e as AnimationEvent).animationName === "qk-glitch-bands") {
+                    el.classList.remove("qk-glitch-jolt");
+                }
+            });
+        }
+        el.classList.remove("qk-glitch-jolt");
+        void el.offsetWidth; // restart the animation
+        el.classList.add("qk-glitch-jolt");
+        window.setTimeout(apply, 140);
+    }
+
     /************************************************
      *  Crosshair cursor HUD
      ***********************************************/

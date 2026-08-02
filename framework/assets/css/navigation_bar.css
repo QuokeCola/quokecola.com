@@ -97,19 +97,19 @@ nav .nav-menu-items:after{
     width: 0;
     height: 100%;
 
-    background: var(--ink);
+    background: var(--accent-green);
 
     z-index: -1;
 
     pointer-events: none;
     transition: width .5s var(--ease-expo);
 }
-/*Hover behavior, font color to white*/
+/*Hover behavior: ink text over the acid-green wipe*/
 nav .nav-menu-items:hover{
-    color: var(--paper);
+    color: var(--ink);
 }
 nav .nav-menu-items:hover::before{
-    color: var(--gray-2);
+    color: var(--ink);
 }
 /*Hover behavior, extend*/
 nav .nav-menu-items:hover::after{

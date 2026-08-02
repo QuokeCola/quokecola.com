@@ -22,13 +22,13 @@
 }
 
 .article-tag-selected{
-    background-color: var(--ink);
+    background-color: var(--accent-green);
     border-color: var(--ink);
-    color: var(--paper);
+    color: var(--ink);
 }
 .article-tag-selected:hover{
-    color: var(--paper);
+    color: var(--ink);
 }
 .article-tag-selected::before, .article-tag-selected::after{
-    color: var(--gray-2);
+    color: var(--ink);
 }

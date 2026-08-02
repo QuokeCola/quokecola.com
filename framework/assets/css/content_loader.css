@@ -115,7 +115,7 @@ horz-line:nth-child(odd){
 
 /*Decorations*/
 .loading-text{
-    padding: 60px 90px;
+    padding: 44px 56px;
     margin: 0 0;
     align-self: center;
 
@@ -123,13 +123,13 @@ horz-line:nth-child(odd){
     background: var(--paper);
     opacity: 0;
 
-    transition: padding .6s .2s var(--ease-expo), opacity .4s .2s var(--ease-expo);
+    transition: opacity .3s var(--ease-expo);
     z-index: 0;
 }
 .loading-text:after{
     font-family: var(--font-mono);
     content: var(--loading-text);
-    padding: 5px;
+    padding: 12px 18px;
     font-weight: 400;
     font-size: 12px;
     letter-spacing: .22em;
@@ -138,7 +138,6 @@ horz-line:nth-child(odd){
 
     background: var(--paper);
 
-    transition: padding .6s var(--ease-expo), opacity .4s var(--ease-expo);
     animation: loading-text-fade 1s forwards;
     -webkit-animation: loading-text-fade 1s forwards;
 }
@@ -163,7 +162,10 @@ horz-line:nth-child(odd){
 #loading-orgName::after{
     content: "SYS.BOOT — OK";
     display: block;
-    color: var(--gray-3);
+    color: var(--ink);
+    background: var(--accent-green);
+    width: fit-content;
+    padding: 0 4px;
 }
 #loading-textBox{
     position: relative;
@@ -174,8 +176,10 @@ horz-line:nth-child(odd){
 
     background: rgba(255,255,255,.7);
     opacity: 0;
+    transform: scale(.96);
 
-    transition: opacity .25s .5s var(--ease-expo);
+    /* closing: box and ticks leave together, quickly, no delay */
+    transition: opacity .25s var(--ease-expo), transform .25s var(--ease-expo);
 }
 
 /* Corner ticks on the loading panel */
@@ -190,13 +194,14 @@ horz-line:nth-child(odd){
     z-index: 1;
 
     background:
-        linear-gradient(var(--ink), var(--ink)) center/9px 1px no-repeat,
-        linear-gradient(var(--ink), var(--ink)) center/1px 9px no-repeat;
+        linear-gradient(var(--accent-green), var(--accent-green)) center/9px 1px no-repeat,
+        linear-gradient(var(--accent-green), var(--accent-green)) center/1px 9px no-repeat;
 
     transform-origin: center;
     transform: scale(0);
+    opacity: 0;
 
-    transition: transform .5s var(--ease-expo);
+    transition: transform .25s var(--ease-expo), opacity .2s var(--ease-expo);
 }
 #loading-textBox::after{
     content: "";
@@ -209,13 +214,14 @@ horz-line:nth-child(odd){
     z-index: 1;
 
     background:
-        linear-gradient(var(--ink), var(--ink)) center/9px 1px no-repeat,
-        linear-gradient(var(--ink), var(--ink)) center/1px 9px no-repeat;
+        linear-gradient(var(--accent-green), var(--accent-green)) center/9px 1px no-repeat,
+        linear-gradient(var(--accent-green), var(--accent-green)) center/1px 9px no-repeat;
 
     transform-origin: center;
     transform: scale(0);
+    opacity: 0;
 
-    transition: transform .5s var(--ease-expo);
+    transition: transform .25s var(--ease-expo), opacity .2s var(--ease-expo);
 }
 
 /***************Loading Behavior***************/
@@ -238,16 +244,10 @@ horz-line:nth-child(odd){
 
 /*Decorations*/
 #loading-status:checked ~ #loading-screen .loading-text{
-    padding: 40px 30px;
-    margin: 6px 6px;
-
     opacity: 1;
 }
 
 #loading-status:checked ~ #loading-screen .loading-text::after{
-    padding: 12px 18px;
-
-    transition: padding .8s .5s var(--ease-expo);
     animation: loading-text-show 1s 0.5s forwards;
     -webkit-animation: loading-text-show 1s 0.5s forwards;
 }
@@ -257,14 +257,16 @@ horz-line:nth-child(odd){
     -webkit-animation: loading-text-show .25s .25s forwards;
 }
 #loading-status:checked ~ #loading-screen #loading-textBox{
-    transition: opacity .2s var(--ease-expo);
+    /* opening: settle in with a long expo scale */
+    transition: opacity .3s var(--ease-expo), transform .7s var(--ease-expo);
     opacity: 1;
-}
-#loading-status:checked ~ #loading-screen #loading-textBox::before{
     transform: scale(1);
 }
+#loading-status:checked ~ #loading-screen #loading-textBox::before,
 #loading-status:checked ~ #loading-screen #loading-textBox::after{
+    transition: transform .5s .15s var(--ease-expo), opacity .3s .15s var(--ease-expo);
     transform: scale(1);
+    opacity: 1;
 }
 
 /********************************************//**

@@ -30,7 +30,7 @@
 }
 
 .article-browser-list-index-selected{
-    background-color: var(--ink) !important;
+    background-color: var(--accent-green) !important;
     border-color: var(--ink) !important;
-    color: var(--paper) !important;
+    color: var(--ink) !important;
 }

@@ -31,7 +31,7 @@
 }
 .blogroll-hud-tag--tl{ top: calc(var(--nav-height) + 10px); left: var(--gutter); }
 .blogroll-hud-tag--tr{ top: calc(var(--nav-height) + 10px); right: var(--gutter); }
-.blogroll-hud-tag--br{ bottom: 12px; right: var(--gutter); }
+.blogroll-hud-tag--br{ bottom: 12px; right: var(--gutter); color: var(--ink); border-color: var(--accent-green); }
 
 /* --- Canvas text overlay --- */
 .blogroll-canvas-overlay{
@@ -222,6 +222,7 @@
 
 #blogroll-list-container > .blogroll-card:hover > .blogroll-card-image{
     filter: grayscale(0) contrast(1);
+    animation: qk-glitch-bands .38s steps(2, end) 1;
 }
 
 /*  --- Breakpoints --- */

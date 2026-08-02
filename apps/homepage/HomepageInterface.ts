@@ -187,12 +187,12 @@ export class HomepageInterface {
                 wrapper.dataset.qkHoverReveal = "1";
                 wrapper.addEventListener("mouseenter", () => {
                     container.querySelectorAll<HTMLElement>(".home-banner-slide").forEach(s => {
-                        if (s.dataset.qkSrc) s.style.backgroundImage = `url("${s.dataset.qkSrc}")`;
+                        if (s.dataset.qkSrc) MotionInterface.glitch_swap(s, s.dataset.qkSrc);
                     });
                 });
                 wrapper.addEventListener("mouseleave", () => {
                     container.querySelectorAll<HTMLElement>(".home-banner-slide").forEach(s => {
-                        if (s.dataset.qkDithered) s.style.backgroundImage = `url("${s.dataset.qkDithered}")`;
+                        if (s.dataset.qkDithered) MotionInterface.glitch_swap(s, s.dataset.qkDithered);
                     });
                 });
             }
@@ -284,8 +284,8 @@ export class HomepageInterface {
                 const host = img_obj.closest<HTMLElement>(".home-quarter-size-tile") ?? img_obj;
                 if (!host.dataset.qkHoverReveal) {
                     host.dataset.qkHoverReveal = "1";
-                    host.addEventListener("mouseenter", () => apply(img_url));
-                    host.addEventListener("mouseleave", () => apply(dithered));
+                    host.addEventListener("mouseenter", () => MotionInterface.glitch_swap(img_obj, img_url));
+                    host.addEventListener("mouseleave", () => MotionInterface.glitch_swap(img_obj, dithered));
                 }
                 for (let element of children) {
                     element.classList.replace("loading-components-light", "loaded-components-light")
