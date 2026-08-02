@@ -142,11 +142,12 @@
     grid-template-columns: repeat(4, 1fr);
 }
 
+/* interior seams only — the outermost edges stay open */
 .home-works-grid > .home-quarter-size-tile{
     border-left: 1px solid var(--line);
 }
-.home-works-grid > .home-quarter-size-tile:nth-child(4n){
-    border-right: 1px solid var(--line);
+.home-works-grid > .home-quarter-size-tile:nth-child(4n+1){
+    border-left: none;
 }
 
 .home-quarter-size-tile{
@@ -171,7 +172,7 @@
     font-family: var(--font-mono);
     font-size: 10px;
     letter-spacing: .14em;
-    color: var(--ink);
+    color: var(--on-accent);
     background: var(--accent-green);
     padding: 3px 7px;
 }
@@ -300,8 +301,8 @@
     .home-works-grid{
         grid-template-columns: repeat(2, 1fr);
     }
-    .home-works-grid > .home-quarter-size-tile:nth-child(2n){
-        border-right: 1px solid var(--line);
+    .home-works-grid > .home-quarter-size-tile:nth-child(2n+1){
+        border-left: none;
     }
 }
 
@@ -310,7 +311,7 @@
         grid-template-columns: 1fr;
     }
     .home-works-grid > .home-quarter-size-tile{
-        border-right: 1px solid var(--line);
+        border-left: none;
     }
     .home-hero-topline .home-hero-coords{
         display: none;

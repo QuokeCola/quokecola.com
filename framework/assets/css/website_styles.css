@@ -2,18 +2,20 @@
  *  Design tokens — terminal / schematic language
  ***********************************************/
 :root{
-    --ink:      #111111;
-    --ink-soft: #3a3a3a;
-    --gray-1:   #555555;
-    --gray-2:   #8a8a8a;
-    --gray-3:   #b5b5b5;
-    --line:     #dcddde;
-    --paper:    #ffffff;
-    --paper-2:  #f4f4f4;
+    /* Dark Marathon palette: near-black paper, light ink */
+    --ink:      #e6e6e4;
+    --ink-soft: #c9c9c6;
+    --gray-1:   #9a9a97;
+    --gray-2:   #6f6f6c;
+    --gray-3:   #47474a;
+    --line:     #2a2a2d;
+    --paper:    #0e0e0f;
+    --paper-2:  #1a1a1c;
 
-    /* Marathon-style acid green accent */
+    /* Marathon-style acid green accent (+ dark text used on green fills) */
     --accent-green: #b9f232;
     --accent-green-pale: #d9f59a;
+    --on-accent: #101010;
     --accent-color: var(--accent-green);
 
     --font-display: "Blender Pro", "IBM Plex Sans", sans-serif;
@@ -34,7 +36,7 @@
 html, body{margin: 0; width: 100% ; height: 100%; font-family: var(--font-body); background-color: var(--paper); overflow: hidden; display: flex;}
 #content-screen{font-family: var(--font-body)}
 
-::selection{ background: var(--accent-green); color: var(--ink); }
+::selection{ background: var(--accent-green); color: var(--on-accent); }
 
 body{
     min-height: 100vh;
@@ -56,7 +58,7 @@ html {
 .qk-grid-bg{
     background-color: transparent;
     background-image:
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='159' height='159'%3E%3Cpath d='M74.5 79.5h10M79.5 74.5v10' stroke='%23c5e88d' stroke-width='1'/%3E%3C/svg%3E"),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='159' height='159'%3E%3Cpath d='M74.5 79.5h10M79.5 74.5v10' stroke='%23566b25' stroke-width='1'/%3E%3C/svg%3E"),
         linear-gradient(to right, var(--line) 1px, transparent 1px),
         linear-gradient(to bottom, var(--line) 1px, transparent 1px);
     background-size:
@@ -132,7 +134,7 @@ html {
     font-family: var(--font-mono);
     font-size: 12px;
     letter-spacing: .1em;
-    color: var(--ink);
+    color: var(--on-accent);
     background: var(--accent-green);
     padding: 1px 6px;
 }
@@ -187,7 +189,8 @@ html {
 }
 .qk-btn:hover{
     background: var(--accent-green);
-    color: var(--ink);
+    border-color: var(--accent-green);
+    color: var(--on-accent);
 }
 .qk-btn:hover::after{
     max-width: 16px;
@@ -208,9 +211,9 @@ html {
 .qk-bracket-link::after { content: "]"; color: var(--gray-3); margin-left: 4px;}
 .qk-bracket-link:hover{
     background: var(--accent-green);
-    color: var(--ink);
+    color: var(--on-accent);
 }
-.qk-bracket-link:hover::before, .qk-bracket-link:hover::after{ color: var(--ink); }
+.qk-bracket-link:hover::before, .qk-bracket-link:hover::after{ color: var(--on-accent); }
 
 /********************************************//**
  *  Frame with corner ticks
@@ -374,26 +377,23 @@ html {
 }
 .copyright a:hover{
     background: var(--accent-green);
-    color: var(--ink);
+    color: var(--on-accent);
 }
 
 /********************************************//**
- *  Digital glitch jolt — used when a dithered
- *  image swaps to its original on hover, and as
- *  a hover kick on CSS-filtered thumbnails.
+ *  Pixel-decode glitch — images resolve through
+ *  coarse→fine mosaic steps (frames generated in
+ *  MotionInterface); a 1px jitter rides along.
  ***********************************************/
-.qk-glitch-jolt{
-    animation: qk-glitch-bands .38s steps(2, end) 1;
+.qk-pixel-jitter{
+    animation: qk-pixel-jitter .3s steps(2, end) infinite;
 }
-@keyframes qk-glitch-bands{
-    0%  { clip-path: inset(0 0 0 0);      transform: translateX(0); }
-    12% { clip-path: inset(8% 0 78% 0);   transform: translateX(-6px); }
-    25% { clip-path: inset(46% 0 38% 0);  transform: translateX(5px); }
-    37% { clip-path: inset(72% 0 5% 0);   transform: translateX(-4px); }
-    50% { clip-path: inset(20% 0 55% 0);  transform: translateX(6px); }
-    62% { clip-path: inset(85% 0 2% 0);   transform: translateX(-5px); }
-    75% { clip-path: inset(0 0 0 0);      transform: translateX(3px); }
-    100%{ clip-path: inset(0 0 0 0);      transform: translateX(0); }
+@keyframes qk-pixel-jitter{
+    0%  { transform: translate(0, 0); }
+    25% { transform: translate(1px, -1px); }
+    50% { transform: translate(-1px, 1px); }
+    75% { transform: translate(1px, 1px); }
+    100%{ transform: translate(0, 0); }
 }
 
 /********************************************//**
@@ -417,6 +417,6 @@ html {
         transition: none;
     }
     [data-qk-parallax]{ transform: none !important; }
-    .qk-glitch-jolt{ animation: none; }
+    .qk-pixel-jitter{ animation: none; }
     #qk-hud{ display: none; }
 }

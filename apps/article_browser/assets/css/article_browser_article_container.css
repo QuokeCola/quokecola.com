@@ -28,7 +28,7 @@
 #article-browser-article-md-container{
     position: relative;
     padding: 2rem calc(var(--grid-gutter) / 2) 2rem;
-    background-color: white;
+    background-color: var(--paper);
 }
 
 .article-browser-article-md-container-images{
@@ -49,6 +49,8 @@
     top: 0;
     z-index: 2;
     pointer-events: none;
+    /* the fade state machine waits on this transition */
+    transition: background-color .25s var(--ease-expo);
 }
 
 #article-browser-article-md-container img{

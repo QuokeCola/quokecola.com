@@ -54,6 +54,6 @@
     content: " ";
     width: 100%;
     height: 100%;
-    background-color: white !important;
+    background-color: var(--paper) !important;
     z-index: 1;
 }

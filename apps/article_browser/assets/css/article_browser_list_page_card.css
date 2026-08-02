@@ -30,7 +30,7 @@
     font-family: var(--font-mono);
     font-size: 10px;
     letter-spacing: .14em;
-    color: var(--ink);
+    color: var(--on-accent);
     background: var(--accent-green);
     padding: 3px 7px;
     pointer-events: none;
@@ -60,7 +60,6 @@
 }
 .article-browser-list-quarter-tile:hover .article-browser-list-card-img{
     filter: grayscale(0) contrast(1);
-    animation: qk-glitch-bands .38s steps(2, end) 1;
 }
 
 .article-browser-list-quarter-tile > h1 {

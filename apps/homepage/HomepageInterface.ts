@@ -198,6 +198,8 @@ export class HomepageInterface {
             }
             new_slide.dataset.qkSrc = new_url;
             new_slide.dataset.qkDithered = dithered;
+            MotionInterface.prewarm_pixel_steps(new_url);
+            MotionInterface.prewarm_pixel_steps(dithered);
             container.classList.replace("loading-components-light", "loaded-components-light");
             new_slide.getBoundingClientRect(); // force reflow before animating
 
@@ -281,6 +283,8 @@ export class HomepageInterface {
                     }
                 };
                 apply(dithered);
+                MotionInterface.prewarm_pixel_steps(img_url);
+                MotionInterface.prewarm_pixel_steps(dithered);
                 const host = img_obj.closest<HTMLElement>(".home-quarter-size-tile") ?? img_obj;
                 if (!host.dataset.qkHoverReveal) {
                     host.dataset.qkHoverReveal = "1";

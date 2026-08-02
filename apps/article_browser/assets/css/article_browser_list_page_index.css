@@ -29,8 +29,9 @@
     color: var(--paper);
 }
 
+
 .article-browser-list-index-selected{
     background-color: var(--accent-green) !important;
-    border-color: var(--ink) !important;
-    color: var(--ink) !important;
+    border-color: var(--accent-green) !important;
+    color: var(--on-accent) !important;
 }

@@ -162,7 +162,7 @@ horz-line:nth-child(odd){
 #loading-orgName::after{
     content: "SYS.BOOT — OK";
     display: block;
-    color: var(--ink);
+    color: var(--on-accent);
     background: var(--accent-green);
     width: fit-content;
     padding: 0 4px;
@@ -174,7 +174,7 @@ horz-line:nth-child(odd){
 
     border: 1px solid var(--ink);
 
-    background: rgba(255,255,255,.7);
+    background: rgba(14,14,15,.75);
     opacity: 0;
     transform: scale(.96);
 

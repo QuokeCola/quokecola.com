@@ -8,7 +8,7 @@
     margin: 5px 5px 5px 0;
     line-height: 1;
     border: var(--gray-1) solid 1px;
-    background-color: rgba(255,255,255,0.5);
+    background-color: rgba(14,14,15,0.5);
     user-select: none;
     cursor: pointer;
     transition: background-color .25s var(--ease-expo), color .25s var(--ease-expo), border-color .25s var(--ease-expo);
@@ -23,12 +23,12 @@
 
 .article-tag-selected{
     background-color: var(--accent-green);
-    border-color: var(--ink);
-    color: var(--ink);
+    border-color: var(--accent-green);
+    color: var(--on-accent);
 }
 .article-tag-selected:hover{
-    color: var(--ink);
+    color: var(--on-accent);
 }
 .article-tag-selected::before, .article-tag-selected::after{
-    color: var(--ink);
+    color: var(--on-accent);
 }

@@ -9,7 +9,7 @@
     box-sizing: border-box;
     padding: calc(var(--nav-height)) var(--gutter) 16px;
     border-bottom: solid 1px var(--article-browser-border-color);
-    background-color: rgba(255,255,255,0.6);
+    background-color: rgba(14,14,15,0.6);
     backdrop-filter: blur(40px);
     -webkit-backdrop-filter: blur(40px);
     margin-bottom: -1px;
@@ -31,7 +31,7 @@
 #article-browser-load-article-status:checked ~ #article-browser-list-page > #article-browser-list-tag-container{
     backdrop-filter: blur(0px);
     -webkit-backdrop-filter: blur(0px);
-    background-color: rgba(255,255,255,1.0);
+    background-color: var(--paper);
 }
 
 /* Static section head above the grid — sits on the wireframe margins */
@@ -69,17 +69,14 @@
     flex-wrap: wrap;
     min-width: 0;
     transition: background-color var(--dur-hover) var(--ease-expo);
-    background-color: white;
+    background-color: var(--paper);
 }
 
-/* Vertical seams drawn on the tiles at the track boundaries — they land
-   exactly on the wireframe rules. */
+/* Interior seams drawn on the tiles at the track boundaries; the
+   outermost edges stay open. */
 #article-browser-list-grid-container > .article-browser-list-quarter-tile{
     border-left: 1px solid var(--article-browser-border-color);
     box-sizing: border-box;
-}
-#article-browser-list-grid-container > .article-browser-list-quarter-tile:last-child{
-    border-right: 1px solid var(--article-browser-border-color);
 }
 
 #article-browser-list-index {
@@ -96,8 +93,8 @@
     #article-browser-list-grid-container{
         grid-template-columns: repeat(4, 1fr);
     }
-    #article-browser-list-grid-container > .article-browser-list-quarter-tile:nth-child(4n){
-        border-right: 1px solid var(--article-browser-border-color);
+    #article-browser-list-grid-container > .article-browser-list-quarter-tile:nth-child(4n+1){
+        border-left: none;
     }
 }
 
@@ -105,8 +102,8 @@
     #article-browser-list-grid-container{
         grid-template-columns: repeat(2, 1fr);
     }
-    #article-browser-list-grid-container > .article-browser-list-quarter-tile:nth-child(2n){
-        border-right: 1px solid var(--article-browser-border-color);
+    #article-browser-list-grid-container > .article-browser-list-quarter-tile:nth-child(2n+1){
+        border-left: none;
     }
 }
 
@@ -115,6 +112,6 @@
         grid-template-columns: 1fr;
     }
     #article-browser-list-grid-container > .article-browser-list-quarter-tile{
-        border-right: 1px solid var(--article-browser-border-color);
+        border-left: none;
     }
 }

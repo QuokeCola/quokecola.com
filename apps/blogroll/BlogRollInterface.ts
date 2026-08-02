@@ -477,7 +477,9 @@ export class BlogRollInterface {
         if (!this.canvas || !this.canvas_container) return;
         this.canvas_container.style.position        = "relative";
         this.canvas_container.style.overflow        = "hidden";
-        this.canvas_container.style.backgroundColor = "#ffffff";
+        // Scene renders grayscale-on-white; CSS invert(1) on the canvas
+        // flips it to the dark theme, so the container matches dark paper.
+        this.canvas_container.style.backgroundColor = "#0e0e0f";
 
         // Renderer
         this.renderer = new THREE.WebGLRenderer({ antialias: true, canvas: this.canvas });

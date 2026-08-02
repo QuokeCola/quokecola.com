@@ -5,13 +5,16 @@
     font-family: var(--font-body);
     font-weight: normal;
     border-bottom: 1px solid var(--ink);
-    background-color: #ffffff;
+    background-color: var(--paper);
 }
 
 #blogroll-threejs-canvas {
     display: block; /* Removes bottom margin/gap from canvas */
     width: 100%;
     height: 100%;
+    /* the shader scene is grayscale on white — inverting it yields the
+       dark theme without touching the WebGL pipeline */
+    filter: invert(1);
 }
 
 /* --- HUD corner readouts over the canvas --- */
@@ -109,13 +112,9 @@
     margin-bottom: 40px;
 }
 
-/* Vertical seams drawn on the cards at the track boundaries — they land
-   exactly on the wireframe rules. */
+/* Interior seams drawn on the cards; the outermost edges stay open. */
 #blogroll-list-container > .blogroll-card{
     border-left: 1px solid var(--line);
-}
-#blogroll-list-container > .blogroll-card:last-child{
-    border-right: 1px solid var(--line);
 }
 
 #blogroll-list-container > p{
@@ -222,7 +221,6 @@
 
 #blogroll-list-container > .blogroll-card:hover > .blogroll-card-image{
     filter: grayscale(0) contrast(1);
-    animation: qk-glitch-bands .38s steps(2, end) 1;
 }
 
 /*  --- Breakpoints --- */
@@ -230,8 +228,8 @@
     #blogroll-list-container{
         grid-template-columns: repeat(2, 1fr);
     }
-    #blogroll-list-container > .blogroll-card:nth-child(2n){
-        border-right: 1px solid var(--line);
+    #blogroll-list-container > .blogroll-card:nth-child(2n+1){
+        border-left: none;
     }
 }
 
@@ -240,7 +238,7 @@
         grid-template-columns: 1fr;
     }
     #blogroll-list-container > .blogroll-card{
-        border-right: 1px solid var(--line);
+        border-left: none;
     }
 }
 
@@ -267,8 +265,8 @@
     #blogroll-list-container{
         grid-template-columns: repeat(4, 1fr);
     }
-    #blogroll-list-container > .blogroll-card:nth-child(4n){
-        border-right: 1px solid var(--line);
+    #blogroll-list-container > .blogroll-card:nth-child(4n+1){
+        border-left: none;
     }
 
     .blogroll-div-line{

@@ -239,7 +239,7 @@ export class ArticleBrowserInterface {
                 }
                 // Monitor the css, preventing stuck situation.
                 let style = window.getComputedStyle(this.article_container_obj,':before');
-                if (style['backgroundColor']==="rgb(255, 255, 255)" ) {
+                if (style['backgroundColor'] !== "rgba(0, 0, 0, 0)" ) {
                     this.write_article_content(this.article_container_content);
                     this.article_container_obj.classList.remove("article-browser-fade");
                     this.article_container_obj.ontransitionend = ()=> {}
@@ -284,7 +284,7 @@ export class ArticleBrowserInterface {
                 }
                 // Monitor the css, preventing stuck situation.
                 let style = window.getComputedStyle(this.list_page_obj,':before');
-                if (style['backgroundColor']==="rgb(255, 255, 255)") {
+                if (style['backgroundColor'] !== "rgba(0, 0, 0, 0)") {
                     this.write_list_content(this.list_grid_content);
                     this.list_page_obj.classList.remove("article-browser-fade");
                     this.list_page_obj.ontransitionend = ()=> {}

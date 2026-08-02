@@ -36,6 +36,7 @@
     width: var(--back-btn-icon-size);
     left: calc((var(--back-btn-width) - var(--back-btn-icon-size))/2);
     bottom: calc((var(--back-btn-width) - var(--back-btn-icon-size))/2);
+    filter: invert(1);
     transition: left .5s var(--ease-expo), filter var(--dur-hover) var(--ease-expo);
     user-select: none;
 }
@@ -49,7 +50,7 @@
 
 #article-browser-article-back-button:hover #article-browser-article-back-button-icon{
     left: calc((var(--back-btn-width) - var(--back-btn-icon-size))/2 - 10px);
-    filter: invert(1);
+    filter: invert(0);
 }
 
 @media screen and (min-width: 1000px) {
@@ -73,7 +74,7 @@
         margin-right: -100%;
         margin-bottom: -80px;
         top: calc(100% - 80px);
-        background-color: rgba(255,255,255,0.7);
+        background-color: rgba(14,14,15,0.7);
         backdrop-filter: blur(40px);
         -webkit-backdrop-filter: blur(40px);
         border-top: solid 1px var(--article-browser-border-color);

@@ -189,35 +189,83 @@ export class MotionInterface {
         });
     }
 
+    /************************************************
+     *  Pixel-decode glitch
+     *  The target image resolves through coarse→fine
+     *  mosaic frames (nearest-neighbour upscales of
+     *  tiny renders), like a signal locking on.
+     ***********************************************/
+    private static pixel_cache: Map<string, string[]> = new Map();
+
+    /** Build mosaic frames (block sizes 28 → 14 → 7 px) for an image. */
+    private static async pixel_steps(url: string): Promise<string[]> {
+        const cached = this.pixel_cache.get(url);
+        if (cached) return cached;
+        try {
+            const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+                const i = new Image();
+                i.onload = () => resolve(i);
+                i.onerror = reject;
+                i.src = url;
+            });
+            const scale = Math.min(1, 480 / img.naturalWidth);
+            const w = Math.max(1, Math.round(img.naturalWidth * scale));
+            const h = Math.max(1, Math.round(img.naturalHeight * scale));
+            const steps: string[] = [];
+            for (const block of [28, 14, 7]) {
+                const sw = Math.max(2, Math.round(w / block));
+                const sh = Math.max(2, Math.round(h / block));
+                const small = document.createElement("canvas");
+                small.width = sw; small.height = sh;
+                small.getContext("2d")!.drawImage(img, 0, 0, sw, sh);
+                const out = document.createElement("canvas");
+                out.width = w; out.height = h;
+                const octx = out.getContext("2d")!;
+                octx.imageSmoothingEnabled = false;
+                octx.drawImage(small, 0, 0, w, h);
+                steps.push(out.toDataURL("image/png"));
+            }
+            this.pixel_cache.set(url, steps);
+            return steps;
+        } catch {
+            return [];
+        }
+    }
+
+    /** Warm the mosaic frame cache so the first hover has no delay. */
+    static prewarm_pixel_steps(url: string) {
+        void this.pixel_steps(url);
+    }
+
     /**
-     * Swap an element's image (img src or background) through a short
-     * digital glitch: band-sliced clip-path jolt with the swap happening
-     * mid-animation. Under reduced motion the swap is instant.
+     * Swap an element's image (img src or background) through the
+     * pixel-decode sequence. Overlapping calls cancel each other via a
+     * token. Under reduced motion the swap is instant.
      */
-    static glitch_swap(el: HTMLElement, url: string) {
-        const apply = () => {
+    static async glitch_swap(el: HTMLElement, url: string) {
+        const apply = (u: string) => {
             if (el instanceof HTMLImageElement) {
-                el.src = url;
+                el.src = u;
             } else {
-                el.style.backgroundImage = `url("${url}")`;
+                el.style.backgroundImage = `url("${u}")`;
             }
         };
         if (this.reduced_motion()) {
-            apply();
+            apply(url);
             return;
         }
-        if (!el.dataset.qkGlitchBound) {
-            el.dataset.qkGlitchBound = "1";
-            el.addEventListener("animationend", (e) => {
-                if ((e as AnimationEvent).animationName === "qk-glitch-bands") {
-                    el.classList.remove("qk-glitch-jolt");
-                }
-            });
+        const token = String(parseInt(el.dataset.qkSwapToken || "0") + 1);
+        el.dataset.qkSwapToken = token;
+        el.classList.add("qk-pixel-jitter");
+        const steps = await this.pixel_steps(url);
+        for (const frame of steps) {
+            if (el.dataset.qkSwapToken !== token) return;
+            apply(frame);
+            await new Promise(r => window.setTimeout(r, 65));
         }
-        el.classList.remove("qk-glitch-jolt");
-        void el.offsetWidth; // restart the animation
-        el.classList.add("qk-glitch-jolt");
-        window.setTimeout(apply, 140);
+        if (el.dataset.qkSwapToken !== token) return;
+        apply(url);
+        el.classList.remove("qk-pixel-jitter");
     }
 
     /************************************************
