@@ -42,7 +42,7 @@
 }
 
 #article-browser-article-back-button:hover {
-    background-color: var(--ink);
+    background-color: var(--paper-2);
 }
 #article-browser-article-back-button:hover::after{
     color: var(--accent-green);
@@ -50,7 +50,6 @@
 
 #article-browser-article-back-button:hover #article-browser-article-back-button-icon{
     left: calc((var(--back-btn-width) - var(--back-btn-icon-size))/2 - 10px);
-    filter: invert(0);
 }
 
 @media screen and (min-width: 1000px) {
