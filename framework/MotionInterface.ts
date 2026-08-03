@@ -190,14 +190,60 @@ export class MotionInterface {
     }
 
     /************************************************
-     *  Pixel-decode glitch
-     *  The target image resolves through coarse→fine
-     *  mosaic frames (nearest-neighbour upscales of
-     *  tiny renders), like a signal locking on.
+     *  Glitch + dither decode
+     *  The target image resolves through frames that
+     *  are Bayer-dithered at coarse color depths and
+     *  pixel sizes, with random horizontal slices
+     *  displaced — a corrupted signal locking on.
      ***********************************************/
     private static pixel_cache: Map<string, string[]> = new Map();
 
-    /** Build mosaic frames (block sizes 28 → 14 → 7 px) for an image. */
+    /**
+     * Render one decode frame: draw the image at 1/pix resolution, apply
+     * a per-channel ordered Bayer dither quantized to `levels`, upscale
+     * nearest-neighbour, then displace `bands` random horizontal slices.
+     */
+    private static dither_glitch_frame(
+        img: HTMLImageElement, w: number, h: number,
+        levels: number, pix: number, bands: number, max_shift: number
+    ): string {
+        const sw = Math.max(2, Math.round(w / pix));
+        const sh = Math.max(2, Math.round(h / pix));
+        const small = document.createElement("canvas");
+        small.width = sw; small.height = sh;
+        const sctx = small.getContext("2d", { willReadFrequently: true })!;
+        sctx.drawImage(img, 0, 0, sw, sh);
+        const data = sctx.getImageData(0, 0, sw, sh);
+        const px = data.data;
+        const q = levels - 1;
+        for (let y = 0; y < sh; y++) {
+            for (let x = 0; x < sw; x++) {
+                const i = (y * sw + x) * 4;
+                const t = (this.BAYER8[(y % 8) * 8 + (x % 8)] + 0.5) / 64;
+                // per-channel ordered dither → coarse color depth
+                px[i]     = Math.min(q, Math.floor(px[i]     / 255 * q + t)) / q * 255;
+                px[i + 1] = Math.min(q, Math.floor(px[i + 1] / 255 * q + t)) / q * 255;
+                px[i + 2] = Math.min(q, Math.floor(px[i + 2] / 255 * q + t)) / q * 255;
+            }
+        }
+        sctx.putImageData(data, 0, 0);
+
+        const out = document.createElement("canvas");
+        out.width = w; out.height = h;
+        const octx = out.getContext("2d")!;
+        octx.imageSmoothingEnabled = false;
+        octx.drawImage(small, 0, 0, w, h);
+        // glitch: displace random horizontal slices
+        for (let b = 0; b < bands; b++) {
+            const bh = Math.max(3, Math.round(h * (0.04 + Math.random() * 0.09)));
+            const by = Math.floor(Math.random() * (h - bh));
+            const dx = Math.round((Math.random() - 0.5) * 2 * max_shift);
+            octx.drawImage(out, 0, by, w, bh, dx, by, w, bh);
+        }
+        return out.toDataURL("image/png");
+    }
+
+    /** Build the decode sequence for an image (coarse+torn → clean). */
     private static async pixel_steps(url: string): Promise<string[]> {
         const cached = this.pixel_cache.get(url);
         if (cached) return cached;
@@ -211,20 +257,14 @@ export class MotionInterface {
             const scale = Math.min(1, 480 / img.naturalWidth);
             const w = Math.max(1, Math.round(img.naturalWidth * scale));
             const h = Math.max(1, Math.round(img.naturalHeight * scale));
-            const steps: string[] = [];
-            for (const block of [28, 14, 7]) {
-                const sw = Math.max(2, Math.round(w / block));
-                const sh = Math.max(2, Math.round(h / block));
-                const small = document.createElement("canvas");
-                small.width = sw; small.height = sh;
-                small.getContext("2d")!.drawImage(img, 0, 0, sw, sh);
-                const out = document.createElement("canvas");
-                out.width = w; out.height = h;
-                const octx = out.getContext("2d")!;
-                octx.imageSmoothingEnabled = false;
-                octx.drawImage(small, 0, 0, w, h);
-                steps.push(out.toDataURL("image/png"));
-            }
+            const steps = [
+                // 1-bit-per-channel dither, chunky pixels, hard tearing
+                this.dither_glitch_frame(img, w, h, 2, 6, 5, w * 0.07),
+                // 3-level dither, medium pixels, moderate tearing
+                this.dither_glitch_frame(img, w, h, 3, 3, 3, w * 0.045),
+                // 5-level dither, native pixels, slight tearing
+                this.dither_glitch_frame(img, w, h, 5, 1, 2, w * 0.02),
+            ];
             this.pixel_cache.set(url, steps);
             return steps;
         } catch {
@@ -232,7 +272,7 @@ export class MotionInterface {
         }
     }
 
-    /** Warm the mosaic frame cache so the first hover has no delay. */
+    /** Warm the decode frame cache so the first hover has no delay. */
     static prewarm_pixel_steps(url: string) {
         void this.pixel_steps(url);
     }
@@ -258,10 +298,11 @@ export class MotionInterface {
         el.dataset.qkSwapToken = token;
         el.classList.add("qk-pixel-jitter");
         const steps = await this.pixel_steps(url);
-        for (const frame of steps) {
+        const delays = [70, 85, 100];
+        for (let i = 0; i < steps.length; i++) {
             if (el.dataset.qkSwapToken !== token) return;
-            apply(frame);
-            await new Promise(r => window.setTimeout(r, 65));
+            apply(steps[i]);
+            await new Promise(r => window.setTimeout(r, delays[i] ?? 70));
         }
         if (el.dataset.qkSwapToken !== token) return;
         apply(url);

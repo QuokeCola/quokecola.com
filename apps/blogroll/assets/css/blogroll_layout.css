@@ -148,8 +148,7 @@
     border: 1px solid var(--line);
     background-size: cover;
     background-position: center;
-    filter: grayscale(1) contrast(1.05);
-    transition: filter .6s var(--ease-expo);
+    background-color: var(--paper-2);
 }
 
 #blogroll-list-container > .blogroll-card > .blogroll-card-text {
@@ -217,10 +216,6 @@
 #blogroll-list-container > .blogroll-card:hover::after{
     opacity: 1;
     transform: translateX(0);
-}
-
-#blogroll-list-container > .blogroll-card:hover > .blogroll-card-image{
-    filter: grayscale(0) contrast(1);
 }
 
 /*  --- Breakpoints --- */

@@ -1,4 +1,5 @@
 import { ContentLoaderInterface } from "../../framework/ContentLoaderInterface";
+import { MotionInterface } from "../../framework/MotionInterface";
 import * as THREE from 'three';
 import { BlogRollInterfaceData } from "./BlogRollInterfaceData";
 
@@ -462,14 +463,21 @@ export class BlogRollInterface {
             card.classList.add("blogroll-card");
             text.classList.add("loading-components-light", "blogroll-card-text");
             img.classList.add("blogroll-card-image");
-            img.style.backgroundImage = `url("${doc.img}")`;
             text.append(title, descr);
             card.append(img, text);
             card.onclick = () => window.open(doc.url, '_blank').focus();
             const loader = new Image();
-            loader.addEventListener("load", () =>
-                text.classList.replace("loading-components-light", "loaded-components-light")
-            );
+            loader.addEventListener("load", async () => {
+                // Bayer-dithered avatar at rest; glitch-decodes to the
+                // original on hover (same pipeline as the other tiles).
+                const dithered = await MotionInterface.ditherToDataUrl(doc.img);
+                img.style.backgroundImage = `url("${dithered}")`;
+                text.classList.replace("loading-components-light", "loaded-components-light");
+                MotionInterface.prewarm_pixel_steps(doc.img);
+                MotionInterface.prewarm_pixel_steps(dithered);
+                card.addEventListener("mouseenter", () => MotionInterface.glitch_swap(img, doc.img));
+                card.addEventListener("mouseleave", () => MotionInterface.glitch_swap(img, dithered));
+            });
             loader.src = doc.img;
             this.blogroll_list_container.appendChild(card);
         }

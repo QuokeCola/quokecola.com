@@ -2,6 +2,7 @@ import {AppRequests} from "../../framework/AppRequests";
 import {ArticleBrowserArticleData, ArticleBrowserAppData} from "./ArticleBrowserData";
 import {ContentLoaderInterface} from "../../framework/ContentLoaderInterface";
 import {NavigationBarInterface} from "../../framework/NavigationBarInterface";
+import {MotionInterface} from "../../framework/MotionInterface";
 
 import { markedHighlight } from "marked-highlight";
 
@@ -237,25 +238,37 @@ export class ArticleBrowserInterface {
                 if (!this.article_container_obj.classList.contains("article-browser-fade")){
                     this.article_container_obj.classList.add("article-browser-fade");
                 }
-                // Monitor the css, preventing stuck situation.
-                let style = window.getComputedStyle(this.article_container_obj,':before');
-                if (style['backgroundColor'] !== "rgba(0, 0, 0, 0)" ) {
+                this.run_after_fade(this.article_container_obj, () => {
                     this.write_article_content(this.article_container_content);
-                    this.article_container_obj.classList.remove("article-browser-fade");
-                    this.article_container_obj.ontransitionend = ()=> {}
-                } else {
-                    this.article_container_obj.ontransitionend = (ev)=>{
-                        // Replace md_container content;
-                        if (ev.propertyName==="background-color"&&ev.target===this.article_container_obj &&
-                            this.article_container_obj) {
-                            this.write_article_content(this.article_container_content);
-                            this.article_container_obj.classList.remove("article-browser-fade");
-                            this.article_container_obj.ontransitionend = ()=> {}
-                        }
-                    }
-                }
+                    this.article_container_obj!.classList.remove("article-browser-fade");
+                });
                 break;
         }
+    }
+
+    /**
+     * Run `action` once the fade overlay (:before background transition) has
+     * become opaque — immediately if it already is, on transitionend
+     * otherwise, with a timeout safety net so a missed transition event
+     * can never leave the page stuck unwritten.
+     */
+    private static run_after_fade(el: HTMLElement, action: () => void) {
+        let done = false;
+        const fire = () => {
+            if (done) return;
+            done = true;
+            el.ontransitionend = () => {};
+            action();
+        };
+        const style = window.getComputedStyle(el, ':before');
+        if (style['backgroundColor'] !== "rgba(0, 0, 0, 0)") {
+            fire();
+            return;
+        }
+        el.ontransitionend = (ev) => {
+            if (ev.propertyName === "background-color" && ev.target === el) fire();
+        };
+        window.setTimeout(fire, 450);
     }
 
     static async load_list(article_data_array: ArticleBrowserArticleData[]) {
@@ -282,23 +295,10 @@ export class ArticleBrowserInterface {
                 if (!this.list_page_obj.classList.contains("article-browser-fade")){
                     this.list_page_obj.classList.add("article-browser-fade");
                 }
-                // Monitor the css, preventing stuck situation.
-                let style = window.getComputedStyle(this.list_page_obj,':before');
-                if (style['backgroundColor'] !== "rgba(0, 0, 0, 0)") {
+                this.run_after_fade(this.list_page_obj, () => {
                     this.write_list_content(this.list_grid_content);
-                    this.list_page_obj.classList.remove("article-browser-fade");
-                    this.list_page_obj.ontransitionend = ()=> {}
-                } else {
-                    this.list_page_obj.ontransitionend = (ev)=>{
-                        // Replace md_container content;
-                        if (ev.propertyName==="background-color"&&ev.target===this.list_page_obj
-                            && this.list_page_obj) {
-                            this.write_list_content(this.list_grid_content);
-                            this.list_page_obj.classList.remove("article-browser-fade");
-                            this.list_page_obj.ontransitionend = ()=> {}
-                        }
-                    }
-                }
+                    this.list_page_obj!.classList.remove("article-browser-fade");
+                });
                 break;
             case this.ArticleBrowserStates.ARTICLE_READY:
                 this.write_list_content(this.list_grid_content);
@@ -432,11 +432,22 @@ export class ArticleBrowserInterface {
             image_instance.classList.add("loading-components-light");
             let image_loader = new Image();
 
-            image_loader.addEventListener("load",()=>{
+            image_loader.addEventListener("load", async ()=>{
+                // Bayer-dithered at rest; hover decodes to the original
+                // through the glitch+dither frame sequence.
+                const original = image_loader.src;
+                const dithered = await MotionInterface.ditherToDataUrl(original);
                 title_instance.classList.replace("loading-components-light","loaded-components-light");
                 detail_instance.classList.replace("loading-components-light","loaded-components-light");
                 image_instance.classList.replace("loading-components-light","loaded-components-light");
-                image_instance.style.backgroundImage = "url("+image_loader.src+")"
+                image_instance.style.backgroundImage = `url("${dithered}")`;
+                MotionInterface.prewarm_pixel_steps(original);
+                MotionInterface.prewarm_pixel_steps(dithered);
+                if (!card_instance.dataset.qkHoverReveal) {
+                    card_instance.dataset.qkHoverReveal = "1";
+                    card_instance.addEventListener("mouseenter", () => MotionInterface.glitch_swap(image_instance, original));
+                    card_instance.addEventListener("mouseleave", () => MotionInterface.glitch_swap(image_instance, dithered));
+                }
             });
             card_instance.onclick = ()=>{
                 let app_data:ArticleBrowserAppData = {
