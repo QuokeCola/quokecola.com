@@ -32,6 +32,7 @@
 }
 
 .article-browser-list-quarter-tile > h1 {
+    min-height: 3em;  /* two lines, so dates and tags line up across a row */
     font-weight: normal;
     cursor: default;
     font-size: 24px;

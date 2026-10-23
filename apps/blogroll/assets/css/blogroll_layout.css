@@ -1,5 +1,4 @@
 :root {
-    --left-right-margin: 15px;
     --link-btn-gray: rgb(200,200,200);
 }
 /* --- Canvas Container --- */
@@ -25,39 +24,39 @@
     height: 100%;
 }
 
-/*  --- Section Wrapper --- */
-.blogroll-section-wrapper{
-    display: flex;
-    flex-wrap: wrap;
-
-    width: calc(100% - 80px);
-
-    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
+/*  --- Hero title, pinned to the bottom of the canvas --- */
+#blogroll-hero{
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    z-index: 1;
+    pointer-events: none;  /* let the mouse reach the canvas through the text */
 }
 
-.blogroll-section-wrapper > h1{
+#blogroll-hero > h1{
     position: relative;
-    font-size: 24px;
-    font-weight: 500;
-    margin-left: var(--left-right-margin);
-    margin-right: var(--left-right-margin);
+    margin: 0 0 var(--space-m) 0;
 }
 
-.blogroll-section-wrapper > p{
+/*  --- Content --- */
+#blogroll-content{
+    padding-top: var(--space-m);
+    padding-bottom: var(--space-m);
+}
+
+#blogroll-content > p{
     font-size: 15px;
     font-weight: 300;
-    margin-left: var(--left-right-margin);
-    margin-right: var(--left-right-margin);
-    margin-bottom: 50px;
+    margin: 0;
 }
 
-.blogroll-section-wrapper > p > a{
+#blogroll-content > p > a{
     position: relative;
     text-decoration: none;
     color: var(--accent-color);
 }
 
-.blogroll-section-wrapper > p > a::after{
+#blogroll-content > p > a::after{
     content: " ";
     left: 0;
     top: 0;
@@ -68,33 +67,20 @@
     transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
 }
 
-.blogroll-section-wrapper > p > a:hover::after{
+#blogroll-content > p > a:hover::after{
     width: 100%;
 }
 
-.blogroll-div-line{
-    width: 50px;
-    height: 1px;
-    background-color: rgb(150,150,150);
-
-    transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
+#blogroll-list-container > p{
+    grid-column: 1 / -1;
+    margin: 0;
 }
 
-.blogroll-section-wrapper > .blogroll-div-line{
-    margin-left: var(--left-right-margin);
-}
-
-#blogroll-list-container {
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-}
 
 #blogroll-list-container > .blogroll-card{
     position: relative;
     height: 80px;
     transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
-    margin-bottom: var(--blogroll-grid-border-width);
     display: flex;
     flex-wrap: nowrap;
 }
@@ -102,7 +88,8 @@
 #blogroll-list-container > .blogroll-card > .blogroll-card-image {
     position: relative;
     z-index: 0;
-    margin: 5px;
+    flex: none;
+    margin: 5px 0;
     width: 70px;
     height: 70px;
     border-radius: 50%;
@@ -111,7 +98,7 @@
 
 #blogroll-list-container > .blogroll-card > .blogroll-card-text {
     margin-left: 10px;
-    width: calc(100% - 90px);
+    width: calc(100% - 80px);
 }
 
 #blogroll-list-container > .blogroll-card > .blogroll-card-text > h1{
@@ -201,101 +188,21 @@
 }
 
 
-/* When screen is smaller than 600px */
-@media screen and (min-width: 550px) {
-    .blogroll-card {
-        width: calc((100% - var(--blogroll-grid-border-width) - var(--left-right-margin)*2)/2);
-    }
-
-    .blogroll-card:nth-child(2n+1){
-        margin-right: var(--blogroll-grid-border-width);
-        margin-left: var(--left-right-margin);
-    }
-}
-
-@media screen and (max-width: 549px) {
-    .blogroll-card {
-        width: 100%;
-        margin-left: var(--left-right-margin);
-        margin-right: var(--left-right-margin);
-    }
+#blogroll-canvas-container {
+    height: 60vh;
 }
 
 @media screen and (min-width: 700px) {
-    .blogroll-section-wrapper{
-        margin: 0 80px 0 80px;
-    }
-
-    #blogroll-canvas-container {
-        height: 60vh;
-    }
-
     /* --- Text Overlay --- */
     #blogroll-canvas-container h1 {
-        /* Critical: allows mouse to pass through text so the particles still flee */
-        pointer-events: none;
-
-        margin-left: var(--left-right-margin);
-        margin-right: var(--left-right-margin);
         color: #111;
         z-index: 10; /* Ensure text is above canvas */
-
-        /* Responsive Font Sizing */
-        font-size: clamp(2rem, 3rem, 5rem); /* Fluid sizing */
+        font-size: 3rem;
     }
 }
 
 @media screen and (max-width: 699px) {
-    .blogroll-section-wrapper{
-        margin: 0 40px 0 40px;
-    }
-    #blogroll-canvas-container {
-        height: 60vh;
-    }
     #blogroll-canvas-container h1 {
-        font-size: clamp(1.5rem, 2rem, 2rem); /* Fluid sizing */
+        font-size: 2rem;
     }
 }
-
-@media screen and (min-width: 900px){
-    :root{
-        --blogroll-grid-border-width: 20px
-    }
-
-    .blogroll-div-line{
-        margin: 100px 0 100px 0;
-    }
-
-    .blogroll-card {
-        width: calc((100% - 3*var(--blogroll-grid-border-width) - 2*var(--left-right-margin))/4);
-    }
-
-    .blogroll-card:nth-child(4n+1), .blogroll-card:nth-child(4n+2), .blogroll-card:nth-child(4n+3){
-        margin-right: var(--blogroll-grid-border-width);
-    }
-
-    .blogroll-card:nth-child(4n+3){
-        margin-left: 0;
-    }
-
-    .blogroll-card:nth-child(4n+1) {
-        margin-left: var(--left-right-margin);
-    }
-
-    .blogroll-card:nth-child(4n) {
-        margin-right: var(--left-right-margin);
-    }
-}
-
-@media screen and (max-width: 899px) {
-
-    :root{
-        --blogroll-grid-border-width: 10px
-    }
-
-    .blogroll-div-line{
-        margin: 30px 0 30px 0;
-    }
-
-}
-

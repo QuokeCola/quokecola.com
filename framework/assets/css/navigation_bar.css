@@ -104,9 +104,14 @@ nav .nav-menu-items:hover::after{
         display: flex;
     }
 
+    /* Logo and menu text sit on the page margin */
+    .nav-logo-panel{
+        margin-left: var(--page-margin);
+    }
+
     .nav-menu-panel {
         position: absolute;
-        right: 50px;
+        right: calc(var(--page-margin) - 5px);
         width: auto;
         display: flex;
     }

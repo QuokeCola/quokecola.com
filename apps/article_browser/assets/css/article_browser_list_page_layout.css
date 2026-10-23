@@ -1,11 +1,17 @@
+#article-browser-list-page{
+    --list-tile-padding: 20px;
+}
+
+/* Full-width bar behind the navigation; its bottom line is the grid's top line */
 #article-browser-list-tag-container{
     position: sticky;
     transition: all cubic-bezier(0.8, 0, 0.2, 1) 0.5s;
     top: 0;
     display: block;
     flex-wrap: wrap;
-    width: calc(100% - var(--grid-gutter));
-    padding: calc(var(--nav-height)) calc(var(--grid-gutter) / 2) 20px;
+    box-sizing: border-box;
+    width: 100%;
+    padding: var(--nav-height) calc(var(--page-margin) + var(--list-tile-padding)) 20px;
     border-bottom: solid 1px var(--article-browser-border-color);
     background-color: rgba(255,255,255,0.5);
     backdrop-filter: blur(40px);
@@ -20,75 +26,48 @@
     background-color: rgba(255,255,255,1.0);
 }
 
+/* Every line is drawn once: tiles outline into the 1px gaps and padding
+   (outlines of neighbours land on the same pixel), and the two margin lines
+   run the full grid height so a part-filled last row stays closed. */
 #article-browser-list-grid-container{
-    display: inline-grid;
-    width: 100%;
-    padding: 0;
+    --list-line: linear-gradient(var(--article-browser-border-color), var(--article-browser-border-color));
+    display: grid;
+    grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr));
+    box-sizing: border-box;
+    width: calc(100% - 2 * var(--page-margin));
+    margin: 0 var(--page-margin);
+    padding: 1px;
     transition: all cubic-bezier(0.8, 0, 0.2, 1) 0.5s;
     grid-gap: 1px;
-    background-color: var(--article-browser-border-color);
+    background-image: var(--list-line), var(--list-line);
+    background-position: left top, right top;
+    background-size: 1px 100%, 1px 100%;
+    background-repeat: no-repeat;
     overflow-x: visible;
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
 }
 
 .article-browser-list-quarter-tile {
     position: relative;
-    padding: calc(var(--grid-gutter) / 2);
+    padding: var(--list-tile-padding);
     display: flex;
     flex-wrap: wrap;
+    align-content: flex-start;
     min-width: 0;
     transition: all cubic-bezier(0.8, 0, 0.2, 1) 0.5s;
     background-color: white;
+    outline: solid 1px var(--article-browser-border-color);
 }
 
+/* Full-width page selector; its top line is the grid's bottom line */
 #article-browser-list-index {
     display: flex;
     height: 50px;
     overflow-x: hidden;
+    box-sizing: border-box;
     width: 100%;
+    margin-top: -1px;
+    padding: 0 var(--page-margin);
     justify-content: flex-end;
     border-bottom: solid 1px var(--article-browser-border-color);
     border-top: solid 1px var(--article-browser-border-color);
-}
-
-@media screen and (min-width: 1000px) {
-    #article-browser-list-grid-container{
-        grid-template-columns: repeat(4, 1fr);
-    }
-    #article-browser-list-grid-container > .article-browser-list-quarter-tile:nth-child(4n+1):before {
-        border-bottom: 1px solid var(--article-browser-border-color);
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 100%;
-        margin-left: calc(-50vw);
-        pointer-events: none;
-    }
-    #article-browser-list-grid-container > .article-browser-list-quarter-tile:nth-child(4n):before {
-        border-bottom: 1px solid var(--article-browser-border-color);
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 100%;
-        margin-right: calc(-50vw);
-        pointer-events: none;
-    }
-}
-
-@media screen and (max-width: 999px) and (min-width: 550px) {
-    #article-browser-list-grid-container{
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media screen and (max-width: 549px) {
-    #article-browser-list-grid-container{
-        grid-template-columns: 1fr;
-    }
 }

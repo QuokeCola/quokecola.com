@@ -65,7 +65,7 @@
 
     .home-banner-text{
         position: absolute;
-        left: 80px;
+        left: var(--page-margin);
         top: 30%;
         font-size: 20px;
         width: 400px;
@@ -80,7 +80,7 @@
 @media screen and (max-width: 699px) {
     .home-banner-text{
         position: absolute;
-        left: 40px;
+        left: var(--page-margin);
         top: 150px;
         font-size: 15px;
         width: 200px;
@@ -115,7 +115,8 @@
 
 .home-banner-nav-btn {
     flex: none;
-    width: var(--banner-controls-height);
+    box-sizing: border-box;
+    width: var(--page-margin);  /* inner border lines up with the content edge */
     height: 100%;
     background: transparent;
     border: none;
@@ -130,10 +131,6 @@
 
 #home-banner-prev { border-right: 1px solid rgb(225,225,225); }
 #home-banner-next { border-left: 1px solid rgb(225,225,225); }
-
-@media screen and (min-width: 700px) {
-    .home-banner-nav-btn { width: 96px; }
-}
 
 .home-banner-nav-btn:hover {
     background: rgba(230,230,230,0.6);

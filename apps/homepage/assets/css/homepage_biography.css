@@ -1,5 +1,6 @@
 #home-welcome{
     font-weight: 300;
+    max-width: 100%;
 
     transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
 }
@@ -37,7 +38,6 @@
 }
 
 #home-about-biography{
-    margin-bottom: 50px;
     transition: all cubic-bezier(.8, 0.0, 0.0, 1.0) .5s;
 }
 
@@ -74,10 +74,21 @@
     }
 }
 
+/* Biography and selfie stack below 1000px */
+@media screen and (max-width: 999px) {
+    #home-about-biography{
+        margin-bottom: var(--space-m);
+    }
+}
+
+#home-about-links{
+    display: flex;
+    margin-bottom: var(--space-m);
+}
+
 .home-about-link-icons {
 
     height: 20px;
-    margin-bottom: 30px;
     padding: 10px;
     border-top: #CCCCCC solid 1px;
     border-bottom: #CCCCCC solid 1px;
@@ -92,11 +103,6 @@
 }
 
 .home-about-link-icons:first-child{
-    height: 20px;
-    margin-bottom: 30px;
-    padding: 10px;
-    border-top: #CCCCCC solid 1px;
-    border-bottom: #CCCCCC solid 1px;
     border-left: none;
 }
 
