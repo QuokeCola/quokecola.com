@@ -71,3 +71,24 @@
     border-bottom: solid 1px var(--article-browser-border-color);
     border-top: solid 1px var(--article-browser-border-color);
 }
+
+/* One column: drop the boxed margins so cards run edge to edge, and inset
+   their content by the page margin instead. Side outlines fall outside the
+   screen and are clipped. */
+@media screen and (max-width: 549px) {
+    #article-browser-list-tag-container{
+        padding-left: var(--page-margin);
+        padding-right: var(--page-margin);
+    }
+
+    #article-browser-list-grid-container{
+        width: 100%;
+        margin: 0;
+        padding: 1px 0;
+        background-image: none;
+    }
+
+    .article-browser-list-quarter-tile {
+        padding: var(--list-tile-padding) var(--page-margin);
+    }
+}
