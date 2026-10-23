@@ -18,6 +18,7 @@
 
 .home-banner-slide {
     position: absolute;
+    overflow: hidden;
     width: 100%;
     height: 100%;
     top: 0;
@@ -74,9 +75,6 @@
         font-size: 40px;
         font-weight: 400;
     }
-    .home-banner-nav-btn{
-        bottom: 50%;
-    }
 }
 
 @media screen and (max-width: 699px) {
@@ -92,33 +90,53 @@
         font-size: 20px;
         font-weight: 400;
     }
+}
 
-    .home-banner-nav-btn{
-        bottom: 5%;
-    }
+#home-banner-button {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Bottom bar: [prev][ indicator ][next], flush with the banner's bottom edge */
+.home-banner-controls {
+    --banner-controls-height: 52px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: var(--banner-controls-height);
+    z-index: 1;  /* above the slides, below the fixed navigation bar (z-index 2) */
+    display: flex;
+    border-top: 1px solid rgb(225,225,225);
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
 }
 
 .home-banner-nav-btn {
-    position: absolute;
-    transform: translateY(-50%);
-    z-index: 3;
-    background: rgba(255,255,255,0.5);
+    flex: none;
+    width: var(--banner-controls-height);
+    height: 100%;
+    background: transparent;
     border: none;
+    border-radius: 0;
     cursor: pointer;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
     padding: 0;
-    transition: all cubic-bezier(0.8,0.0,0.2,1.0) 0.5s;
+    transition: background cubic-bezier(0.5,0.0,0.5,1.0) .15s;
+}
+
+#home-banner-prev { border-right: 1px solid rgb(225,225,225); }
+#home-banner-next { border-left: 1px solid rgb(225,225,225); }
+
+@media screen and (min-width: 700px) {
+    .home-banner-nav-btn { width: 96px; }
 }
 
 .home-banner-nav-btn:hover {
-    background: rgba(255,255,255,0.35);
+    background: rgba(230,230,230,0.6);
 }
 
 .home-banner-nav-btn img {
@@ -126,35 +144,78 @@
     height: 20px;
 }
 
-#home-banner-prev {
-    left: 16px;
-}
-
-#home-banner-next {
-    right: 16px;
+.home-banner-indicator {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .home-banner-dots {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 3;
     display: flex;
     gap: 8px;
     align-items: center;
 }
 
 .home-banner-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 4px;
-    background: rgba(255,255,255,0.5);
+    position: relative;
+    width: 16px;
+    height: 1px;
+    padding: 6px 0;
+    background: rgb(200,200,200) content-box;
     cursor: pointer;
-    transition: background 0.3s ease, width 0.3s ease;
+    transition: width 0.3s ease;
 }
 
 .home-banner-dot-active {
-    background: rgba(255,255,255,1);
-    width: 20px;
+    width: 32px;
+}
+
+/* Progress fill: full when idle, fills over one autoplay interval while autoplaying */
+.home-banner-dot-active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 6px;
+    width: 100%;
+    height: 1px;
+    background: rgb(60,60,60);
+}
+
+.home-banner-autoplay .home-banner-dot-active::after {
+    animation: home-banner-progress var(--banner-autoplay-interval) linear both;
+}
+
+@keyframes home-banner-progress {
+    from { width: 0; }
+    to   { width: 100%; }
+}
+
+.home-banner-model-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.9s cubic-bezier(0.5, 0, 0.2, 1);
+}
+
+/* Blurred render shown while the model loads; sharpens and fades out once it is ready */
+.home-banner-placeholder {
+    position: absolute;
+    inset: -40px;  /* keep the blurred edges outside the slide */
+    background-size: cover;
+    background-position: center;
+    filter: blur(24px);
+    opacity: 1;
+    pointer-events: none;
+    transition: filter 0.9s cubic-bezier(0.5, 0, 0.2, 1), opacity 0.9s cubic-bezier(0.5, 0, 0.2, 1);
+}
+
+.home-banner-model-ready .home-banner-model-canvas {
+    opacity: 1;
+}
+
+.home-banner-model-ready .home-banner-placeholder {
+    filter: blur(0);
+    opacity: 0;
 }

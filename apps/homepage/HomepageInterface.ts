@@ -2,19 +2,27 @@ import {ContentLoaderInterface} from "../../framework/ContentLoaderInterface";
 import {AppRequests} from "../../framework/AppRequests";
 import {ArticleBrowserAppData, ArticleBrowserArticleData} from "../article_browser/ArticleBrowserData";
 import RequestType = ArticleBrowserAppData.RequestType;
+import {BannerModelViewer} from "./BannerModelViewer";
 
 interface BannerPage {
-    img: string;
+    img?: string;    // background image
+    model?: string;  // 3D model, rendered instead of an image
+    placeholder?: string;  // shown blurred while the model loads
+
     subtitle: string;
     title: string;
     abstract: string;
     onLearnMore: () => void;
 }
 
+const BANNER_AUTOPLAY_INTERVAL = 5000;  // ms per page
+const BANNER_RESUME_DELAY      = 10000; // ms of autoplay pause after manual navigation
+
 export class HomepageInterface {
     static banner_pages: BannerPage[] = [
         {
-            img: "./apps/homepage/assets/images/banner_img.JPG",
+            model: "./apps/homepage/assets/models/haptic_device.bin",
+            placeholder: "./apps/homepage/assets/images/banner_placeholder.jpg",
             subtitle: "Project",
             title: "Haptic Device",
             abstract: "Wearable Haptic Device for Shape and Weight Rendering.",
@@ -57,6 +65,8 @@ export class HomepageInterface {
 
     static current_banner_idx: number = 0;
     static banner_timer: ReturnType<typeof setInterval> | null = null;
+    static banner_resume_timer: ReturnType<typeof setTimeout> | null = null;
+    static banner_viewers: Map<HTMLElement, BannerModelViewer> = new Map();
 
     static home_selfie_img_url: string = "./apps/homepage/assets/images/selfie.jpeg"
     static html_url = "./apps/homepage/layout.html"
@@ -83,34 +93,29 @@ export class HomepageInterface {
         let prev_btn = document.getElementById("home-banner-prev");
         let next_btn = document.getElementById("home-banner-next");
         if (prev_btn) {
-            prev_btn.onclick = () => {
-                this.stop_banner_autoplay();
-                this.goto_banner_page(this.current_banner_idx - 1, 'backward');
-                setTimeout(() => this.start_banner_autoplay(), 10000);
-            };
+            prev_btn.onclick = () => this.navigate_banner(this.current_banner_idx - 1, 'backward');
         }
         if (next_btn) {
-            next_btn.onclick = () => {
-                this.stop_banner_autoplay();
-                this.goto_banner_page(this.current_banner_idx + 1, 'forward');
-                setTimeout(() => this.start_banner_autoplay(), 10000);
-            };
+            next_btn.onclick = () => this.navigate_banner(this.current_banner_idx + 1, 'forward');
         }
 
         let dots_container = document.getElementById("home-banner-dots");
         if (dots_container) {
+            dots_container.style.setProperty('--banner-autoplay-interval', `${BANNER_AUTOPLAY_INTERVAL}ms`);
             this.banner_pages.forEach((_, i) => {
                 let dot = document.createElement("span");
                 dot.className = "home-banner-dot" + (i === 0 ? " home-banner-dot-active" : "");
-                dot.onclick = () => {
-                    const dir = i > this.current_banner_idx ? 'forward' : 'backward';
-                    this.stop_banner_autoplay();
-                    this.goto_banner_page(i, dir);
-                    setTimeout(() => this.start_banner_autoplay(), 10000);
-                };
+                dot.onclick = () => this.navigate_banner(i, i > this.current_banner_idx ? 'forward' : 'backward');
                 dots_container!.appendChild(dot);
             });
         }
+    }
+
+    /** Manual navigation: pauses autoplay, then resumes it after BANNER_RESUME_DELAY. */
+    static navigate_banner(idx: number, direction: 'forward' | 'backward') {
+        this.stop_banner_autoplay();
+        this.goto_banner_page(idx, direction);
+        this.banner_resume_timer = setTimeout(() => this.start_banner_autoplay(), BANNER_RESUME_DELAY);
     }
 
     static goto_banner_page(idx: number, direction: 'forward' | 'backward' | 'none' = 'forward') {
@@ -123,14 +128,14 @@ export class HomepageInterface {
         let banner_imgs     = document.getElementById("home-banner-imgs");
         let banner_button   = document.getElementById("home-banner-button");
 
-        const text_els = [banner_subtitle, banner_title, banner_abstract].filter(Boolean) as HTMLElement[];
+        const text_els = [banner_subtitle, banner_title, banner_abstract, banner_button].filter(Boolean) as HTMLElement[];
         text_els.forEach(el => el.classList.replace("loaded-components-light", "loading-components-light"));
         if (banner_subtitle) banner_subtitle.textContent = page.subtitle;
         if (banner_title)    banner_title.textContent    = page.title;
         if (banner_abstract) banner_abstract.textContent = page.abstract;
 
         if (banner_imgs) {
-            this.slide_to_img(banner_imgs, page.img, direction, () => {
+            this.slide_to_page(banner_imgs, page, direction, () => {
                 text_els.forEach(el => el.classList.replace("loading-components-light", "loaded-components-light"));
             });
         }
@@ -142,15 +147,24 @@ export class HomepageInterface {
         document.querySelectorAll(".home-banner-dot").forEach((dot, i) => {
             dot.classList.toggle("home-banner-dot-active", i === this.current_banner_idx);
         });
+        this.restart_banner_progress();
     }
 
-    static slide_to_img(container: HTMLElement, new_url: string, direction: 'forward' | 'backward' | 'none', onComplete: () => void) {
+    /** Restarts the active indicator's fill; it only animates while autoplay is running. */
+    static restart_banner_progress() {
+        const dots = document.getElementById("home-banner-dots");
+        if (!dots) return;
+        dots.classList.remove("home-banner-autoplay");
+        void dots.offsetWidth; // reflow so the fill animation starts over
+        dots.classList.toggle("home-banner-autoplay", this.banner_timer !== null);
+    }
+
+    static slide_to_page(container: HTMLElement, page: BannerPage, direction: 'forward' | 'backward' | 'none', onComplete: () => void) {
         const DURATION = 500;
         const old_slides = Array.from(container.querySelectorAll<HTMLElement>('.home-banner-slide'));
 
         const new_slide = document.createElement('div');
         new_slide.className = 'home-banner-slide';
-        new_slide.style.backgroundImage = `url(${new_url})`;
         if (direction === 'none') {
             new_slide.style.opacity = '0';
         } else {
@@ -158,8 +172,7 @@ export class HomepageInterface {
         }
         container.appendChild(new_slide);
 
-        const image = new Image();
-        image.onload = () => {
+        const on_ready = () => {
             container.classList.replace("loading-components-light", "loaded-components-light");
             new_slide.getBoundingClientRect(); // force reflow before animating
 
@@ -179,17 +192,58 @@ export class HomepageInterface {
             onComplete();
 
             setTimeout(() => {
-                old_slides.forEach(s => { if (s.parentNode === container) container.removeChild(s); });
+                old_slides.forEach(s => this.remove_banner_slide(s));
             }, DURATION);
         };
-        image.src = new_url;
+
+        if (page.model) {
+            // The slide comes in with the blurred placeholder; once the model is ready the
+            // placeholder sharpens and fades out over it (see .home-banner-model-ready)
+            const viewer = new BannerModelViewer(new_slide, page.model);
+            this.banner_viewers.set(new_slide, viewer);
+            const model_ready = viewer.load().then(() => new_slide.classList.add('home-banner-model-ready'));
+            if (page.placeholder) {
+                const placeholder = document.createElement('div');
+                placeholder.className = 'home-banner-placeholder';
+                placeholder.style.backgroundImage = `url(${page.placeholder})`;
+                new_slide.appendChild(placeholder);
+                const image = new Image();
+                image.onload = on_ready;
+                image.src = page.placeholder;
+            } else {
+                model_ready.then(on_ready);
+            }
+        } else if (page.img) {
+            new_slide.style.backgroundImage = `url(${page.img})`;
+            const image = new Image();
+            image.onload = on_ready;
+            image.src = page.img;
+        }
+    }
+
+    static remove_banner_slide(slide: HTMLElement) {
+        this.banner_viewers.get(slide)?.destroy();
+        this.banner_viewers.delete(slide);
+        slide.remove();
+    }
+
+    /**
+     * Leaving the homepage: the model blurs back into its placeholder while the page
+     * transitions out. Each viewer releases itself once the layout removes its slide.
+     */
+    static destroy_banner() {
+        this.stop_banner_autoplay();
+        this.banner_viewers.forEach((_, slide) => slide.classList.remove('home-banner-model-ready'));
+        this.banner_viewers.clear();
     }
 
     static start_banner_autoplay() {
         this.stop_banner_autoplay();
+        if (this.banner_pages.length < 2) return;
         this.banner_timer = setInterval(() => {
             this.goto_banner_page(this.current_banner_idx + 1, 'forward');
-        }, 5000);
+        }, BANNER_AUTOPLAY_INTERVAL);
+        this.restart_banner_progress();
     }
 
     static stop_banner_autoplay() {
@@ -197,6 +251,11 @@ export class HomepageInterface {
             clearInterval(this.banner_timer);
             this.banner_timer = null;
         }
+        if (this.banner_resume_timer !== null) {
+            clearTimeout(this.banner_resume_timer);
+            this.banner_resume_timer = null;
+        }
+        this.restart_banner_progress();
     }
 
     static reload_banner() {
